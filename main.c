@@ -4,6 +4,17 @@
 //enum para facilitar manutenção cogido menu
 enum Opcoes{SAIR = 0, JOGAR, DECKS};
 
+ typedef struct
+{
+    char nome[51];
+    char pais[51];
+    int anoConstrucao;
+    float altura;
+    int visitasAnuais;
+    int importanciaHistorica;
+    int popularidade;
+}cartas;
+
 void jogar(){
     printf("Em Breve\n");
     return;
