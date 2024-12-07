@@ -4,12 +4,20 @@
 #include <locale.h>
 #include <stdbool.h> // Biblioteca para bool
 
+// Enum para facilitar manutenção do menu Principal
 enum Opcoes
 {
     SAIR = 0,
     JOGAR,
-    DECKS
+    DECKS,
+    INSERIR = 1,
+    LISTAR,
+    PESQUISAR,
+    ALTERAR,
+    EXCLUIR
 };
+
+// Enum para facilitar manutenção do menu Deck
 
 typedef struct
 {
@@ -29,18 +37,85 @@ void jogar()
     return;
 }
 
-void decks()
+void inserirCartas()
 {
     printf("Em breve.\n");
+    return;
+}
+
+void listarCartas()
+{
+    printf("Em breve.\n");
+    return;
+}
+
+void pesquisarCartas()
+{
+    printf("Em breve.\n");
+    return;
+}
+void alterarCartas()
+{
+    printf("Em breve.\n");
+    return;
+}
+
+void excluirCartas()
+{
+    printf("Em breve.\n");
+    return;
+}
+
+
+void menuDecks(int *vmenu)
+{
+    printf("O que deseja fazer?\n1 - Inserir cartas no deck\n2 - Listar as cartas do deck\n3 - Pesquisar cartas no deck\n4 - Alterar cartas do deck\n5 - Excluir cartas do deck\n0 - Sair\nDigite a opção desejada: ");
+    scanf("%i", vmenu);
+    return;
+}
+
+void decks()
+{
+    int vmenud = -1;
+    do
+    {
+        menuDecks(&vmenud);
+        switch (vmenud)
+        {
+        case INSERIR:
+            inserirCartas();
+            break;
+        case LISTAR:
+            listarCartas();
+            break;
+        case PESQUISAR:
+            pesquisarCartas();
+            break;
+        case ALTERAR:
+            alterarCartas();
+            break;
+        case EXCLUIR:
+            excluirCartas();
+            break;
+        case SAIR:
+            printf("Encerrando o programa.\n");
+            break;
+        default:
+            printf("O valor digitado não é válido\n");
+            break;
+        }
+    } while (vmenud != SAIR);
     return;
 }
 
 void menu(int *vmenu)
 {
     printf("O que deseja fazer?\n1 - Jogar\n2 - Decks\n0 - Sair\nDigite a opção desejada: ");
-    if (scanf("%i", vmenu) != 1) {
+    if (scanf("%i", vmenu) != 1)
+    {
         printf("Entrada inválida! Digite novamente.\n");
-        while (getchar() != '\n'); // Limpa o buffer do teclado
+        while (getchar() != '\n')
+            ; // Limpa o buffer do teclado
         *vmenu = -1;
     }
     return;
@@ -131,11 +206,11 @@ int main()
     for (int i = 0; i < quantidadeCartas; i++)
     {
         deck[i] = configuracoesIniciais(arq);
-        printf("%s, %s, %s, %i, %.2f, %i, %i, %i\n", 
-               deck[i].nome, deck[i].pais, 
-               deck[i].supertrunfo ? "Sim" : "Nao", 
-               deck[i].anoConstrucao, deck[i].altura, 
-               deck[i].visitasAnuais, deck[i].importanciaHistorica, 
+        printf("%s, %s, %s, %i, %.2f, %i, %i, %i\n",
+               deck[i].nome, deck[i].pais,
+               deck[i].supertrunfo ? "Sim" : "Nao",
+               deck[i].anoConstrucao, deck[i].altura,
+               deck[i].visitasAnuais, deck[i].importanciaHistorica,
                deck[i].popularidade);
     }
 
