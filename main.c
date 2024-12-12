@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include <stdbool.h> // Biblioteca para bool
 
 // Enum para facilitar manutenção do menu Principal
 enum Opcoes
@@ -23,7 +22,7 @@ typedef struct
 {
     char nome[51];
     char pais[51];
-    bool supertrunfo; // Agora é booleano
+    int supertrunfo; // Agora é booleano
     int anoConstrucao;
     float altura;
     int visitasAnuais;
@@ -43,10 +42,25 @@ void inserirCartas()
     return;
 }
 
-void listarCartas()
+void listarCartas(cartas **deck, int quantidadeCartas)
 {
-    printf("Em breve.\n");
-    return;
+    for (int i = 0; i < quantidadeCartas; i++)
+    {
+        if ((*deck)[i].supertrunfo == 1)
+        {
+            printf("%i - %20s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Sim",
+                   (*deck)[i].anoConstrucao, (*deck)[i].altura,
+                   (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
+                   (*deck)[i].popularidade);
+        }
+        else if ((*deck)[i].supertrunfo == 0)
+        {
+            printf("%i - %20s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Nao",
+                   (*deck)[i].anoConstrucao, (*deck)[i].altura,
+                   (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
+                   (*deck)[i].popularidade);
+        }
+    }
 }
 
 void pesquisarCartas()
@@ -66,27 +80,21 @@ void excluirCartas()
     return;
 }
 
-
-void menuDecks(int *vmenu)
+void menuDecks(cartas **deck, int quantidadeCartas)
 {
-    printf("O que deseja fazer?\n1 - Inserir cartas no deck\n2 - Listar as cartas do deck\n3 - Pesquisar cartas no deck\n4 - Alterar cartas do deck\n5 - Excluir cartas do deck\n0 - Sair\nDigite a opção desejada: ");
-    scanf("%i", vmenu);
-    return;
-}
+    int vmenu = -1;
 
-void decks()
-{
-    int vmenud = -1;
     do
     {
-        menuDecks(&vmenud);
-        switch (vmenud)
+        printf("O que deseja fazer?\n1 - Inserir cartas no deck\n2 - Listar as cartas do deck\n3 - Pesquisar cartas no deck\n4 - Alterar cartas do deck\n5 - Excluir cartas do deck\n0 - Sair\nDigite a opcao desejada: ");
+        scanf("%i", &vmenu);
+        switch (vmenu)
         {
         case INSERIR:
             inserirCartas();
             break;
         case LISTAR:
-            listarCartas();
+            listarCartas(deck, quantidadeCartas);
             break;
         case PESQUISAR:
             pesquisarCartas();
@@ -98,59 +106,31 @@ void decks()
             excluirCartas();
             break;
         case SAIR:
-            printf("Encerrando o programa.\n");
+            printf("Saindo da Secao decks\n");
             break;
         default:
-            printf("O valor digitado não é válido\n");
+            printf("O valor digitado nao e valido.\n");
             break;
         }
-    } while (vmenud != SAIR);
+    } while (vmenu != SAIR);
     return;
 }
 
 void menu(int *vmenu)
 {
-    printf("O que deseja fazer?\n1 - Jogar\n2 - Decks\n0 - Sair\nDigite a opção desejada: ");
-    if (scanf("%i", vmenu) != 1)
-    {
-        printf("Entrada inválida! Digite novamente.\n");
-        while (getchar() != '\n')
-            ; // Limpa o buffer do teclado
-        *vmenu = -1;
-    }
+    printf("O que deseja fazer?\n1 - Jogar\n2 - Decks\n0 - Sair\nDigite a opcao desejada: ");
+    scanf("%i", vmenu);
+    setbuf(stdin, NULL);
     return;
 }
 
 cartas configuracoesIniciais(FILE *arq)
 {
     cartas deck;
-    char linha[256]; // Buffer para a linha
-    if (fgets(linha, sizeof(linha), arq) != NULL)
+    fscanf(arq, "%[^,],%[^,],%i,%i,%f,%i,%i,%i\n", deck.nome, deck.pais, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
+    if (deck.supertrunfo != 1 && deck.supertrunfo != 0)
     {
-        // Usando strtok para dividir os campos com base na vírgula
-        char *token = strtok(linha, ",");
-        strncpy(deck.nome, token, sizeof(deck.nome));
-
-        token = strtok(NULL, ",");
-        strncpy(deck.pais, token, sizeof(deck.pais));
-
-        token = strtok(NULL, ",");
-        deck.supertrunfo = (atoi(token) != 0); // Converte para bool
-
-        token = strtok(NULL, ",");
-        deck.anoConstrucao = atoi(token);
-
-        token = strtok(NULL, ",");
-        deck.altura = atof(token);
-
-        token = strtok(NULL, ",");
-        deck.visitasAnuais = atoi(token);
-
-        token = strtok(NULL, ",");
-        deck.importanciaHistorica = atoi(token);
-
-        token = strtok(NULL, ",");
-        deck.popularidade = atoi(token);
+        deck.supertrunfo = 0;
     }
     return deck;
 }
@@ -198,7 +178,7 @@ int main()
     cartas *deck = (cartas *)malloc(quantidadeCartas * sizeof(cartas));
     if (deck == NULL)
     {
-        printf("Erro ao alocar memória\n");
+        printf("Erro ao alocar memoria\n");
         fclose(arq);
         exit(1);
     }
@@ -206,12 +186,6 @@ int main()
     for (int i = 0; i < quantidadeCartas; i++)
     {
         deck[i] = configuracoesIniciais(arq);
-        printf("%s, %s, %s, %i, %.2f, %i, %i, %i\n",
-               deck[i].nome, deck[i].pais,
-               deck[i].supertrunfo ? "Sim" : "Nao",
-               deck[i].anoConstrucao, deck[i].altura,
-               deck[i].visitasAnuais, deck[i].importanciaHistorica,
-               deck[i].popularidade);
     }
 
     fclose(arq);
@@ -226,13 +200,13 @@ int main()
             jogar();
             break;
         case DECKS:
-            decks();
+            menuDecks(&deck, quantidadeCartas);
             break;
         case SAIR:
             printf("Encerrando o programa.\n");
             break;
         default:
-            printf("O valor digitado não é válido.\n");
+            printf("O valor digitado nao e valido.\n");
             break;
         }
     } while (vmenu != SAIR);
