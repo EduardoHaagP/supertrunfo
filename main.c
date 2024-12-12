@@ -36,26 +36,149 @@ void jogar()
     return;
 }
 
-void inserirCartas()
+void inserirCartas(cartas **deck, int *quantidadeCartas)
 {
-    printf("Em breve.\n");
-    return;
+    int maisUmaCarta = 0;
+    printf("Voce deseja adicionar uma carta?\n1 - Sim\n0 - Nao\nDigite aqui: ");
+    scanf("%i", &maisUmaCarta);
+    setbuf(stdin, NULL);
+
+    while (maisUmaCarta != 0 && maisUmaCarta != 1)
+    {
+        printf("Valor invalido!\nDigite novamente: ");
+        scanf("%i", &maisUmaCarta);
+        setbuf(stdin, NULL);
+    }
+    
+    FILE *arq = NULL;
+
+    if (maisUmaCarta == 1) {
+          arq = fopen("deck.csv", "w"); // Abre para escrita no inicio da função.
+        if (arq == NULL)
+        {
+            printf("Erro na abertura do arquivo\n");
+            exit(1);
+        }
+    }
+
+    while (maisUmaCarta == 1)
+    {
+        cartas carta;
+
+        printf("Qual o nome do monumento que deseja adicionar: ");
+        fgets(carta.nome, sizeof(carta.nome), stdin);
+        carta.nome[strcspn(carta.nome, "\n")] = '\0';
+
+        printf("Em qual pais esse monumento esta localizado: ");
+        fgets(carta.pais, sizeof(carta.pais), stdin);
+        carta.pais[strcspn(carta.pais, "\n")] = '\0';
+
+        int resposta;
+        printf("Deseja que ele se torne o super trunfo\n1 - sim\n0 - nao\nDigite aqui: ");
+        scanf("%i", &resposta);
+        setbuf(stdin, NULL);
+        while (resposta != 1 && resposta != 0)
+        {
+            printf("Resposta invalida!\nDigite novamente: ");
+            scanf("%i", &resposta);
+            setbuf(stdin, NULL);
+        }
+
+        if (resposta == 1)
+        {
+            // Desmarca todos os super trunfos no deck
+            for (int i = 0; i < (*quantidadeCartas); i++)
+            {
+                (*deck)[i].supertrunfo = 0;
+            }
+            carta.supertrunfo = 1;
+        }
+        else
+        {
+            carta.supertrunfo = 0;
+        }
+
+        printf("Em que ano ele terminou de ser construido (em caso de ser antes de cristo digite o valor negativo): ");
+        scanf("%i", &carta.anoConstrucao);
+        setbuf(stdin, NULL);
+
+        printf("Qual a altura desse monumento: ");
+        scanf("%f", &carta.altura);
+        setbuf(stdin, NULL);
+
+        printf("Quantas visitas anuais esse monumento recebe em media: ");
+        scanf("%i", &carta.visitasAnuais);
+        setbuf(stdin, NULL);
+
+        printf("De 0 a 10 qual a sua importancia historica: ");
+        scanf("%i", &resposta);
+        setbuf(stdin, NULL);
+        while (resposta > 10 || resposta < 0)
+        {
+            printf("Resposta invalida!\nDigite novamente: ");
+            scanf("%i", &resposta);
+            setbuf(stdin, NULL);
+        }
+        carta.importanciaHistorica = resposta;
+
+        printf("De 0 a 10 qual a sua popularidade: ");
+        scanf("%i", &resposta);
+        setbuf(stdin, NULL);
+        while (resposta > 10 || resposta < 0)
+        {
+            printf("Resposta invalida!\nDigite novamente: ");
+            scanf("%i", &resposta);
+            setbuf(stdin, NULL);
+        }
+        carta.popularidade = resposta;
+
+        *deck = realloc(*deck, (*quantidadeCartas + 1) * sizeof(cartas));
+        if (*deck == NULL)
+        {
+            printf("Erro: Memória insuficiente!\n");
+            if(arq != NULL)
+            {
+                fclose(arq);
+            }
+            exit(1);
+        }
+        (*deck)[*quantidadeCartas] = carta;
+        (*quantidadeCartas)++;
+
+        printf("Voce deseja adicionar mais uma carta?\n1 - Sim\n0 - Nao\nDigite aqui: ");
+        scanf("%i", &maisUmaCarta);
+        setbuf(stdin, NULL);
+        while (maisUmaCarta != 0 && maisUmaCarta != 1)
+        {
+            printf("Valor invalido!\nDigite novamente: ");
+            scanf("%i", &maisUmaCarta);
+            setbuf(stdin, NULL);
+        }
+    }
+    if (arq != NULL) {
+        for (int i = 0; i < (*quantidadeCartas); i++) {
+             fprintf(arq, "%s,%s,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].pais, (*deck)[i].supertrunfo,
+                     (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
+                     (*deck)[i].popularidade);
+         }
+         fclose(arq);
+    }
 }
 
-void listarCartas(cartas **deck, int quantidadeCartas)
+void listarCartas(cartas **deck, int *quantidadeCartas)
 {
-    for (int i = 0; i < quantidadeCartas; i++)
+    for (int i = 0; i < (*quantidadeCartas); i++)
     {
         if ((*deck)[i].supertrunfo == 1)
         {
-            printf("%i - %20s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Sim",
+            printf("%i - %35s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Sim",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
         }
         else if ((*deck)[i].supertrunfo == 0)
         {
-            printf("%i - %20s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Nao",
+            printf("%i - %35s| %20s| %5s| %6i| %7.2f| %15i| %4i| %4i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Nao",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
@@ -80,7 +203,7 @@ void excluirCartas()
     return;
 }
 
-void menuDecks(cartas **deck, int quantidadeCartas)
+void menuDecks(cartas **deck, int *quantidadeCartas)
 {
     int vmenu = -1;
 
@@ -91,7 +214,7 @@ void menuDecks(cartas **deck, int quantidadeCartas)
         switch (vmenu)
         {
         case INSERIR:
-            inserirCartas();
+            inserirCartas(deck, quantidadeCartas);
             break;
         case LISTAR:
             listarCartas(deck, quantidadeCartas);
@@ -200,7 +323,7 @@ int main()
             jogar();
             break;
         case DECKS:
-            menuDecks(&deck, quantidadeCartas);
+            menuDecks(&deck, &quantidadeCartas);
             break;
         case SAIR:
             printf("Encerrando o programa.\n");
