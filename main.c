@@ -21,7 +21,7 @@ enum Opcoes
 typedef struct
 {
     char nome[51];
-    char pais[51];
+    char letra;
     int supertrunfo; // Agora é booleano
     int anoConstrucao;
     float altura;
@@ -69,10 +69,26 @@ void inserirCartas(cartas **deck, int *quantidadeCartas)
         printf("Qual o nome do monumento que deseja adicionar: ");
         fgets(carta.nome, sizeof(carta.nome), stdin);
         carta.nome[strcspn(carta.nome, "\n")] = '\0';
+        setbuf(stdin, NULL);
 
-        printf("Em qual pais esse monumento esta localizado: ");
-        fgets(carta.pais, sizeof(carta.pais), stdin);
-        carta.pais[strcspn(carta.pais, "\n")] = '\0';
+        int respostaLetra;
+        printf("Qual letra voce deseja que essa carta possua:1 - A\n2 - B\n3 - C\n4 - D\nDigite aqui: ");
+        scanf("%i", &respostaLetra);
+        setbuf(stdin, NULL);
+        if (respostaLetra == 1)
+        {
+            carta.letra == 'A';
+        }else if (respostaLetra == 2)
+        {
+            carta.letra == 'B';
+        }else if (respostaLetra == 3)
+        {
+            carta.letra == 'C';
+        }else if (respostaLetra == 4)
+        {
+            carta.letra == 'D';
+        } 
+        
 
         int resposta;
         printf("Deseja que ele se torne o super trunfo\n1 - sim\n0 - nao\nDigite aqui: ");
@@ -160,7 +176,7 @@ void inserirCartas(cartas **deck, int *quantidadeCartas)
     {
         for (int i = 0; i < (*quantidadeCartas); i++)
         {
-            fprintf(arq, "%s,%s,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].pais, (*deck)[i].supertrunfo,
+            fprintf(arq, "%s,%c,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
                     (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                     (*deck)[i].popularidade);
         }
@@ -170,19 +186,19 @@ void inserirCartas(cartas **deck, int *quantidadeCartas)
 
 void listarCartas(cartas **deck, int *quantidadeCartas)
 {
-    printf("%6s - %35s| %20s| %5s| %12s| %14s| %15s| %20s| %14s\n", "Indice", "Nome do Monumento", "Pais", "Super Trunfo", "Ano Construcao", "Altura","Visitas Anuais", "Importancia Historica", "Popularidade");
+    printf("%6s - %35s| %5c| %5s| %12s| %14s| %15s| %20s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura","Visitas Anuais", "Importancia Historica", "Popularidade");
     for (int i = 0; i < (*quantidadeCartas); i++)
     {
         if ((*deck)[i].supertrunfo == 1)
         {
-            printf("%6i - %35s| %20s| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Sim",
+            printf("%6i - %35s| %7c| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
         }
         else if ((*deck)[i].supertrunfo == 0)
         {
-            printf("%6i - %35s| %20s| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Nao",
+            printf("%6i - %35s| %7c| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
@@ -202,17 +218,17 @@ void pesquisarCartas(cartas **deck, int *quantidadeCartas)
     {
         if (strcmp(pesquisa, (*deck)[i].nome) == 0)
         {
-            printf("%6s - %35s| %20s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Pais", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
+            printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
             if ((*deck)[i].supertrunfo == 1)
             {
-                printf("%6i - %35s| %20s| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Sim",
+                printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
                        (*deck)[i].anoConstrucao, (*deck)[i].altura,
                        (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                        (*deck)[i].popularidade);
             }
             else if ((*deck)[i].supertrunfo == 0)
             {
-                printf("%6i - %35s| %20s| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].pais, "Nao",
+                printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
                        (*deck)[i].anoConstrucao, (*deck)[i].altura,
                        (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                        (*deck)[i].popularidade);
@@ -286,7 +302,7 @@ void menu(int *vmenu)
 cartas configuracoesIniciais(FILE *arq)
 {
     cartas deck;
-    fscanf(arq, "%[^,],%[^,],%i,%i,%f,%i,%i,%i\n", deck.nome, deck.pais, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
+    fscanf(arq, "%[^,],%c,%i,%i,%f,%i,%i,%i\n", deck.nome, deck.letra, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
     if (deck.supertrunfo != 1 && deck.supertrunfo != 0)
     {
         deck.supertrunfo = 0;
