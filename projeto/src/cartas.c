@@ -1,20 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
+#include "cartas.h"
 
-// Enum para facilitar manutenção do menu Principal
-// Enum para facilitar manutenção do menu Deck
 enum Opcoes
 {
-    SAIR = 0,
-    JOGAR,
-    DECKS,
-    INSERIR = 1,
-    LISTAR,
-    PESQUISAR,
-    ALTERAR,
-    EXCLUIR,
     NOME = 1,
     LETRA,
     SUPERTRUNFO,
@@ -25,26 +15,7 @@ enum Opcoes
     POPULARIDADE
 };
 
-typedef struct
-{
-    char nome[51];
-    char letra;
-    int supertrunfo;
-    int anoConstrucao;
-    float altura;
-    int visitasAnuais;
-    int importanciaHistorica;
-    int popularidade;
-} cartas;
-
-void jogar()
-{
-    printf("Em breve.\n");
-    return;
-}
-
-void inserirCartas(cartas **deck, int *quantidadeCartas)
-{
+void inserirCartas(cartas **deck, int *quantidadeCartas) {
     int maisUmaCarta = 0;
     printf("Voce deseja adicionar uma carta?\n1 - Sim\n0 - Nao\nDigite aqui: ");
     scanf("%i", &maisUmaCarta);
@@ -191,33 +162,33 @@ void inserirCartas(cartas **deck, int *quantidadeCartas)
         }
         fclose(arq);
     }
+    return;
 }
 
-void listarCartas(cartas **deck, int *quantidadeCartas)
-{
-    printf("%6s - %35s| %7s| %5s| %12s| %14s| %15s| %20s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
+void listarCartas(cartas **deck, int *quantidadeCartas) {
+    printf("%6s - %35s| %7s| %14s| %12s| %14s| %15s| %20s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
     for (int i = 0; i < (*quantidadeCartas); i++)
     {
         if ((*deck)[i].supertrunfo == 1)
         {
-            printf("%6i - %35s| %7c| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
+            printf("%6i - %35s| %7c| %14s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
         }
         else if ((*deck)[i].supertrunfo == 0)
         {
-            printf("%6i - %35s| %7c| %5s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
+            printf("%6i - %35s| %7c| %14s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
         }
     }
+    return;
 }
 
-void pesquisarCartas(cartas **deck, int *quantidadeCartas)
-{
-    setbuf(stdin, NULL);
+void pesquisarCartas(cartas **deck, int *quantidadeCartas) {
+   setbuf(stdin, NULL);
     char pesquisa[51];
     int encontrou = 0;
     printf("Digite o nome da carta que busca: ");
@@ -252,8 +223,7 @@ void pesquisarCartas(cartas **deck, int *quantidadeCartas)
     return;
 }
 
-void alterarCartas(cartas **deck, int *quantidadeCartas)
-{
+void alterarCartas(cartas **deck, int *quantidadeCartas) {
     int indice;
     int quantidadeCartasAux = *quantidadeCartas - 1;
     printf("Qual o Indice da carta que voce deseja alterar (0 - %i): ", quantidadeCartasAux);
@@ -412,12 +382,11 @@ void alterarCartas(cartas **deck, int *quantidadeCartas)
             }
             fclose(arq);
         }
-        return;
     }
+    return;
 }
 
-void excluirCartas(cartas **deck, int *quantidadeCartas)
-{
+void excluirCartas(cartas **deck, int *quantidadeCartas) {
     int indice;
     int quantidadeCartasAux = *quantidadeCartas - 1;
     printf("Qual o Indice da carta que voce deseja excluir (0 - %i): ", quantidadeCartasAux);
@@ -456,7 +425,7 @@ void excluirCartas(cartas **deck, int *quantidadeCartas)
     }
     if ((*quantidadeCartas) == 32)
     {
-        printf("Sinto muito, mas nao posso excluir nenhuma carta.\nCaso queira excluir alguma carta adicione outra");
+        printf("Sinto muito, mas nao posso excluir nenhuma carta.\nCaso queira excluir alguma carta adicione outra\n");
         return;
     }
     else
@@ -469,20 +438,24 @@ void excluirCartas(cartas **deck, int *quantidadeCartas)
             }
             else if (i > indice)
             {
-                strcpy((*deck)[i-1].nome, (*deck)[i].nome);
-                (*deck)[i-1].letra = (*deck)[i].letra;
-                (*deck)[i-1].supertrunfo = (*deck)[i].supertrunfo;
-                (*deck)[i-1].anoConstrucao = (*deck)[i].anoConstrucao;
-                (*deck)[i-1].altura = (*deck)[i].altura;
-                (*deck)[i-1].visitasAnuais = (*deck)[i].visitasAnuais;
-                (*deck)[i-1].importanciaHistorica = (*deck)[i].importanciaHistorica;
-                (*deck)[i-1].popularidade = (*deck)[i].popularidade;
+                strcpy((*deck)[i - 1].nome, (*deck)[i].nome);
+                (*deck)[i - 1].letra = (*deck)[i].letra;
+                (*deck)[i - 1].supertrunfo = (*deck)[i].supertrunfo;
+                (*deck)[i - 1].anoConstrucao = (*deck)[i].anoConstrucao;
+                (*deck)[i - 1].altura = (*deck)[i].altura;
+                (*deck)[i - 1].visitasAnuais = (*deck)[i].visitasAnuais;
+                (*deck)[i - 1].importanciaHistorica = (*deck)[i].importanciaHistorica;
+                (*deck)[i - 1].popularidade = (*deck)[i].popularidade;
             }
+        }
+        if ((*deck)[indice].supertrunfo == 1)
+        {
+            (*deck)[0].supertrunfo = 1;
         }
         (*quantidadeCartas)--;
         *deck = realloc(*deck, (*quantidadeCartas) * sizeof(cartas));
     }
-    
+
     FILE *arq = fopen("deck.csv", "w");
     if (arq != NULL)
     {
@@ -494,141 +467,5 @@ void excluirCartas(cartas **deck, int *quantidadeCartas)
         }
         fclose(arq);
     }
-    return;
-}
-
-void menuDecks(cartas **deck, int *quantidadeCartas)
-{
-    int vmenu = -1;
-
-    do
-    {
-        printf("O que deseja fazer?\n1 - Inserir cartas no deck\n2 - Listar as cartas do deck\n3 - Pesquisar cartas no deck\n4 - Alterar cartas do deck\n5 - Excluir cartas do deck\n0 - Sair\nDigite a opcao desejada: ");
-        scanf("%i", &vmenu);
-        switch (vmenu)
-        {
-        case INSERIR:
-            inserirCartas(deck, quantidadeCartas);
-            break;
-        case LISTAR:
-            listarCartas(deck, quantidadeCartas);
-            break;
-        case PESQUISAR:
-            pesquisarCartas(deck, quantidadeCartas);
-            break;
-        case ALTERAR:
-            alterarCartas(deck, quantidadeCartas);
-            break;
-        case EXCLUIR:
-            excluirCartas(deck, quantidadeCartas);
-            break;
-        case SAIR:
-            printf("Saindo da Secao decks\n");
-            break;
-        default:
-            printf("O valor digitado nao e valido.\n");
-            break;
-        }
-    } while (vmenu != SAIR);
-    return;
-}
-
-void menu(int *vmenu)
-{
-    printf("O que deseja fazer?\n1 - Jogar\n2 - Decks\n0 - Sair\nDigite a opcao desejada: ");
-    scanf("%i", vmenu);
-    setbuf(stdin, NULL);
-    return;
-}
-
-cartas configuracoesIniciais(FILE *arq)
-{
-    cartas deck;
-    fscanf(arq, "%[^,],%c,%i,%i,%f,%i,%i,%i\n", deck.nome, &deck.letra, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
-    if (deck.supertrunfo != 1 && deck.supertrunfo != 0)
-    {
-        deck.supertrunfo = 0;
-    }
-    return deck;
-}
-
-int contarcartas(FILE *arq)
-{
-    char c;
-    int contador = 0; // Inicializa o contador
-    int encontrouTexto = 0;
-
-    while ((c = fgetc(arq)) != EOF)
-    {
-        if (c == '\n') // Contar cada linha completa
-        {
-            contador++;
-            encontrouTexto = 0; // Reinicia o flag de texto encontrado
-        }
-        else
-        {
-            encontrouTexto = 1; // Flag de que há conteúdo na linha
-        }
-    }
-
-    // Adiciona a última linha se houver texto sem '\n'
-    if (encontrouTexto)
-        contador++;
-
-    return contador;
-}
-
-int main()
-{
-    setlocale(LC_ALL, "pt_BR.UTF-8");
-
-    FILE *arq = fopen("deck.csv", "r");
-    if (arq == NULL)
-    {
-        printf("Erro na abertura do arquivo\n");
-        exit(1);
-    }
-
-    int quantidadeCartas = contarcartas(arq);
-    rewind(arq);
-
-    cartas *deck = (cartas *)malloc(quantidadeCartas * sizeof(cartas));
-    if (deck == NULL)
-    {
-        printf("Erro ao alocar memoria\n");
-        fclose(arq);
-        exit(1);
-    }
-
-    for (int i = 0; i < quantidadeCartas; i++)
-    {
-        deck[i] = configuracoesIniciais(arq);
-    }
-
-    fclose(arq);
-
-    int vmenu = -1;
-    do
-    {
-        menu(&vmenu);
-        switch (vmenu)
-        {
-        case JOGAR:
-            jogar();
-            break;
-        case DECKS:
-            menuDecks(&deck, &quantidadeCartas);
-            break;
-        case SAIR:
-            printf("Encerrando o programa.\n");
-            break;
-        default:
-            printf("O valor digitado nao e valido.\n");
-            break;
-        }
-    } while (vmenu != SAIR);
-
-    free(deck);
-
-    return 0;
+    return; 
 }
