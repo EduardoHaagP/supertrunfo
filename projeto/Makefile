@@ -62,4 +62,3 @@ run: $(TARGET)
 
 # Regra para forçar a recompilação
 .PHONY: all clean run
-

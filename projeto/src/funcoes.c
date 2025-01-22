@@ -83,6 +83,31 @@ int contarcartas(FILE *arq) {
     return contador;
 }
 
+cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas) {
+    FILE *arq = fopen(nomeArquivo, "r");
+    if (arq == NULL) {
+        printf("Erro na abertura do arquivo\n");
+        exit(1);
+    }
+
+    *quantidadeCartas = contarcartas(arq);
+    rewind(arq);
+
+    cartas *deck = (cartas *)malloc((*quantidadeCartas) * sizeof(cartas));
+    if (deck == NULL) {
+        printf("Erro ao alocar memória\n");
+        fclose(arq);
+        exit(1);
+    }
+
+    for (int i = 0; i < *quantidadeCartas; i++) {
+        deck[i] = configuracoesIniciais(arq);
+    }
+
+    fclose(arq);
+    return deck;
+}
+
 cartas configuracoesIniciais(FILE *arq) {
     cartas deck;
     fscanf(arq, "%[^,],%c,%i,%i,%f,%i,%i,%i\n", deck.nome, &deck.letra, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
