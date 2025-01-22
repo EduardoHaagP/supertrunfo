@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include "funcoes.h"
+#include "raylib.h"
 
 enum Opcoes
 {
@@ -13,6 +14,42 @@ enum Opcoes
 
 int main() {
     setlocale(LC_ALL, "pt_BR.UTF-8");
+
+    // Inicialização
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
+
+    InitWindow(screenWidth, screenHeight, "Hello World Raylib 5.5");
+
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
+
+    // Loop principal do jogo
+    while (!WindowShouldClose())    // Detecta o botão de fechar a janela ou a tecla ESC
+    {
+        // Atualizar
+        //----------------------------------------------------------------------------------
+        // TODO: Atualize suas variáveis aqui
+        //----------------------------------------------------------------------------------
+
+        // Desenha
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
+
+            ClearBackground(RAYWHITE);
+ 
+            DrawText("Parabéns! Você criou sua primeiro programa com Raylib!", 120, 200, 20, LIGHTGRAY);
+
+        EndDrawing();
+        //----------------------------------------------------------------------------------
+    }
+
+    // Desinicialização
+    //--------------------------------------------------------------------------------------
+    CloseWindow();
+
+
 
     FILE *arq = fopen("deck.csv", "r");
     if (arq == NULL) {
