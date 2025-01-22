@@ -13,24 +13,24 @@ OBJ_DIR = obj
 INCLUDE_DIR = include
 
 # Sistema operacional
-ifdef OS
-  OS := $(strip $(OS))
+ifeq ($(OS),Windows_NT)
+  OS := Windows
 else
-  OS := $(strip $(shell uname))
+  OS := Unix
 endif
 
 # Configurações específicas do sistema operacional
-ifeq ($(OS),Windows_NT)
+ifeq ($(OS),Windows)
   LIB_DIR = libwin
   RAYLIB_FLAGS = -I$(INCLUDE_DIR) -L$(LIB_DIR) -lraylib -lm -lopengl32 -lgdi32 -lwinmm
-  RM = del /Q /F
-  MKDIR = mkdir
+  RM = cmd /C del /Q /F
+  MKDIR = mkdir $(OBJ_DIR)
   TARGET := $(TARGET).exe
 else
   LIB_DIR = lib
   RAYLIB_FLAGS = -I$(INCLUDE_DIR) -L$(LIB_DIR) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
   RM = rm -f
-  MKDIR = mkdir -p
+  MKDIR = mkdir -p $(OBJ_DIR)
 endif
 
 # Arquivos fonte e objeto
@@ -50,15 +50,19 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 # Regra para criar o diretório obj, se não existir
 $(OBJ_DIR):
-	$(MKDIR) $(OBJ_DIR)
+	$(MKDIR)
 
 # Limpar os arquivos objeto e o executável
 clean:
-	$(RM) $(OBJ_DIR)/*.o $(TARGET)
+	$(RM) $(OBJ_DIR)\*.o $(TARGET)
 
 # Executar o programa
 run: $(TARGET)
+ifeq ($(OS),Windows)
+	$(TARGET)
+else
 	./$(TARGET)
+endif
 
 # Regra para forçar a recompilação
 .PHONY: all clean run
