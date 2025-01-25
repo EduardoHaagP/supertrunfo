@@ -33,7 +33,7 @@ int main() {
 
     while (!WindowShouldClose()) {
         if (estadoAtual == MENU) {
-            atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes, opcoes);
+            atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
         }
 
         BeginDrawing();
@@ -45,7 +45,7 @@ int main() {
             desenharTelaJogo();
             if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
         } else if (estadoAtual == DECKS) {
-            desenharTelaDecks();
+            desenharTelaDecks(deck,quantidadeCartas);
             if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
         }
 

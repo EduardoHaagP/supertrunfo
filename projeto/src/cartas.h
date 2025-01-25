@@ -6,7 +6,7 @@ typedef struct {
     char letra;
     int supertrunfo;
     int anoConstrucao;
-    float altura;
+    int altura;
     int visitasAnuais;
     int importanciaHistorica;
     int popularidade;

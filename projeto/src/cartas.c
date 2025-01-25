@@ -100,7 +100,7 @@ void inserirCartas(cartas **deck, int *quantidadeCartas) {
         setbuf(stdin, NULL);
 
         printf("Qual a altura desse monumento: ");
-        scanf("%f", &carta.altura);
+        scanf("%i", &carta.altura);
         setbuf(stdin, NULL);
 
         printf("Quantas visitas anuais esse monumento recebe em media: ");
@@ -156,7 +156,7 @@ void inserirCartas(cartas **deck, int *quantidadeCartas) {
     {
         for (int i = 0; i < (*quantidadeCartas); i++)
         {
-            fprintf(arq, "%s,%c,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
+            fprintf(arq, "%s,%c,%i,%i,%.i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
                     (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                     (*deck)[i].popularidade);
         }
@@ -171,14 +171,14 @@ void listarCartas(cartas **deck, int *quantidadeCartas) {
     {
         if ((*deck)[i].supertrunfo == 1)
         {
-            printf("%6i - %35s| %7c| %14s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
+            printf("%6i - %35s| %7c| %14s| %12i| %14i| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
         }
         else if ((*deck)[i].supertrunfo == 0)
         {
-            printf("%6i - %35s| %7c| %14s| %12i| %14.2f| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
+            printf("%6i - %35s| %7c| %14s| %12i| %14i| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
                    (*deck)[i].anoConstrucao, (*deck)[i].altura,
                    (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                    (*deck)[i].popularidade);
@@ -201,14 +201,14 @@ void pesquisarCartas(cartas **deck, int *quantidadeCartas) {
             printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
             if ((*deck)[i].supertrunfo == 1)
             {
-                printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
+                printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
                        (*deck)[i].anoConstrucao, (*deck)[i].altura,
                        (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                        (*deck)[i].popularidade);
             }
             else if ((*deck)[i].supertrunfo == 0)
             {
-                printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
+                printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
                        (*deck)[i].anoConstrucao, (*deck)[i].altura,
                        (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                        (*deck)[i].popularidade);
@@ -238,14 +238,14 @@ void alterarCartas(cartas **deck, int *quantidadeCartas) {
     printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
     if ((*deck)[indice].supertrunfo == 1)
     {
-        printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Sim",
+        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Sim",
                (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
                (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
                (*deck)[indice].popularidade);
     }
     else if ((*deck)[indice].supertrunfo == 0)
     {
-        printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Nao",
+        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Nao",
                (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
                (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
                (*deck)[indice].popularidade);
@@ -338,7 +338,7 @@ void alterarCartas(cartas **deck, int *quantidadeCartas) {
             break;
         case ALTURA:
             printf("Qual a altura desse monumento: ");
-            scanf("%f", &(*deck)[indice].altura);
+            scanf("%i", &(*deck)[indice].altura);
             setbuf(stdin, NULL);
             break;
         case VISITASANUAIS:
@@ -376,7 +376,7 @@ void alterarCartas(cartas **deck, int *quantidadeCartas) {
         {
             for (int i = 0; i < (*quantidadeCartas); i++)
             {
-                fprintf(arq, "%s,%c,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
+                fprintf(arq, "%s,%c,%i,%i,%i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
                         (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                         (*deck)[i].popularidade);
             }
@@ -401,14 +401,14 @@ void excluirCartas(cartas **deck, int *quantidadeCartas) {
     printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
     if ((*deck)[indice].supertrunfo == 1)
     {
-        printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Sim",
+        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Sim",
                (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
                (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
                (*deck)[indice].popularidade);
     }
     else if ((*deck)[indice].supertrunfo == 0)
     {
-        printf("%6i - %35s| %7c| %14s| %16i| %12.2f| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Nao",
+        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Nao",
                (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
                (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
                (*deck)[indice].popularidade);
@@ -461,7 +461,7 @@ void excluirCartas(cartas **deck, int *quantidadeCartas) {
     {
         for (int i = 0; i < (*quantidadeCartas); i++)
         {
-            fprintf(arq, "%s,%c,%i,%i,%.2f,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
+            fprintf(arq, "%s,%c,%i,%i,%i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
                     (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
                     (*deck)[i].popularidade);
         }

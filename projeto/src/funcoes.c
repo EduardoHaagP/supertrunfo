@@ -63,22 +63,22 @@ int contarcartas(FILE *arq) {
     int contador = 0; // Inicializa o contador
     int encontrouTexto = 0;
 
-    while ((c = fgetc(arq)) != EOF)
-    {
-        if (c == '\n') // Contar cada linha completa
-        {
-            contador++;
+    // Lê o arquivo caractere por caractere
+    while ((c = fgetc(arq)) != EOF) {
+        if (c == '\n') { // Contar cada linha completa
+            if (encontrouTexto) { // Se houve texto na linha, conta a linha
+                contador++;
+            }
             encontrouTexto = 0; // Reinicia o flag de texto encontrado
-        }
-        else
-        {
+        } else {
             encontrouTexto = 1; // Flag de que há conteúdo na linha
         }
     }
 
-    // Adiciona a última linha se houver texto sem '\n'
-    if (encontrouTexto)
+    // Se a última linha não terminar com '\n' e tiver texto, conta essa linha
+    if (encontrouTexto) {
         contador++;
+    }
 
     return contador;
 }
@@ -110,10 +110,19 @@ cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas) {
 
 cartas configuracoesIniciais(FILE *arq) {
     cartas deck;
-    fscanf(arq, "%[^,],%c,%i,%i,%f,%i,%i,%i\n", deck.nome, &deck.letra, &deck.supertrunfo, &deck.anoConstrucao, &deck.altura, &deck.visitasAnuais, &deck.importanciaHistorica, &deck.popularidade);
-    if (deck.supertrunfo != 1 && deck.supertrunfo != 0)
-    {
+    // Certifique-se de que está lendo apenas 8 campos
+    fscanf(arq, "%[^,],%c,%i,%i,%i,%i,%i,%i\n", deck.nome, &deck.letra, &deck.supertrunfo, 
+                                                &deck.anoConstrucao, &deck.altura, 
+                                                &deck.visitasAnuais, &deck.importanciaHistorica, 
+                                                &deck.popularidade);
+    // Verificar se a leitura foi bem-sucedida
+    if (deck.supertrunfo != 1 && deck.supertrunfo != 0) {
         deck.supertrunfo = 0;
     }
+
+    // Imprimir os valores lidos
+    printf("%s,%c,%i,%i,%i,%i,%i,%i\n", deck.nome, deck.letra, deck.supertrunfo, deck.anoConstrucao,
+                                        deck.altura, deck.visitasAnuais, deck.importanciaHistorica, 
+                                        deck.popularidade);
     return deck;
 }
