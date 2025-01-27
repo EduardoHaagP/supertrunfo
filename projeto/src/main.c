@@ -30,6 +30,7 @@ int main() {
     Estado estadoAtual = MENU;
 
     inicializarJogo(larguraTela, alturaTela, "Menu com Raylib");
+    Molduras molduras = LoadMolduras();
 
     while (!WindowShouldClose()) {
         if (estadoAtual == MENU) {
@@ -45,13 +46,14 @@ int main() {
             desenharTelaJogo();
             if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
         } else if (estadoAtual == DECKS) {
-            desenharTelaDecks(deck,quantidadeCartas);
+            desenharTelaDecks(deck,quantidadeCartas, molduras);
             if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
         }
 
         EndDrawing();
     }
 
+    UnloadMolduras(molduras);
     CloseWindow();
     free(deck);
     return 0;

@@ -8,11 +8,15 @@ typedef struct {
     Texture2D azul;
     Texture2D verde;
     Texture2D amarelo;
-    Texture2D vermelha;
+    Texture2D vermelho;
+    Texture2D azulST;
+    Texture2D verdeST;
+    Texture2D amareloST;
+    Texture2D vermelhoST;
 } Molduras;
 
-const int larguraTela = 800;
-const int alturaTela = 450;
+extern int larguraTela;  // Declare as extern
+extern int alturaTela;   // Declare as extern
 
 
 typedef enum { MENU = 0, JOGO, DECKS } Estado;
@@ -24,7 +28,7 @@ void desenharTelaJogo();
 Molduras LoadMolduras();
 void UnloadMolduras(Molduras molduras);
 void desenharCarta(cartas carta, int x, int y, Molduras molduras);
-void desenharTelaDecks(cartas *deck, int quantidadeCartas/*, Texture2D imagem*/);
+void desenharTelaDecks(cartas *deck, int quantidadeCartas, Molduras moldura);
 
 
 #endif

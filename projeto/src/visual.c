@@ -100,17 +100,35 @@ Molduras LoadMolduras() {
     molduras.azul = LoadTextureFromImage(azul);
     UnloadImage(azul);
 
+    Image azulST = LoadImage("./assets/moldura/azulST.png");
+    molduras.azulST = LoadTextureFromImage(azulST);
+    UnloadImage(azulST);
+
     Image verde = LoadImage("./assets/moldura/verde.png");
     molduras.verde = LoadTextureFromImage(verde);
     UnloadImage(verde);
+
+    Image verdeST = LoadImage("./assets/moldura/verdeST.png");
+    molduras.verdeST = LoadTextureFromImage(verdeST);
+    UnloadImage(verdeST);
 
     Image amarelo = LoadImage("./assets/moldura/amarelo.png");
     molduras.amarelo = LoadTextureFromImage(amarelo);
     UnloadImage(amarelo);
 
-    Image vermelha = LoadImage("./assets/moldura/vermelho.png");
-    molduras.vermelha = LoadTextureFromImage(vermelha);
-    UnloadImage(vermelha);
+    Image amareloST = LoadImage("./assets/moldura/amareloST.png");
+    molduras.amareloST = LoadTextureFromImage(amareloST);
+    UnloadImage(amareloST);
+
+    Image vermelho = LoadImage("./assets/moldura/vermelho.png");
+    molduras.vermelho = LoadTextureFromImage(vermelho);
+    UnloadImage(vermelho);
+
+    Image vermelhoST = LoadImage("./assets/moldura/vermelhoST.png");
+    molduras.vermelhoST = LoadTextureFromImage(vermelhoST);
+    UnloadImage(vermelhoST);
+
+
 
     return molduras;
 }
@@ -119,79 +137,105 @@ void UnloadMolduras(Molduras molduras) {
     UnloadTexture(molduras.azul);
     UnloadTexture(molduras.verde);
     UnloadTexture(molduras.amarelo);
-    UnloadTexture(molduras.vermelha);
+    UnloadTexture(molduras.vermelho);
+    UnloadTexture(molduras.azulST);
+    UnloadTexture(molduras.verdeST);
+    UnloadTexture(molduras.amareloST);
+    UnloadTexture(molduras.vermelhoST);
 }
 
 void desenharCarta(cartas carta, int x, int y, Molduras molduras) {
-    switch (carta.letra) {
+    if (carta.supertrunfo == 1)
+    {
+        switch (carta.letra) {
         case 'A':
-            DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, 0.8f, WHITE);
+            DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            
             break;
         case 'B':
-            DrawTextureEx(molduras.verde, (Vector2){x, y}, 0.0f, 0.8f, WHITE);
+            DrawTextureEx(molduras.verdeST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
             break;
         case 'C':
-            DrawTextureEx(molduras.amarelo, (Vector2){x, y}, 0.0f, 0.8f, WHITE);
+            DrawTextureEx(molduras.amareloST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
             break;
         case 'D':
-            DrawTextureEx(molduras.vermelha, (Vector2){x, y}, 0.0f, 0.8f, WHITE);
+            DrawTextureEx(molduras.vermelhoST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
             break;
         default:
             break;
     }
+
+    }else{
+
+    
+    switch (carta.letra) {
+        case 'A':
+            DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            break;
+        case 'B':
+            DrawTextureEx(molduras.verde, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            break;
+        case 'C':
+            DrawTextureEx(molduras.amarelo, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            break;
+        case 'D':
+            DrawTextureEx(molduras.vermelho, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            break;
+        default:
+            break;
+    }
+    }
 }
 
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas)
-{
-
-
-    const int larguraCarta = 204;
-    const int alturaCarta = 325;
-    const int espacamento = 15;
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras) {
+    const int larguraCarta = 155;
+    const int alturaCarta = 248;
+    const int espacamentoX = 23;
+    const int espacamentoY = 20;
+    const float extremosLaterais = 54;
 
     const int cartasPorLinha = 4;
-    int totalLinhas = (quantidadeCartas + cartasPorLinha - 1) / cartasPorLinha;
+    const int alturaTela = 600; // Substitua pelo valor real da altura da tela
 
-    // Calcular altura do conteúdo com base no número de cartas
-    int alturaConteudo = totalLinhas * (alturaCarta + espacamento);
+    int totalLinhas = (quantidadeCartas + cartasPorLinha - 1) / cartasPorLinha; // Arredonda para cima
+    int alturaConteudo = totalLinhas * (alturaCarta + espacamentoY);
 
     int offsetY = 0; // Controle de scroll vertical
 
-    while (!WindowShouldClose())
-    {
-        // Controle do scroll usando o mouse ou o teclado
-        if (IsKeyDown(KEY_DOWN))
-            offsetY -= 10;
-        if (IsKeyDown(KEY_UP))
-            offsetY += 10;
-        if (GetMouseWheelMove() != 0)
-            offsetY += GetMouseWheelMove() * 20;
+    while (!WindowShouldClose()) {
+        // Controle do scroll
+        if (IsKeyDown(KEY_DOWN)) offsetY -= 10;
+        if (IsKeyDown(KEY_UP)) offsetY += 10;
+        if (GetMouseWheelMove() != 0) offsetY += GetMouseWheelMove() * 20;
 
-        // Limitar o scroll para não ultrapassar os limites
-        if (offsetY > 0)
-            offsetY = 0;
-        if (offsetY < -alturaConteudo + alturaTela - 50)
-            offsetY = -alturaConteudo + alturaTela - 50;
+        // Limitar o scroll
+        if (offsetY > 0) offsetY = 0;
+        if (offsetY < -alturaConteudo + alturaTela - 50) offsetY = -alturaConteudo + alturaTela - 50;
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // Desenhar o título (fixo no topo)
-        Molduras molduras = LoadMolduras();
-        // Desenhar as cartas com o offset de rolagem
-        for (int i = 0; i < quantidadeCartas; i++)
-        {
+        // Desenhar cartas
+        for (int i = 0; i < quantidadeCartas; i++) {
             int linha = i / cartasPorLinha;
             int coluna = i % cartasPorLinha;
 
-            int posX = espacamento + coluna * (larguraCarta + espacamento);
-            int posY = 61 + linha * (alturaCarta + espacamento) + offsetY;
+            int posX;
+            if (coluna == 0) {
+                // Primeira coluna com espaçamento lateral maior
+                posX = extremosLaterais;
+            } else {
+                // Outras colunas
+                posX = extremosLaterais + coluna * (larguraCarta + espacamentoX);
+            }
 
-            // Desenhar cada carta
-            desenharCarta(listaCartas[i], posX, posY,molduras);
+            int posY = 61 + linha * (alturaCarta + espacamentoY) + offsetY;
+
+            desenharCarta(listaCartas[i], posX, posY, molduras);
         }
 
+        // Barra superior
         DrawRectangle(0, 0, larguraTela, 50, WHITE);
         DrawRectangleLines(0, 0, larguraTela, 50, DARKBLUE);
         DrawText("Biblioteca de Cartas", 10, 15, 20, DARKBLUE);
@@ -199,3 +243,4 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas)
         EndDrawing();
     }
 }
+
