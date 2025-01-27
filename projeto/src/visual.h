@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include "funcoes.h"
 
+extern const float ESCALA;
+
 typedef struct {
     Texture2D azul;
     Texture2D verde;
@@ -15,8 +17,15 @@ typedef struct {
     Texture2D vermelhoST;
 } Molduras;
 
-extern int larguraTela;  // Declare as extern
-extern int alturaTela;   // Declare as extern
+typedef struct {
+    Font tituloCartas; //projeto/assets/font/Avenir-Black.ttf
+    Font tituloTelas; //projeto/assets/font/Avenir-Book.ttf
+    Font letraCarta; //projeto/assets/font/Avenir-Heavy.ttf
+    Font atributoCartas; //projeto/assets/font/AvenirNextCyr-Medium.ttf
+} Fonte;
+
+
+
 
 
 typedef enum { MENU = 0, JOGO, DECKS } Estado;
@@ -25,10 +34,18 @@ void inicializarJogo(int largura, int altura, const char *titulo);
 void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes);
 void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes);
 void desenharTelaJogo();
-Molduras LoadMolduras();
-void UnloadMolduras(Molduras molduras);
-void desenharCarta(cartas carta, int x, int y, Molduras molduras);
-void desenharTelaDecks(cartas *deck, int quantidadeCartas, Molduras moldura);
+
+void loadIMGCarta(cartas carta[], int quantidadecartas);
+
+Fonte loadFonte();
+void unloadFonte(Fonte fonte);
+
+Molduras loadMolduras();
+void unloadMolduras(Molduras molduras);
+
+void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte);
+
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras,Fonte fonte);
 
 
 #endif

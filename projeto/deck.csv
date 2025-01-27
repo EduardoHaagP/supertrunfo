@@ -1,32 +1,32 @@
-Torre Eiffel,A,1,1889,324,7000000,8,10
-Estatua da Liberdade,A,0,1886,93,4500000,7,9
-Coliseu,A,0,80,48,6000000,9,9
-Cristo Redentor,A,0,1931,38,2000000,6,9
-Taj Mahal,A,0,1648,73,8000000,9,98
-Muralha da China,A,0,-700,45419,10000000,10,9
-Big Ben,A,0,1859,96,5000000,7,8
-Opera de Sydney,A,0,1973,65,8000000,6,8
-Piramides de Gize,B,0,-2560,146,14000000,10,9
-Stonehenge,B,0,-3000,45295,1500000,8,7
-Palacio de Buckingham,B,0,1703,24,500000,7,8
-Machu Picchu,B,0,1450,2430,1500000,9,9
-Petra,B,0,-312,39,1000000,8,9
-Torre de Pisa,B,0,1372,57,5000000,6,7
-Palacio de Versalhes,B,0,1682,45422,10000000,9,9
-Monte Rushmore,B,0,1941,18,3000000,6,8
-Angkor Wat,C,0,1150,42,2600000,9,9
-Burj Khalifa,C,0,2010,828,2000000,6,9
-Golden Gate Bridge,C,0,1937,67,10000000,7,8
-Catedral de Notre Dame,C,0,1345,69,12000000,9,8
-Acropole de Atenas,C,0,-432,156,1500000,10,9
-Castelo de Neuschwanstein,C,0,1886,65,1400000,6,7
-Mesquita de Al Haram,C,0,1570,89,20000000,10,9
-Catedral de Sao Basilio,C,0,1561,47,500000,7,7
-Parthenon,D,0,-438,13,2000000,9,8
-Santuario de Itsukushima,D,0,1168,16,4000000,8,5
-Palacio Potala,D,0,1649,117,1500000,8,6
-Alhambra,D,0,1358,26,2700000,8,91
-Templo de Kukulkan,D,0,800,30,2000000,8,7
-Atomium,D,0,1958,102,600000,4,6
-Chichen Itza,D,0,600,30,2600000,9,8
-Hagia Sophia,D,0,537,55,3700000,9,8
+Torre Eiffel,A,1,1889,324,7000000,8,10,./assets/imagem/Torre Eiffel.png
+Estatua da Liberdade,A,0,1886,93,4500000,7,9,./assets/imagem/Estatua da Liberdade.png
+Coliseu,A,0,80,48,6000000,9,9,./assets/imagem/Coliseu.png
+Cristo Redentor,A,0,1931,38,2000000,6,9,./assets/imagem/Cristo Redentor.png
+Taj Mahal,A,0,1648,73,8000000,9,9,./assets/imagem/Taj Mahal.png
+Muralha da China,A,0,-700,45419,10000000,10,9,./assets/imagem/Muralha da China.png
+Big Ben,A,0,1859,96,5000000,7,8,./assets/imagem/Big Ben.png
+Opera de Sydney,A,0,1973,65,8000000,6,8,./assets/imagem/Opera de Sydney.png
+Piramides de Gize,B,0,-2560,146,14000000,10,9,./assets/imagem/Piramides de Gize.png
+Stonehenge,B,0,-3000,45295,1500000,8,7,./assets/imagem/Stonehenge.png
+Palacio de Buckingham,B,0,1703,24,500000,7,8,./assets/imagem/Palacio de Buckingham.png
+Machu Picchu,B,0,1450,2430,1500000,9,9,./assets/imagem/Machu Pichu.png
+Petra,B,0,-312,39,1000000,8,9,./assets/imagem/Petra.png
+Torre de Pisa,B,0,1372,57,5000000,6,7,./assets/imagem/Palacio de Versalhes.png
+Palacio de Versalhes,B,0,1682,45422,10000000,9,9,./assets/imagem/Palacio de Versalhes.png
+Monte Rushmore,B,0,1941,18,3000000,6,8,./assets/imagem/Monte Rushmore.png
+Angkor Wat,C,0,1150,42,2600000,9,9,./assets/imagem/Angkor Wat.png
+Burj Khalifa,C,0,2010,828,2000000,6,9,./assets/imagem/Burj Khalifa.png
+Golden Gate Bridge,C,0,1937,67,10000000,7,8,./assets/imagem/Golden Gate Bridge.png
+Catedral de Notre Dame,C,0,1345,69,12000000,9,8,./assets/imagem/Catedral de Notre Dame.png
+Acropole de Atenas,C,0,-432,156,1500000,10,9,./assets/imagem/Acropole de Atenas.png
+Castelo de Neuschwanstein,C,0,1886,65,1400000,6,7,./assets/imagem/Castelo de Neuschwanstein.png
+Mesquita de Al Haram,C,0,1570,89,20000000,10,9,./assets/imagem/Mesquita de Al Haram.png
+Catedral de Sao Basilio,C,0,1561,47,500000,7,7,./assets/imagem/Catedral de Sao Basilio.png
+Parthenon,D,0,-438,13,2000000,9,8,./assets/imagem/Parthenon.png
+Santuario de Itsukushima,D,0,1168,16,4000000,8,5,./assets/imagem/Santuario de Itsukushima.png
+Palacio Potala,D,0,1649,117,1500000,8,6,./assets/imagem/Palacio Potala.png
+Alhambra,D,0,1358,26,2700000,8,9,./assets/imagem/Alhambra.png
+Templo de Kukulkan,D,0,800,30,2000000,8,7,./assets/imagem/Templo de Kukulkan.png
+Atomium,D,0,1958,102,600000,4,6,./assets/imagem/Atomium.png
+Chichen Itza,D,0,600,30,2600000,9,8,./assets/imagem/ChichenItza.png
+Hagia Sophia,D,0,537,55,3700000,9,8,./assets/imagem/Hagia Sophia.png

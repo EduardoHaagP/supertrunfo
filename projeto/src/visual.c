@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "visual.h"
 #include <stdlib.h>
+#include <string.h>
 
 /*
 Color azul = { 53, 114, 151};
@@ -19,6 +20,7 @@ Color vermelho = {231, 58, 44};
 Color vermelhoOp = {231, 58, 44, 0.9};
 Color vermelhoClaro = {251, 204, 204, 1};
 */
+
 
 void inicializarJogo(int largura, int altura, const char *titulo)
 {
@@ -90,9 +92,24 @@ void desenharTelaJogo()
     DrawText("Pressione ESC para voltar ao menu", 220, 250, 20, GRAY);
 }
 
+Fonte loadFonte(){
+    Fonte fonte;
+    fonte.tituloCartas = LoadFont("./assets/font/Avenir-Black.ttf");
+    fonte.tituloTelas= LoadFont("./assets/font/Avenir-Book.ttf");
+    fonte.letraCarta = LoadFont("./assets/font/Avenir-Heavy.ttf");
+    fonte.atributoCartas = LoadFont("./assets/font/AvenirNextCyr-Medium.ttf");
+    return fonte;
+}
 
+void unloadFonte(Fonte font){
+    UnloadFont(font.tituloCartas);
+    UnloadFont(font.tituloTelas);
+    UnloadFont(font.letraCarta);
+    UnloadFont(font.atributoCartas);
+    return;
+}
 
-Molduras LoadMolduras() {
+Molduras loadMolduras() {
     Molduras molduras;
 
     // Carrega as imagens e converte para texturas
@@ -133,7 +150,7 @@ Molduras LoadMolduras() {
     return molduras;
 }
 
-void UnloadMolduras(Molduras molduras) {
+void unloadMolduras(Molduras molduras) {
     UnloadTexture(molduras.azul);
     UnloadTexture(molduras.verde);
     UnloadTexture(molduras.amarelo);
@@ -142,76 +159,150 @@ void UnloadMolduras(Molduras molduras) {
     UnloadTexture(molduras.verdeST);
     UnloadTexture(molduras.amareloST);
     UnloadTexture(molduras.vermelhoST);
+
 }
 
-void desenharCarta(cartas carta, int x, int y, Molduras molduras) {
+void escreverAtributoCartas(cartas carta,int x, int y, Fonte fonte){
+            char bufferAno[20]; // Buffer para armazenar o ano como string
+            sprintf(bufferAno, "%d", carta.anoConstrucao);
+            DrawTextEx(fonte.atributoCartas,"Ano de Construcao",(Vector2){x+ (17*ESCALA) ,y+(201*ESCALA)},16*ESCALA,0,WHITE);
+            DrawTextEx(fonte.atributoCartas,bufferAno,(Vector2){x+ (155*ESCALA) ,y+(201*ESCALA)},16*ESCALA,0,WHITE);
+
+            char bufferAltura[20]; // Buffer para armazenar o ano como string
+            sprintf(bufferAltura, "%d", carta.altura);
+            DrawTextEx(fonte.atributoCartas,"Altura",(Vector2){x+ (17*ESCALA) ,y+((201+22)*ESCALA)},16*ESCALA,0,WHITE);
+            DrawTextEx(fonte.atributoCartas,bufferAltura,(Vector2){x+ (155*ESCALA) ,y+((201+22)*ESCALA)},16*ESCALA,0,WHITE);
+
+            DrawTextEx(fonte.atributoCartas,"Visitas Anuais",(Vector2){x+ (17*ESCALA) ,y+((201+44)*ESCALA)},16*ESCALA,0,WHITE);
+            if (carta.visitasAnuais > 1000000000)//bilhao
+            {
+                char resultado[50];
+                sprintf(resultado, "%d%s", (carta.visitasAnuais)/1000000000, " Bi");
+                DrawTextEx(fonte.atributoCartas,resultado,(Vector2){x+ (155*ESCALA) ,y+((201+44)*ESCALA)},16*ESCALA,0,WHITE);
+            }else if(carta.visitasAnuais > 1000000)//milhao
+            {
+                char resultado[50];
+                sprintf(resultado, "%d%s", (carta.visitasAnuais)/1000000, " M");
+                DrawTextEx(fonte.atributoCartas,resultado,(Vector2){x+ (155*ESCALA) ,y+((201+44)*ESCALA)},16*ESCALA,0,WHITE);
+            }else if (carta.visitasAnuais > 1000)//mil
+            {
+                char resultado[50];
+                sprintf(resultado, "%d%s", (carta.visitasAnuais)/1000, " m");
+                DrawTextEx(fonte.atributoCartas,resultado,(Vector2){x+ (155*ESCALA) ,y+((201+44)*ESCALA)},16*ESCALA,0,WHITE);
+            }else{
+                char resultado[50];
+                sprintf(resultado, "%d", (carta.visitasAnuais));
+                DrawTextEx(fonte.atributoCartas,resultado,(Vector2){x+ (155*ESCALA) ,y+((201+44)*ESCALA)},16*ESCALA,0,WHITE);
+            }
+            
+            char bufferImpotanciaHistorica[20]; // Buffer para armazenar o ano como string
+            sprintf(bufferImpotanciaHistorica, "%d", carta.importanciaHistorica);
+            DrawTextEx(fonte.atributoCartas,"Importancia historica",(Vector2){x+ (17*ESCALA) ,y+((201+66)*ESCALA)},16*ESCALA,0,WHITE);
+            DrawTextEx(fonte.atributoCartas,bufferImpotanciaHistorica,(Vector2){x+ (155*ESCALA) ,y+((201+66)*ESCALA)},16*ESCALA,0,WHITE);
+
+            char bufferPopularidade[20]; // Buffer para armazenar o ano como string
+            sprintf(bufferPopularidade, "%d", carta.popularidade);
+            DrawTextEx(fonte.atributoCartas,"Popularidade",(Vector2){x+ (17*ESCALA) ,y+((201+88)*ESCALA)},16*ESCALA,0,WHITE);
+            DrawTextEx(fonte.atributoCartas,bufferPopularidade,(Vector2){x+ (155*ESCALA) ,y+((201+88)*ESCALA)},16*ESCALA,0,WHITE);
+}
+
+
+
+void loadIMGCarta(cartas carta[], int quantidadecartas) {
+    for (int i = 0; i < quantidadecartas; i++)
+    {
+        carta[i].img = LoadTexture(carta[i].arqimg);
+
+        if (carta[i].img.id == 0) {
+        // Handle the error (e.g., log it, return a default texture, etc.)
+        printf("Failed to load texture: %s\n", carta[i].nome);
+        // Optionally return a default texture or an empty texture
+    }
+    }
+    
+    
+    // Check if the texture was loaded successfully
+    
+    
+    return;
+}
+
+
+
+void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte) {
+    DrawTextureEx(carta.img, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
     if (carta.supertrunfo == 1)
     {
         switch (carta.letra) {
         case 'A':
-            DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
             
+            DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         case 'B':
-            DrawTextureEx(molduras.verdeST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.verdeST, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         case 'C':
-            DrawTextureEx(molduras.amareloST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.amareloST, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         case 'D':
-            DrawTextureEx(molduras.vermelhoST, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.vermelhoST, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         default:
             break;
     }
 
     }else{
-
-    
     switch (carta.letra) {
         case 'A':
-            DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         case 'B':
-            DrawTextureEx(molduras.verde, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.verde, (Vector2){x, y}, 0.0f, ESCALA, WHITE);            
             break;
         case 'C':
-            DrawTextureEx(molduras.amarelo, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.amarelo, (Vector2){x, y}, 0.0f, ESCALA, WHITE);            
             break;
         case 'D':
-            DrawTextureEx(molduras.vermelho, (Vector2){x, y}, 0.0f, (155.37/204), WHITE);
+            DrawTextureEx(molduras.vermelho, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
         default:
             break;
     }
     }
+    Vector2 posicaoNome = (Vector2){x + (60 * ESCALA), y + (13 * ESCALA)};
+    DrawTextEx(fonte.tituloCartas, carta.nome, posicaoNome, 16 * ESCALA, 0, WHITE);
+    escreverAtributoCartas(carta, x,  y,  fonte);
 }
 
+    
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras) {
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras,Fonte fonte) {
+
+    const int ALTURA = 600;
     const int larguraCarta = 155;
     const int alturaCarta = 248;
     const int espacamentoX = 23;
     const int espacamentoY = 20;
-    const float extremosLaterais = 54;
+    const int extremosLaterais = 54;
 
     const int cartasPorLinha = 4;
-    const int alturaTela = 600; // Substitua pelo valor real da altura da tela
 
     int totalLinhas = (quantidadeCartas + cartasPorLinha - 1) / cartasPorLinha; // Arredonda para cima
-    int alturaConteudo = totalLinhas * (alturaCarta + espacamentoY);
+    int alturaConteudo = totalLinhas * (alturaCarta + espacamentoY + 20);
 
     int offsetY = 0; // Controle de scroll vertical
 
     while (!WindowShouldClose()) {
         // Controle do scroll
-        if (IsKeyDown(KEY_DOWN)) offsetY -= 10;
-        if (IsKeyDown(KEY_UP)) offsetY += 10;
+        if (IsKeyDown(KEY_DOWN)) offsetY -= 20;
+        if (IsKeyDown(KEY_UP)) offsetY += 20;
         if (GetMouseWheelMove() != 0) offsetY += GetMouseWheelMove() * 20;
 
         // Limitar o scroll
         if (offsetY > 0) offsetY = 0;
-        if (offsetY < -alturaConteudo + alturaTela - 50) offsetY = -alturaConteudo + alturaTela - 50;
+        if (offsetY < -alturaConteudo + ALTURA - 50) offsetY = -alturaConteudo + ALTURA - 50;
+
+        
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -230,17 +321,19 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
                 posX = extremosLaterais + coluna * (larguraCarta + espacamentoX);
             }
 
-            int posY = 61 + linha * (alturaCarta + espacamentoY) + offsetY;
+            int posY = 61 + (linha * (alturaCarta + espacamentoY)) + offsetY;
 
-            desenharCarta(listaCartas[i], posX, posY, molduras);
+            desenharCarta(listaCartas[i], posX, posY, molduras,fonte);
+            
         }
 
         // Barra superior
-        DrawRectangle(0, 0, larguraTela, 50, WHITE);
-        DrawRectangleLines(0, 0, larguraTela, 50, DARKBLUE);
+        DrawRectangle(0, 0, 800, 50, WHITE);
+        DrawRectangleLines(0, 0, 800, 50, DARKBLUE);
         DrawText("Biblioteca de Cartas", 10, 15, 20, DARKBLUE);
+
+        
 
         EndDrawing();
     }
 }
-

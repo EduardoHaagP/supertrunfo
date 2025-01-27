@@ -1,6 +1,8 @@
 #ifndef CARTAS_H
 #define CARTAS_H
 
+#include "raylib.h"
+
 typedef struct {
     char nome[51];
     char letra;
@@ -10,6 +12,8 @@ typedef struct {
     int visitasAnuais;
     int importanciaHistorica;
     int popularidade;
+    Texture2D img;
+    char arqimg[100];
 } cartas;
 
 // Declarações das funções

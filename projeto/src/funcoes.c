@@ -111,18 +111,13 @@ cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas) {
 cartas configuracoesIniciais(FILE *arq) {
     cartas deck;
     // Certifique-se de que está lendo apenas 8 campos
-    fscanf(arq, "%[^,],%c,%i,%i,%i,%i,%i,%i\n", deck.nome, &deck.letra, &deck.supertrunfo, 
+    fscanf(arq, "%[^,],%c,%i,%i,%i,%i,%i,%i,%[^\n]\n", deck.nome, &deck.letra, &deck.supertrunfo, 
                                                 &deck.anoConstrucao, &deck.altura, 
                                                 &deck.visitasAnuais, &deck.importanciaHistorica, 
-                                                &deck.popularidade);
+                                                &deck.popularidade,deck.arqimg);
     // Verificar se a leitura foi bem-sucedida
     if (deck.supertrunfo != 1 && deck.supertrunfo != 0) {
         deck.supertrunfo = 0;
     }
-
-    // Imprimir os valores lidos
-    printf("%s,%c,%i,%i,%i,%i,%i,%i\n", deck.nome, deck.letra, deck.supertrunfo, deck.anoConstrucao,
-                                        deck.altura, deck.visitasAnuais, deck.importanciaHistorica, 
-                                        deck.popularidade);
     return deck;
 }
