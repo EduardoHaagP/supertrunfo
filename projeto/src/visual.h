@@ -4,7 +4,6 @@
 #include "raylib.h"
 #include "funcoes.h"
 
-extern const float ESCALA;
 
 typedef struct {
     Texture2D azul;
@@ -33,7 +32,6 @@ typedef struct {
 
 
 
-
 typedef enum { MENU = 0, JOGO, DECKS } Estado;
 
 void inicializarJogo(int largura, int altura, const char *titulo);
@@ -42,17 +40,19 @@ void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes);
 void desenharTelaJogo();
 
 void loadIMGCarta(cartas carta[], int quantidadecartas);
-
 Fonte loadFonte();
 void unloadFonte(Fonte fonte);
-
 Molduras loadMolduras();
 void unloadMolduras(Molduras molduras);
-
-void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte);
-
 Textura loadTexturas();
 void unloadTexturas(Textura testuras);
+
+
+
+void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fonte fonte);
+
+void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered);
+
 
 void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte,Textura texturas, Estado *estadoAtual);
 

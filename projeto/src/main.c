@@ -5,7 +5,7 @@
 #include "visual.h"
 #include "raylib.h"
 
-const float ESCALA = 155.37 / 204;
+
 const int LARGURA_TELA = 800;
 const int ALTURA_TELA = 600;
 

@@ -121,3 +121,4 @@ cartas configuracoesIniciais(FILE *arq) {
     }
     return deck;
 }
+
