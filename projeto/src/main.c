@@ -33,37 +33,51 @@ int main() {
     Molduras molduras = loadMolduras();
     loadIMGCarta(deck, quantidadeCartas);    
     Fonte fonte = loadFonte();
+    Textura textura = loadTexturas();
     
 
     while (!WindowShouldClose()) {
-        if (estadoAtual == MENU) {
-            atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
-        }
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        if (estadoAtual == MENU) {
-            desenharMenu(opcaoSelecionada, botoes, opcoes);
-        } else if (estadoAtual == JOGO) {
-            desenharTelaJogo();
-            if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
-        } else if (estadoAtual == DECKS) {
-            desenharTelaDecks(deck,quantidadeCartas, molduras,fonte);
-            if (IsKeyPressed(KEY_ESCAPE)) estadoAtual = MENU;
-        }
-
-        EndDrawing();
+    // Atualização lógica baseada no estado
+    if (estadoAtual == MENU) {
+        atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
     }
+
+    // Iniciar desenho
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    // Desenhar telas com base no estado
+    if (estadoAtual == MENU) {
+        desenharMenu(opcaoSelecionada, botoes, opcoes);
+    } else if (estadoAtual == JOGO) {
+        desenharTelaJogo();
+
+        // Verificar se ESC retorna ao menu
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            estadoAtual = MENU;
+        }
+    } else if (estadoAtual == DECKS) {
+        // Passar estado por referência para permitir alteração dentro da função
+        desenharTelaDecks(deck, quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+
+        // Verificar se ESC retorna ao menu
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            estadoAtual = MENU;
+        }
+    }
+
+    EndDrawing();
+}
 
     for (int i = 0; i < quantidadeCartas; i++)
     {
         UnloadTexture(deck[i].img);
     }
     
+    unloadTexturas(textura);
     unloadFonte(fonte);
     unloadMolduras(molduras);
-    CloseWindow();
     free(deck);
+    CloseWindow();
     return 0;
 }

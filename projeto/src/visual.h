@@ -18,6 +18,12 @@ typedef struct {
 } Molduras;
 
 typedef struct {
+    Texture2D setaON;
+    Texture2D setaOFF;
+    Texture2D TexturaFundo;
+} Textura;
+
+typedef struct {
     Font tituloCartas; //projeto/assets/font/Avenir-Black.ttf
     Font tituloTelas; //projeto/assets/font/Avenir-Book.ttf
     Font letraCarta; //projeto/assets/font/Avenir-Heavy.ttf
@@ -45,7 +51,10 @@ void unloadMolduras(Molduras molduras);
 
 void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte);
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras,Fonte fonte);
+Textura loadTexturas();
+void unloadTexturas(Textura testuras);
+
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte,Textura texturas, Estado *estadoAtual);
 
 
 #endif
