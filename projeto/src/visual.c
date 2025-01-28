@@ -256,7 +256,7 @@ void drawLetterDropdown(Rectangle rect, Fonte fonte) {
 void drawSortByDropdown(Rectangle rect, Fonte fonte) {
     if (showSortByDropdown) {
         DrawRectangleRec(rect, LIGHTGRAY);
-        const char *sortOptions[] = {"Evolution Chain", "Alphabetical"};
+        const char *sortOptions[] = {"Letra da Carta", "Alfabetico"};
 
         for (int i = 0; i < 2; i++) { // Only two sorting options now
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
@@ -361,6 +361,8 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     const int extremosLateraisPadrao = 54;
     const int extremosLateraisReduzido = 32;
     const int espacamentoTopo = 27;
+    const int alturaSortByDropdown = 60;
+
     const int cartasPorLinha = 4;
 
 
@@ -491,7 +493,7 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
         desenharCartaSelecionada(filteredCards[selectedCardIndex], 564, 82+espacamentoTopo, molduras, fonte);
     }
     drawLetterDropdown((Rectangle){letterButtonRec.x, letterButtonRec.y + 26 , letterButtonRec.width, 150} ,fonte);
-    drawSortByDropdown((Rectangle){sortByButtonRec.x, sortByButtonRec.y + 26, sortByButtonRec.width, 100}, fonte);
+    drawSortByDropdown((Rectangle){sortByButtonRec.x, sortByButtonRec.y + 26, sortByButtonRec.width, alturaSortByDropdown}, fonte);
 
    
     DrawCircleV((Vector2){46, 45}, 13, WHITE);
