@@ -3,32 +3,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-Color azul = { 53, 114, 151};
-Color azulOp = { 53, 114, 151, 0.9};
-Color azulClaro = { 134, 184, 215, 1};
+// Global variable to store the scroll offset for deck screen
+static int offsetY = 0;
 
-Color verde = { 145, 185, 101};
-Color verdeOp = { 145, 185, 101, 0.9};
-Color verdeClaro = { 171, 239, 97, 1};
-
-Color amarelo = { 240, 188, 65};
-Color amareloOp = { 240, 188, 65, 0.9};
-Color amareloClaro = { 251, 237, 204, 1};
-
-Color vermelho = {231, 58, 44};
-Color vermelhoOp = {231, 58, 44, 0.9};
-Color vermelhoClaro = {251, 204, 204, 1};
-*/
-
-void inicializarJogo(int largura, int altura, const char *titulo)
-{
+void inicializarJogo(int largura, int altura, const char *titulo) {
     InitWindow(largura, altura, titulo);
     SetTargetFPS(60);
 }
 
-void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes)
-{
+void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes) {
     if (IsKeyPressed(KEY_DOWN))
         (*opcaoSelecionada)++;
     if (IsKeyPressed(KEY_UP))
@@ -40,19 +23,15 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
         *opcaoSelecionada = 0;
 
     Vector2 mousePos = GetMousePosition();
-    for (int i = 0; i < 3; i++)
-    {
-        if (CheckCollisionPointRec(mousePos, botoes[i]))
-        {
+    for (int i = 0; i < 3; i++) {
+        if (CheckCollisionPointRec(mousePos, botoes[i])) {
             *opcaoSelecionada = i;
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 if (i == 0)
                     *estadoAtual = JOGO;
                 else if (i == 1)
                     *estadoAtual = DECKS;
-                else if (i == 2)
-                {
+                else if (i == 2) {
                     CloseWindow();
                     exit(0);
                 }
@@ -60,40 +39,34 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
         }
     }
 
-    if (IsKeyPressed(KEY_ENTER))
-    {
+    if (IsKeyPressed(KEY_ENTER)) {
         if (*opcaoSelecionada == 0)
             *estadoAtual = JOGO;
         else if (*opcaoSelecionada == 1)
             *estadoAtual = DECKS;
-        else if (*opcaoSelecionada == 2)
-        {
+        else if (*opcaoSelecionada == 2) {
             CloseWindow();
             exit(0);
         }
     }
 }
 
-void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
-{
+void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes) {
     ClearBackground(RAYWHITE);
     DrawText("Menu Principal", 320, 100, 30, DARKGRAY);
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         Color cor = (i == opcaoSelecionada) ? RED : BLACK;
         DrawRectangleRec(botoes[i], LIGHTGRAY);
         DrawText(opcoes[i], botoes[i].x + 10, botoes[i].y + 5, 20, cor);
     }
 }
 
-void desenharTelaJogo()
-{
+void desenharTelaJogo() {
     DrawText("Você está jogando!", 280, 200, 30, DARKGREEN);
     DrawText("Pressione ESC para voltar ao menu", 220, 250, 20, GRAY);
 }
 
-Fonte loadFonte()
-{
+Fonte loadFonte() {
     Fonte fonte;
     fonte.tituloCartas = LoadFont("./assets/font/Avenir-Black.ttf");
     fonte.tituloTelas = LoadFont("./assets/font/Avenir-Book.ttf");
@@ -102,8 +75,7 @@ Fonte loadFonte()
     return fonte;
 }
 
-void unloadFonte(Fonte font)
-{
+void unloadFonte(Fonte font) {
     UnloadFont(font.tituloCartas);
     UnloadFont(font.tituloTelas);
     UnloadFont(font.letraCarta);
@@ -111,8 +83,7 @@ void unloadFonte(Fonte font)
     return;
 }
 
-Molduras loadMolduras()
-{
+Molduras loadMolduras() {
     Molduras molduras;
 
     // Carrega as imagens e converte para texturas
@@ -151,8 +122,7 @@ Molduras loadMolduras()
     return molduras;
 }
 
-void unloadMolduras(Molduras molduras)
-{
+void unloadMolduras(Molduras molduras) {
     UnloadTexture(molduras.azul);
     UnloadTexture(molduras.verde);
     UnloadTexture(molduras.amarelo);
@@ -163,8 +133,7 @@ void unloadMolduras(Molduras molduras)
     UnloadTexture(molduras.vermelhoST);
 }
 
-void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte)
-{
+void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte) {
     char bufferAno[20]; // Buffer para armazenar o ano como string
     sprintf(bufferAno, "%d", carta.anoConstrucao);
     DrawTextEx(fonte.atributoCartas, "Ano de Construcao", (Vector2){x + (17 * ESCALA), y + (201 * ESCALA)}, 16 * ESCALA, 0, WHITE);
@@ -212,14 +181,11 @@ void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte)
     DrawTextEx(fonte.atributoCartas, bufferPopularidade, (Vector2){x + (155 * ESCALA), y + ((201 + 88) * ESCALA)}, 16 * ESCALA, 0, WHITE);
 }
 
-void loadIMGCarta(cartas carta[], int quantidadecartas)
-{
-    for (int i = 0; i < quantidadecartas; i++)
-    {
+void loadIMGCarta(cartas carta[], int quantidadecartas) {
+    for (int i = 0; i < quantidadecartas; i++) {
         carta[i].img = LoadTexture(carta[i].arqimg);
 
-        if (carta[i].img.id == 0)
-        {
+        if (carta[i].img.id == 0) {
             // Handle the error (e.g., log it, return a default texture, etc.)
             printf("Failed to load texture: %s\n", carta[i].nome);
             // Optionally return a default texture or an empty texture
@@ -231,13 +197,10 @@ void loadIMGCarta(cartas carta[], int quantidadecartas)
     return;
 }
 
-void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte)
-{
+void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte) {
     DrawTextureEx(carta.img, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
-    if (carta.supertrunfo == 1)
-    {
-        switch (carta.letra)
-        {
+    if (carta.supertrunfo == 1) {
+        switch (carta.letra) {
         case 'A':
 
             DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
@@ -254,11 +217,8 @@ void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte)
         default:
             break;
         }
-    }
-    else
-    {
-        switch (carta.letra)
-        {
+    } else {
+        switch (carta.letra) {
         case 'A':
             DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, ESCALA, WHITE);
             break;
@@ -296,9 +256,9 @@ void unloadTexturas(Textura texturas){
     return;
 };
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte,Textura texturas, Estado *estadoAtual)
-{
 
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual)
+{
     const int ALTURA = 600;
     const int LARGURA = 800;
     const int larguraCarta = 155;
@@ -312,74 +272,67 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     int totalLinhas = (quantidadeCartas + cartasPorLinha - 1) / cartasPorLinha; // Arredonda para cima
     int alturaConteudo = totalLinhas * (alturaCarta + espacamentoY + 20);
 
-    int offsetY = 0; // Controle de scroll vertical
+    // Clipping Rectangle - Define the area where cards should be visible
+    Rectangle clippingRec = {0, 62, LARGURA, ALTURA - 62}; 
 
-    while (!WindowShouldClose())
-    {
-        // Controle do scroll
-        if (IsKeyDown(KEY_DOWN))
-            offsetY -= 20;
-        if (IsKeyDown(KEY_UP))
-            offsetY += 20;
-        if (GetMouseWheelMove() != 0)
-            offsetY += GetMouseWheelMove() * 20;
+    // Control scroll
+    if (IsKeyDown(KEY_DOWN))
+        offsetY -= 20;
+    if (IsKeyDown(KEY_UP))
+        offsetY += 20;
+    if (GetMouseWheelMove() != 0)
+        offsetY += GetMouseWheelMove() * 20;
 
-        // Limitar o scroll
-        if (offsetY > 0)
-            offsetY = 0;
-        if (offsetY < -alturaConteudo + ALTURA - 50)
-            offsetY = -alturaConteudo + ALTURA - 50;
+    // Limitar o scroll
+    if (offsetY > 0)
+        offsetY = 0;
+    if (offsetY < -alturaConteudo + ALTURA - 50)
+        offsetY = -alturaConteudo + ALTURA - 50;
 
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
+    DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
+   
+   
+    BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
 
-        DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
+    // Desenhar cartas
+    for (int i = 0; i < quantidadeCartas; i++) {
+        int linha = i / cartasPorLinha;
+        int coluna = i % cartasPorLinha;
 
-        // Desenhar cartas
-        for (int i = 0; i < quantidadeCartas; i++)
-        {
-            int linha = i / cartasPorLinha;
-            int coluna = i % cartasPorLinha;
-
-            int posX;
-            if (coluna == 0)
-            {
-                // Primeira coluna com espaçamento lateral maior
-                posX = extremosLaterais;
-            }
-            else
-            {
-                // Outras colunas
-                posX = extremosLaterais + coluna * (larguraCarta + espacamentoX);
-            }
-
-            int posY = 82 + (linha * (alturaCarta + espacamentoY)) + offsetY;
-
-            desenharCarta(listaCartas[i], posX, posY, molduras, fonte);
+        int posX;
+        if (coluna == 0) {
+            // Primeira coluna com espaçamento lateral maior
+            posX = extremosLaterais;
+        } else {
+            // Outras colunas
+            posX = extremosLaterais + coluna * (larguraCarta + espacamentoX);
         }
 
-        
+        int posY = 82 + (linha * (alturaCarta + espacamentoY)) + offsetY;
 
-        DrawRectangle(0, 28, LARGURA, 34, WHITE);
-        DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
-        DrawCircleV((Vector2){46, 45}, 13, WHITE);
-
-        Vector2 mousePos = GetMousePosition();
-        if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13))
-        {
-            DrawTexture(texturas.setaON, 33, 32, WHITE);
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            {
-                (*estadoAtual) = 0; // Retorna ao menu
-            }
-        }
-        else
-        {
-            DrawTexture(texturas.setaOFF, 33, 32, WHITE);
-        }
-
-        DrawTextEx(fonte.tituloTelas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
-
-        EndDrawing();
+        desenharCarta(listaCartas[i], posX, posY, molduras, fonte);
     }
+    
+    EndScissorMode();
+    
+    DrawRectangle(0, 28, LARGURA, 34, WHITE);
+    DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
+    DrawCircleV((Vector2){46, 45}, 13, WHITE);
+    
+    Vector2 mousePos = GetMousePosition();
+    if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13))
+    {
+        DrawTexture(texturas.setaON, 33, 32, WHITE);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+           *estadoAtual = MENU; // Returns to menu.
+            offsetY = 0; // Reset scroll offset when exiting deck screen.
+        }
+    }
+    else
+    {
+        DrawTexture(texturas.setaOFF, 33, 32, WHITE);
+    }
+
+    DrawTextEx(fonte.tituloTelas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
 }
