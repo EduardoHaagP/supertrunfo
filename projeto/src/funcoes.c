@@ -1,6 +1,12 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include "raylib.h"
+#include "visual.h"
+#include "cartas.h"
 #include "funcoes.h"
+#include "jogar.h"
 
 enum Opcoes
 {
@@ -13,51 +19,6 @@ enum Opcoes
 };
 
 // Implementação das funções
-void jogar() {
-    printf("Em breve.\n");
-}
-
-void menu(int *vmenu) {
-    printf("O que deseja fazer?\n1 - Jogar\n2 - Decks\n0 - Sair\nDigite a opcao desejada: ");
-    scanf("%i", vmenu);
-    setbuf(stdin, NULL);
-}
-
-void menuDecks(cartas **deck, int *quantidadeCartas) {
-    int vmenu = -1;
-
-    do
-    {
-        printf("O que deseja fazer?\n1 - Inserir cartas no deck\n2 - Listar as cartas do deck\n3 - Pesquisar cartas no deck\n4 - Alterar cartas do deck\n5 - Excluir cartas do deck\n0 - Sair\nDigite a opcao desejada: ");
-        scanf("%i", &vmenu);
-        switch (vmenu)
-        {
-        case INSERIR:
-            inserirCartas(deck, quantidadeCartas);
-            break;
-        case LISTAR:
-            listarCartas(deck, quantidadeCartas);
-            break;
-        case PESQUISAR:
-            pesquisarCartas(deck, quantidadeCartas);
-            break;
-        case ALTERAR:
-            alterarCartas(deck, quantidadeCartas);
-            break;
-        case EXCLUIR:
-            excluirCartas(deck, quantidadeCartas);
-            break;
-        case SAIR:
-            printf("Saindo da Secao decks\n");
-            break;
-        default:
-            printf("O valor digitado nao e valido.\n");
-            break;
-        }
-    } while (vmenu != SAIR);
-    return;
-}
-
 int contarcartas(FILE *arq) {
     char c;
     int contador = 0; // Inicializa o contador
@@ -120,5 +81,112 @@ cartas configuracoesIniciais(FILE *arq) {
         deck.supertrunfo = 0;
     }
     return deck;
+}
+
+//load
+Fonte loadFonte()
+{
+    Fonte fonte;
+    fonte.tituloCartas = LoadFont("./assets/font/Avenir-Black.ttf");
+    fonte.tituloTelas = LoadFont("./assets/font/Avenir-Book.ttf");
+    fonte.letraCarta = LoadFont("./assets/font/Avenir-Heavy.ttf");
+    fonte.atributoCartas = LoadFont("./assets/font/AvenirNextCyr-Medium.ttf");
+    return fonte;
+}
+
+void unloadFonte(Fonte font)
+{
+    UnloadFont(font.tituloCartas);
+    UnloadFont(font.tituloTelas);
+    UnloadFont(font.letraCarta);
+    UnloadFont(font.atributoCartas);
+    return;
+}
+
+Molduras loadMolduras()
+{
+    Molduras molduras;
+
+    // Carrega as imagens e converte para texturas
+    Image azul = LoadImage("./assets/moldura/azul.png");
+    molduras.azul = LoadTextureFromImage(azul);
+    UnloadImage(azul);
+
+    Image azulST = LoadImage("./assets/moldura/azulST.png");
+    molduras.azulST = LoadTextureFromImage(azulST);
+    UnloadImage(azulST);
+
+    Image verde = LoadImage("./assets/moldura/verde.png");
+    molduras.verde = LoadTextureFromImage(verde);
+    UnloadImage(verde);
+
+    Image verdeST = LoadImage("./assets/moldura/verdeST.png");
+    molduras.verdeST = LoadTextureFromImage(verdeST);
+    UnloadImage(verdeST);
+
+    Image amarelo = LoadImage("./assets/moldura/amarelo.png");
+    molduras.amarelo = LoadTextureFromImage(amarelo);
+    UnloadImage(amarelo);
+
+    Image amareloST = LoadImage("./assets/moldura/amareloST.png");
+    molduras.amareloST = LoadTextureFromImage(amareloST);
+    UnloadImage(amareloST);
+
+    Image vermelho = LoadImage("./assets/moldura/vermelho.png");
+    molduras.vermelho = LoadTextureFromImage(vermelho);
+    UnloadImage(vermelho);
+
+    Image vermelhoST = LoadImage("./assets/moldura/vermelhoST.png");
+    molduras.vermelhoST = LoadTextureFromImage(vermelhoST);
+    UnloadImage(vermelhoST);
+
+    return molduras;
+}
+
+void unloadMolduras(Molduras molduras)
+{
+    UnloadTexture(molduras.azul);
+    UnloadTexture(molduras.verde);
+    UnloadTexture(molduras.amarelo);
+    UnloadTexture(molduras.vermelho);
+    UnloadTexture(molduras.azulST);
+    UnloadTexture(molduras.verdeST);
+    UnloadTexture(molduras.amareloST);
+    UnloadTexture(molduras.vermelhoST);
+}
+
+Textura loadTexturas()
+{
+    Textura texturas;
+    texturas.setaOFF = LoadTexture("./assets/textura/setasaidaOFF.png");
+    texturas.setaON = LoadTexture("./assets/textura/setasaidaON.png");
+    texturas.TexturaFundo = LoadTexture("./assets/textura/vector.png");
+    return texturas;
+}
+
+void unloadTexturas(Textura texturas)
+{
+    UnloadTexture(texturas.setaOFF);
+    UnloadTexture(texturas.setaON);
+    UnloadTexture(texturas.TexturaFundo);
+    return;
+}
+
+void loadIMGCarta(cartas carta[], int quantidadecartas){
+    for (int i = 0; i < quantidadecartas; i++)
+    {
+        carta[i].img = LoadTexture(carta[i].arqimg);
+
+        if (carta[i].img.id == 0)
+        {
+            // Handle the error (e.g., log it, return a default texture, etc.)
+            printf("Failed to load texture: %s\n", carta[i].nome);
+            // Optionally return a default texture or an empty texture
+        }
+    }
+
+    // Check if the texture was loaded successfully
+
+    return;
 }
 

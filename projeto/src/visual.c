@@ -228,20 +228,25 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
 }
 
 // Function to draw the letter dropdown
-void drawLetterDropdown(Rectangle rect, Fonte fonte) {
-    if (showLetterDropdown) {
-        DrawRectangleRec(rect, LIGHTGRAY);
+void drawLetterDropdown(Rectangle rect, Fonte fonte)
+{
+    if (showLetterDropdown)
+    {
+        DrawRectangleRec( rect,WHITE);
+        DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
         const char *letters[] = {"Todas", "A", "B", "C", "D"};
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++)
+        {
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = BLACK;
+            Color cor = (Color){13, 35,	55, 255};
             if (selectedLetter == letters[i][0] && i > 0)
-                cor = RED;
+                cor = (Color){175, 215, 248, 255};
             else if (selectedLetter == '\0' && i == 0)
-                cor = RED;
+                cor = (Color){175, 215, 248, 255};
             DrawTextEx(fonte.atributoCartas, letters[i], (Vector2){itemRect.x + 10, itemRect.y + 5}, 18, 0, cor);
-            if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 if (i == 0)
                     selectedLetter = '\0';
                 else
@@ -253,16 +258,21 @@ void drawLetterDropdown(Rectangle rect, Fonte fonte) {
 }
 
 // Function to draw the sort by dropdown
-void drawSortByDropdown(Rectangle rect, Fonte fonte) {
-    if (showSortByDropdown) {
-        DrawRectangleRec(rect, LIGHTGRAY);
+void drawSortByDropdown(Rectangle rect, Fonte fonte)
+{
+    if (showSortByDropdown)
+    {
+        DrawRectangleRec( rect,WHITE);
+        DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
         const char *sortOptions[] = {"Letra da Carta", "Alfabetico"};
 
-        for (int i = 0; i < 2; i++) { // Only two sorting options now
+        for (int i = 0; i < 2; i++)
+        { // Only two sorting options now
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = (sortByMethod == i) ? RED : BLACK;
+            Color cor = (sortByMethod == i) ? (Color){175, 215, 248, 255} : (Color){13, 35,	55, 255};
             DrawTextEx(fonte.atributoCartas, sortOptions[i], (Vector2){itemRect.x + 10, itemRect.y + 5}, 18, 0, cor);
-            if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 sortByMethod = i;
                 showSortByDropdown = false;
             }
@@ -271,32 +281,36 @@ void drawSortByDropdown(Rectangle rect, Fonte fonte) {
 }
 
 // Function to draw and update the search textbox
-void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive) {
-    DrawRectangleRec(rect, WHITE);
-    DrawRectangleLinesEx(rect, 1, GRAY);
-    Color textColor = isHovered ?  DARKGRAY : BLACK;
+void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
+{
+
+    DrawRectangleRounded( rect, 0.7f, 0,WHITE);
+    DrawRectangleRoundedLinesEx(rect, 0.3f, 0, 0.4f, (Color){175, 215, 248, 255});
+    Color textColor = isHovered ? DARKGRAY : BLACK;
 
     DrawTextEx(fonte.atributoCartas, searchText, (Vector2){rect.x + 5, rect.y + 5}, 18, 0, textColor);
-    
+
     if (isActive)
     {
-         double currentTime = GetTime();
-           if ((currentTime - lastCursorBlinkTime) > 0.5)
-                {
-                    DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5 , rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 22, BLACK);
-                    
-                    if ((currentTime - lastCursorBlinkTime) > 1.0)
-                     lastCursorBlinkTime = currentTime;
-                }
+        double currentTime = GetTime();
+        if ((currentTime - lastCursorBlinkTime) > 0.5)
+        {
+            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){13, 35,	55, 255});
 
+            if ((currentTime - lastCursorBlinkTime) > 1.0)
+                lastCursorBlinkTime = currentTime;
+        }
     }
 }
 
 // Function to handle keyboard input for the search box
-void updateSearchText() {
+void updateSearchText()
+{
     int key = GetCharPressed();
-    while (key > 0) {
-        if ((key >= 32) && (key <= 125) && (TextLength(searchText) < 63)) {
+    while (key > 0)
+    {
+        if ((key >= 32) && (key <= 125) && (TextLength(searchText) < 63))
+        {
             int len = TextLength(searchText);
             searchText[len] = (char)key;
             searchText[len + 1] = '\0';
@@ -304,7 +318,8 @@ void updateSearchText() {
         key = GetCharPressed();
     }
 
-    if (IsKeyPressed(KEY_BACKSPACE)) {
+    if (IsKeyPressed(KEY_BACKSPACE))
+    {
         int len = TextLength(searchText);
         if (len > 0)
             searchText[len - 1] = '\0';
@@ -348,7 +363,7 @@ void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filt
     *filteredCards = tempFilteredCards;
 }
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual) {
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual){
     const int ALTURA = 600;
     const int LARGURA = 800;
     const int larguraCartaPadrao = 155;
@@ -365,15 +380,14 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
 
     const int cartasPorLinha = 4;
 
-
     int totalLinhas = (quantidadeCartas + cartasPorLinha - 1) / cartasPorLinha;
     int alturaConteudo = totalLinhas * (alturaCartaPadrao + espacamentoY + 20);
     int scrollSpeed = scrollSpeedPadrao;
 
     Vector2 mousePos = GetMousePosition();
 
-
-    if (selectedCardIndex != -1) {
+    if (selectedCardIndex != -1)
+    {
         alturaConteudo = totalLinhas * (alturaCartaReduzida + espacamentoY + 20);
         scrollSpeed = scrollSpeedReduzido;
     }
@@ -394,16 +408,17 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
         offsetY = 0;
     if (offsetY < -alturaConteudo + ALTURA - 50)
         offsetY = -alturaConteudo + ALTURA - 50;
-    
+
     DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
     BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
-        
+
     cartas *filteredCards;
     int filteredCount;
     filterAndSortCards(listaCartas, quantidadeCartas, &filteredCards, &filteredCount);
 
     // Desenhar cartas
-    for (int i = 0; i < filteredCount; i++) {
+    for (int i = 0; i < filteredCount; i++)
+    {
         int linha = i / cartasPorLinha;
         int coluna = i % cartasPorLinha;
 
@@ -413,19 +428,23 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
         int larguraCarta = larguraCartaPadrao;
         int alturaCarta = alturaCartaPadrao;
         int extremosLaterais = extremosLateraisPadrao;
-         int espacamentoX = espacamentoXPadrao;
+        int espacamentoX = espacamentoXPadrao;
 
-        if (selectedCardIndex != -1) {
+        if (selectedCardIndex != -1)
+        {
             escala = escalaReduzida;
             larguraCarta = larguraCartaReduzida;
             alturaCarta = alturaCartaReduzida;
             extremosLaterais = extremosLateraisReduzido;
-             espacamentoX = espacamentoXReduzido;
+            espacamentoX = espacamentoXReduzido;
         }
 
-        if (coluna == 0) {
+        if (coluna == 0)
+        {
             posX = extremosLaterais;
-        } else {
+        }
+        else
+        {
             posX = extremosLaterais + coluna * (larguraCarta + espacamentoX);
         }
 
@@ -434,181 +453,89 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
         Rectangle cardRec = (Rectangle){posX, posY, larguraCarta, alturaCarta};
 
         bool isHovered = CheckCollisionPointRec(mousePos, cardRec);
-        // Verifique se o estado atual é DECKS antes de permitir a seleção de cartas
         desenharCarta(filteredCards[i], posX, posY, molduras, fonte, escala, isHovered);
-        if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
             selectedCardIndex = i;
         }
     }
-     EndScissorMode();
+    EndScissorMode();
+
     
-     // Draw the title and the background rectangle
     DrawRectangle(0, 28, LARGURA, 34, WHITE);
     DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
     DrawTextEx(fonte.tituloTelas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
 
-     // Buttons and search box
+    
     Rectangle letterButtonRec = {250, 32, 80, 24};
     Rectangle sortByButtonRec = {340, 32, 110, 24};
-    Rectangle searchBoxRec = {470, 32, 200, 24};
+    Rectangle searchBoxRec = {470, 33, 200, 22};
+
+    bool letterButtonHovered = CheckCollisionPointRec(mousePos, letterButtonRec);
+    bool sortByButtonHovered = CheckCollisionPointRec(mousePos, sortByButtonRec);
+    bool searchBoxHovered = CheckCollisionPointRec(mousePos, searchBoxRec);
+
     
 
-       bool letterButtonHovered = CheckCollisionPointRec(mousePos, letterButtonRec);
-       bool sortByButtonHovered = CheckCollisionPointRec(mousePos, sortByButtonRec);
-        bool searchBoxHovered = CheckCollisionPointRec(mousePos, searchBoxRec);
-    
-         // Handle Search Input
-    
-         if (CheckCollisionPointRec(mousePos, searchBoxRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            searchBoxActive = !searchBoxActive;
-    
-     if (searchBoxActive)
-         updateSearchText();
-    
-    
-     // Draw filter options (always visible)
-     DrawRectangleRec(letterButtonRec,letterButtonHovered?  LIGHTGRAY : WHITE);
-     DrawRectangleLinesEx(letterButtonRec,1,GRAY);
-     Color letterColor =  letterButtonHovered?  DARKGRAY : BLACK;
-     DrawTextEx(fonte.atributoCartas, "Letra", (Vector2){letterButtonRec.x + 5, letterButtonRec.y + 5}, 18, 0, letterColor);
+    if (CheckCollisionPointRec(mousePos, searchBoxRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        searchBoxActive = !searchBoxActive;
 
-     DrawRectangleRec(sortByButtonRec,sortByButtonHovered? LIGHTGRAY : WHITE);
-     DrawRectangleLinesEx(sortByButtonRec,1,GRAY);
-       Color sortByColor = sortByButtonHovered ? DARKGRAY : BLACK;
-      DrawTextEx(fonte.atributoCartas, "Sort By", (Vector2){sortByButtonRec.x + 5, sortByButtonRec.y + 5}, 18, 0, sortByColor);
+    if (searchBoxActive)
+        updateSearchText();
 
-    drawSearchBox(searchBoxRec, fonte, searchBoxHovered,searchBoxActive);
-   
-     if (CheckCollisionPointRec(mousePos, letterButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-           showLetterDropdown = !showLetterDropdown;
-             showSortByDropdown = false; // Close the other dropdown
-        }
-     if (CheckCollisionPointRec(mousePos, sortByButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            showSortByDropdown = !showSortByDropdown;
-             showLetterDropdown = false; // Close the other dropdown
-       }
+//(Color){175, 215, 248, 255} : (Color){13, 35,	55, 255};
+
+    DrawRectangleRec(letterButtonRec, letterButtonHovered ? LIGHTGRAY : WHITE);
+    DrawRectangleLinesEx(letterButtonRec, 1, (Color){175, 215, 248, 255});
+    Color letterColor = letterButtonHovered ? DARKGRAY : (Color){13, 35,	55, 255};
+    DrawTextEx(fonte.atributoCartas, "Filtrar", (Vector2){letterButtonRec.x + 5, letterButtonRec.y + 5}, 18, 0, letterColor);
+
+    DrawRectangleRec(sortByButtonRec, sortByButtonHovered ? LIGHTGRAY : WHITE);
+    DrawRectangleLinesEx(sortByButtonRec, 1, (Color){175, 215, 248, 255});
+    Color sortByColor = sortByButtonHovered ? DARKGRAY : (Color){13, 35,	55, 255};
+    DrawTextEx(fonte.atributoCartas, "Ordenar Por", (Vector2){sortByButtonRec.x + 5, sortByButtonRec.y + 5}, 18, 0, sortByColor);
+
+    drawSearchBox(searchBoxRec, fonte, searchBoxHovered, searchBoxActive);
+
+    if (CheckCollisionPointRec(mousePos, letterButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        showLetterDropdown = !showLetterDropdown;
+        showSortByDropdown = false; // Close the other dropdown
+    }
+    if (CheckCollisionPointRec(mousePos, sortByButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        showSortByDropdown = !showSortByDropdown;
+        showLetterDropdown = false; // Close the other dropdown
+    }
 
     // Draw the selected card if the state is DECKS
-    if (*estadoAtual == DECKS && selectedCardIndex != -1) {
-        desenharCartaSelecionada(filteredCards[selectedCardIndex], 564, 82+espacamentoTopo, molduras, fonte);
+    if (*estadoAtual == DECKS && selectedCardIndex != -1)
+    {
+        desenharCartaSelecionada(filteredCards[selectedCardIndex], 564, 82 + espacamentoTopo, molduras, fonte);
     }
-    drawLetterDropdown((Rectangle){letterButtonRec.x, letterButtonRec.y + 26 , letterButtonRec.width, 150} ,fonte);
+    drawLetterDropdown((Rectangle){letterButtonRec.x, letterButtonRec.y + 26, letterButtonRec.width, 150}, fonte);
     drawSortByDropdown((Rectangle){sortByButtonRec.x, sortByButtonRec.y + 26, sortByButtonRec.width, alturaSortByDropdown}, fonte);
 
-   
     DrawCircleV((Vector2){46, 45}, 13, WHITE);
 
-    if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13)) {
+    if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13))
+    {
         DrawTexture(texturas.setaON, 33, 32, WHITE);
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            *estadoAtual = MENU; // Returns to menu.
-            offsetY = 0;      // Reset scroll offset when exiting deck screen.
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            *estadoAtual = MENU;    // Returns to menu.
+            offsetY = 0;            // Reset scroll offset when exiting deck screen.
             selectedCardIndex = -1; // unselect the card when exiting
             searchText[0] = '\0';
             selectedLetter = '\0';
-            sortByMethod = 0; // 0 = Evolution Chain, 1 = Alphabetical
+            sortByMethod = 0;
             searchBoxActive = false;
         }
-    } else {
+    }
+    else
+    {
         DrawTexture(texturas.setaOFF, 33, 32, WHITE);
     }
-       free(filteredCards);
+    free(filteredCards);
 }
 
-Fonte loadFonte() {
-    Fonte fonte;
-    fonte.tituloCartas = LoadFont("./assets/font/Avenir-Black.ttf");
-    fonte.tituloTelas = LoadFont("./assets/font/Avenir-Book.ttf");
-    fonte.letraCarta = LoadFont("./assets/font/Avenir-Heavy.ttf");
-    fonte.atributoCartas = LoadFont("./assets/font/AvenirNextCyr-Medium.ttf");
-    return fonte;
-}
-
-void unloadFonte(Fonte font) {
-    UnloadFont(font.tituloCartas);
-    UnloadFont(font.tituloTelas);
-    UnloadFont(font.letraCarta);
-    UnloadFont(font.atributoCartas);
-    return;
-}
-
-Molduras loadMolduras() {
-    Molduras molduras;
-
-    // Carrega as imagens e converte para texturas
-    Image azul = LoadImage("./assets/moldura/azul.png");
-    molduras.azul = LoadTextureFromImage(azul);
-    UnloadImage(azul);
-
-    Image azulST = LoadImage("./assets/moldura/azulST.png");
-    molduras.azulST = LoadTextureFromImage(azulST);
-    UnloadImage(azulST);
-
-    Image verde = LoadImage("./assets/moldura/verde.png");
-    molduras.verde = LoadTextureFromImage(verde);
-    UnloadImage(verde);
-
-    Image verdeST = LoadImage("./assets/moldura/verdeST.png");
-    molduras.verdeST = LoadTextureFromImage(verdeST);
-    UnloadImage(verdeST);
-
-    Image amarelo = LoadImage("./assets/moldura/amarelo.png");
-    molduras.amarelo = LoadTextureFromImage(amarelo);
-    UnloadImage(amarelo);
-
-    Image amareloST = LoadImage("./assets/moldura/amareloST.png");
-    molduras.amareloST = LoadTextureFromImage(amareloST);
-    UnloadImage(amareloST);
-
-    Image vermelho = LoadImage("./assets/moldura/vermelho.png");
-    molduras.vermelho = LoadTextureFromImage(vermelho);
-    UnloadImage(vermelho);
-
-    Image vermelhoST = LoadImage("./assets/moldura/vermelhoST.png");
-    molduras.vermelhoST = LoadTextureFromImage(vermelhoST);
-    UnloadImage(vermelhoST);
-
-    return molduras;
-}
-
-void unloadMolduras(Molduras molduras) {
-    UnloadTexture(molduras.azul);
-    UnloadTexture(molduras.verde);
-    UnloadTexture(molduras.amarelo);
-    UnloadTexture(molduras.vermelho);
-    UnloadTexture(molduras.azulST);
-    UnloadTexture(molduras.verdeST);
-    UnloadTexture(molduras.amareloST);
-    UnloadTexture(molduras.vermelhoST);
-}
-
-Textura loadTexturas() {
-    Textura texturas;
-    texturas.setaOFF = LoadTexture("./assets/textura/setasaidaOFF.png");
-    texturas.setaON = LoadTexture("./assets/textura/setasaidaON.png");
-    texturas.TexturaFundo = LoadTexture("./assets/textura/vector.png");
-    return texturas;
-}
-
-void unloadTexturas(Textura texturas) {
-    UnloadTexture(texturas.setaOFF);
-    UnloadTexture(texturas.setaON);
-    UnloadTexture(texturas.TexturaFundo);
-    return;
-}
-
-void loadIMGCarta(cartas carta[], int quantidadecartas) {
-    for (int i = 0; i < quantidadecartas; i++) {
-        carta[i].img = LoadTexture(carta[i].arqimg);
-
-        if (carta[i].img.id == 0) {
-            // Handle the error (e.g., log it, return a default texture, etc.)
-            printf("Failed to load texture: %s\n", carta[i].nome);
-            // Optionally return a default texture or an empty texture
-        }
-    }
-
-    // Check if the texture was loaded successfully
-
-    return;
-}
