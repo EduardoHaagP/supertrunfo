@@ -16,6 +16,8 @@ static char searchText[64] = "";
 static char selectedLetter = '\0';
 static int sortByMethod = 0; // 0 = Evolution Chain, 1 = Alphabetical
 static bool searchBoxActive = false;
+static bool editActive = false;
+
 
 static float escalaPadrao = 155.37 / 204; // Escala padrão para as cartas na lista.
 static float escalaReduzida = 115.0 / 204; // Escala reduzida para cartas não selecionadas
@@ -412,6 +414,7 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
     BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
 
+
     cartas *filteredCards;
     int filteredCount;
     filterAndSortCards(listaCartas, quantidadeCartas, &filteredCards, &filteredCount);
@@ -470,14 +473,27 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     Rectangle letterButtonRec = {250, 32, 80, 24};
     Rectangle sortByButtonRec = {340, 32, 110, 24};
     Rectangle searchBoxRec = {470, 33, 200, 22};
+    Rectangle editBoxRec = {700, 33, 22, 22};
+
 
     bool letterButtonHovered = CheckCollisionPointRec(mousePos, letterButtonRec);
     bool sortByButtonHovered = CheckCollisionPointRec(mousePos, sortByButtonRec);
     bool searchBoxHovered = CheckCollisionPointRec(mousePos, searchBoxRec);
+    bool editBoxHovered = CheckCollisionPointRec(mousePos, editBoxRec);
 
+    if (editActive == 1|| editBoxHovered == 1)
+    {
+        DrawTextureEx(texturas.editarON,(Vector2){700, 33},0,1,WHITE);
+    }else{
+        DrawTextureEx(texturas.editarOFF,(Vector2){700, 33},0,1,WHITE);
+    }
+    if (editBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        editActive = !editActive;
+    }
     
 
-    if (CheckCollisionPointRec(mousePos, searchBoxRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+
+    if (searchBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         searchBoxActive = !searchBoxActive;
 
     if (searchBoxActive)

@@ -4,8 +4,9 @@
 #include "raylib.h"
 #include "cartas.h"
 #include <stdio.h>
+#include <stdbool.h>
 
-
+// Structures
 typedef struct {
     Texture2D azul;
     Texture2D verde;
@@ -21,28 +22,32 @@ typedef struct {
     Texture2D setaON;
     Texture2D setaOFF;
     Texture2D TexturaFundo;
+    Texture2D editarON;
+    Texture2D editarOFF;
 } Textura;
 
 typedef struct {
-    Font tituloCartas; //projeto/assets/font/Avenir-Black.ttf
-    Font tituloTelas; //projeto/assets/font/Avenir-Book.ttf
-    Font letraCarta; //projeto/assets/font/Avenir-Heavy.ttf
-    Font atributoCartas; //projeto/assets/font/AvenirNextCyr-Medium.ttf
+    Font tituloCartas;
+    Font tituloTelas;
+    Font letraCarta;
+    Font atributoCartas;
 } Fonte;
 
 
+// Function Prototypes
 int contarcartas(FILE *arq);
-cartas configuracoesIniciais(FILE *arq);
+cartas configuracoesIniciais(FILE *arq); //Should this be a 'cartas *'?
 cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas);
 
-//load
+// Resource loading and unloading
 Fonte loadFonte();
 void unloadFonte(Fonte fonte);
 Molduras loadMolduras();
 void unloadMolduras(Molduras molduras);
 Textura loadTexturas();
-void unloadTexturas(Textura testuras);
-void loadIMGCarta(cartas carta[], int quantidadecartas);
+void unloadTexturas(Textura texturas);
+void loadIMGCartas(cartas *cartas, int quantidadeCartas); // loads texture into each card.
+
 
 
 #endif

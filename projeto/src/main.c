@@ -27,11 +27,11 @@ int main() {
 
     inicializarJogo(LARGURA_TELA, ALTURA_TELA, "Menu com Raylib");
 
+
     Molduras molduras = loadMolduras();
-    loadIMGCarta(deck, quantidadeCartas);
+    loadIMGCartas(deck, quantidadeCartas);
     Fonte fonte = loadFonte();
     Textura textura = loadTexturas();
-
     while (!WindowShouldClose()) {
         // Atualização lógica baseada no estado
         if (estadoAtual == MENU) {

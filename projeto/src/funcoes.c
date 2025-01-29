@@ -155,13 +155,16 @@ void unloadMolduras(Molduras molduras)
     UnloadTexture(molduras.vermelhoST);
 }
 
-Textura loadTexturas()
-{
+Textura loadTexturas(){
     Textura texturas;
     texturas.setaOFF = LoadTexture("./assets/textura/setasaidaOFF.png");
     texturas.setaON = LoadTexture("./assets/textura/setasaidaON.png");
     texturas.TexturaFundo = LoadTexture("./assets/textura/vector.png");
+    texturas.editarOFF = LoadTexture("./assets/textura/editarOFF.png");
+    texturas.editarON = LoadTexture("./assets/textura/editarON.png");
+    
     return texturas;
+    
 }
 
 void unloadTexturas(Textura texturas)
@@ -172,7 +175,7 @@ void unloadTexturas(Textura texturas)
     return;
 }
 
-void loadIMGCarta(cartas carta[], int quantidadecartas){
+void loadIMGCartas(cartas *carta, int quantidadecartas){
     for (int i = 0; i < quantidadecartas; i++)
     {
         carta[i].img = LoadTexture(carta[i].arqimg);
@@ -189,4 +192,3 @@ void loadIMGCarta(cartas carta[], int quantidadecartas){
 
     return;
 }
-
