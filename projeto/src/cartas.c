@@ -152,77 +152,10 @@ void inserirCartas(cartas **deck, int *quantidadeCartas) {
             setbuf(stdin, NULL);
         }
     }
-    if (arq != NULL)
-    {
-        for (int i = 0; i < (*quantidadeCartas); i++)
-        {
-            fprintf(arq, "%s,%c,%i,%i,%.i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
-                    (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                    (*deck)[i].popularidade);
-        }
-        fclose(arq);
-    }
+    salvarNoCSV(deck, quantidadeCartas);
     return;
 }
-
-void listarCartas(cartas **deck, int *quantidadeCartas) {
-    printf("%6s - %35s| %7s| %14s| %12s| %14s| %15s| %20s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
-    for (int i = 0; i < (*quantidadeCartas); i++)
-    {
-        if ((*deck)[i].supertrunfo == 1)
-        {
-            printf("%6i - %35s| %7c| %14s| %12i| %14i| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
-                   (*deck)[i].anoConstrucao, (*deck)[i].altura,
-                   (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                   (*deck)[i].popularidade);
-        }
-        else if ((*deck)[i].supertrunfo == 0)
-        {
-            printf("%6i - %35s| %7c| %14s| %12i| %14i| %15i| %20i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
-                   (*deck)[i].anoConstrucao, (*deck)[i].altura,
-                   (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                   (*deck)[i].popularidade);
-        }
-    }
-    return;
-}
-
-void pesquisarCartas(cartas **deck, int *quantidadeCartas) {
-   setbuf(stdin, NULL);
-    char pesquisa[51];
-    int encontrou = 0;
-    printf("Digite o nome da carta que busca: ");
-    fgets(pesquisa, 50, stdin);
-    pesquisa[strcspn(pesquisa, "\n")] = '\0';
-    for (int i = 0; i < (*quantidadeCartas); i++)
-    {
-        if (strcmp(pesquisa, (*deck)[i].nome) == 0)
-        {
-            printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
-            if ((*deck)[i].supertrunfo == 1)
-            {
-                printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Sim",
-                       (*deck)[i].anoConstrucao, (*deck)[i].altura,
-                       (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                       (*deck)[i].popularidade);
-            }
-            else if ((*deck)[i].supertrunfo == 0)
-            {
-                printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", i, (*deck)[i].nome, (*deck)[i].letra, "Nao",
-                       (*deck)[i].anoConstrucao, (*deck)[i].altura,
-                       (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                       (*deck)[i].popularidade);
-            }
-            encontrou = 1;
-        }
-    }
-    if (encontrou == 0)
-    {
-        printf("Nao encontramos nenhuma chamada '%s'", pesquisa);
-    }
-    return;
-}
-
+    
 void alterarCartas(cartas **deck, int *quantidadeCartas) {
     int indice;
     int quantidadeCartasAux = *quantidadeCartas - 1;
@@ -371,17 +304,7 @@ void alterarCartas(cartas **deck, int *quantidadeCartas) {
             (*deck)[indice].popularidade = respostasAux;
             break;
         }
-        FILE *arq = fopen("deck.csv", "w");
-        if (arq != NULL)
-        {
-            for (int i = 0; i < (*quantidadeCartas); i++)
-            {
-                fprintf(arq, "%s,%c,%i,%i,%i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
-                        (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                        (*deck)[i].popularidade);
-            }
-            fclose(arq);
-        }
+        salvarNoCSV(deck, quantidadeCartas);
     }
     return;
 }
@@ -456,16 +379,31 @@ void excluirCartas(cartas **deck, int *quantidadeCartas) {
         *deck = realloc(*deck, (*quantidadeCartas) * sizeof(cartas));
     }
 
-    FILE *arq = fopen("deck.csv", "w");
-    if (arq != NULL)
-    {
-        for (int i = 0; i < (*quantidadeCartas); i++)
-        {
-            fprintf(arq, "%s,%c,%i,%i,%i,%i,%i,%i\n", (*deck)[i].nome, (*deck)[i].letra, (*deck)[i].supertrunfo,
-                    (*deck)[i].anoConstrucao, (*deck)[i].altura, (*deck)[i].visitasAnuais, (*deck)[i].importanciaHistorica,
-                    (*deck)[i].popularidade);
-        }
-        fclose(arq);
-    }
+    salvarNoCSV(deck, quantidadeCartas);
     return; 
+}
+
+void salvarNoCSV(cartas **deck, int *quantidadeCartas) {
+    FILE *arq = fopen("deck.csv", "w");
+    if (arq == NULL) {
+        printf("Erro ao abrir arquivo para salvar\n");
+        return;
+    }
+
+    // Escreve os dados de cada carta
+    for (int i = 0; i < *quantidadeCartas; i++) {
+        fprintf(arq, "%s,%c,%d,%d,%d,%d,%d,%d,%s\n",
+                (*deck)[i].nome,
+                (*deck)[i].letra,
+                (*deck)[i].supertrunfo,
+                (*deck)[i].anoConstrucao,
+                (*deck)[i].altura,
+                (*deck)[i].visitasAnuais,
+                (*deck)[i].importanciaHistorica,
+                (*deck)[i].popularidade,
+                (*deck)[i].arqimg);
+    }
+
+    fclose(arq);
+    return;
 }

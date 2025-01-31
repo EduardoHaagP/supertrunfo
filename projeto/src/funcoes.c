@@ -17,6 +17,7 @@ enum Opcoes
     ALTERAR,
     EXCLUIR,
 };
+//"deck.csv"
 
 // Implementação das funções
 int contarcartas(FILE *arq) {

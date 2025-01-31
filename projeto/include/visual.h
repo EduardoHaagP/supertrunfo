@@ -8,8 +8,8 @@
 
 
 
-
 typedef enum { MENU = 0, JOGO, DECKS } Estado;
+
 
 void inicializarJogo(int largura, int altura, const char *titulo);
 void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes);
@@ -21,6 +21,7 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
 
 void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered);
 
+void editCartas(Fonte fonte, Vector2 mousePos, cartas *deck, int quantidadeCartas);
 
 void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount);
 void updateSearchText();

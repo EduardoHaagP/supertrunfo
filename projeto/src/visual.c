@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 
+static bool isModalOpen = false;
+
 // Global variable to store the scroll offset for deck screen
 static int offsetY = 0;
 // Global variable to store the index of the currently selected card
@@ -18,22 +20,23 @@ static int sortByMethod = 0; // 0 = Evolution Chain, 1 = Alphabetical
 static bool searchBoxActive = false;
 static bool editActive = false;
 
-
-static float escalaPadrao = 155.37 / 204; // Escala padrão para as cartas na lista.
+static float escalaPadrao = 155.37 / 204;  // Escala padrão para as cartas na lista.
 static float escalaReduzida = 115.0 / 204; // Escala reduzida para cartas não selecionadas
 static float escalaGrande = 6800 / 5179;   // escala para carta em destaque
-static int scrollSpeedPadrao = 20;        // velocidade do scroll em tamanho padrão
-static int scrollSpeedReduzido = 15;      // velocidade do scroll em tamanho reduzido
+static int scrollSpeedPadrao = 20;         // velocidade do scroll em tamanho padrão
+static int scrollSpeedReduzido = 15;       // velocidade do scroll em tamanho reduzido
 static double lastCursorBlinkTime;
 
-void inicializarJogo(int largura, int altura, const char *titulo) {
+void inicializarJogo(int largura, int altura, const char *titulo)
+{
     InitWindow(largura, altura, titulo);
     SetTargetFPS(60);
-        srand(time(NULL));
-        lastCursorBlinkTime = GetTime();
+    srand(time(NULL));
+    lastCursorBlinkTime = GetTime();
 }
 
-void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes) {
+void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes)
+{
     if (IsKeyPressed(KEY_DOWN))
         (*opcaoSelecionada)++;
     if (IsKeyPressed(KEY_UP))
@@ -45,15 +48,19 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
         *opcaoSelecionada = 0;
 
     Vector2 mousePos = GetMousePosition();
-    for (int i = 0; i < 3; i++) {
-        if (CheckCollisionPointRec(mousePos, botoes[i])) {
+    for (int i = 0; i < 3; i++)
+    {
+        if (CheckCollisionPointRec(mousePos, botoes[i]))
+        {
             *opcaoSelecionada = i;
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 if (i == 0)
                     *estadoAtual = JOGO;
                 else if (i == 1)
                     *estadoAtual = DECKS;
-                else if (i == 2) {
+                else if (i == 2)
+                {
                     CloseWindow();
                     exit(0);
                 }
@@ -61,85 +68,114 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
         }
     }
 
-    if (IsKeyPressed(KEY_ENTER)) {
+    if (IsKeyPressed(KEY_ENTER))
+    {
         if (*opcaoSelecionada == 0)
             *estadoAtual = JOGO;
         else if (*opcaoSelecionada == 1)
             *estadoAtual = DECKS;
-        else if (*opcaoSelecionada == 2) {
+        else if (*opcaoSelecionada == 2)
+        {
             CloseWindow();
             exit(0);
         }
     }
 }
 
-void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes) {
+void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
+{
     ClearBackground(RAYWHITE);
     DrawText("Menu Principal", 320, 100, 30, DARKGRAY);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         Color cor = (i == opcaoSelecionada) ? RED : BLACK;
         DrawRectangleRec(botoes[i], LIGHTGRAY);
         DrawText(opcoes[i], botoes[i].x + 10, botoes[i].y + 5, 20, cor);
     }
 }
 
-void desenharTelaJogo() {
+void desenharTelaJogo()
+{
     DrawText("Você está jogando!", 280, 200, 30, DARKGREEN);
     DrawText("Pressione ESC para voltar ao menu", 220, 250, 20, GRAY);
 }
 
-void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escala) {
+void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escala, char letra)
+{
+    Color corNomeAtributo = BLACK;
+    Color corValorAtributo = (Color){232, 244, 255, 255};
+    switch (letra)
+    {
+    case 'A':
+        corNomeAtributo = (Color){2, 12, 20, 255};
+        break;
+    case 'B':
+        corNomeAtributo = (Color){13, 55, 19, 255};
+        break;
+    case 'C':
+        corNomeAtributo = (Color){152, 107, 1, 255};
+        break;
+    case 'D':
+        corNomeAtributo = (Color){47, 12, 9, 255};
+        break;
+
+    default:
+        break;
+    }
     char bufferAno[20]; // Buffer para armazenar o ano como string
     sprintf(bufferAno, "%d", carta.anoConstrucao);
-    DrawTextEx(fonte.atributoCartas, "Ano de Construcao", (Vector2){x + (17 * escala), y + (201 * escala)}, 16 * escala, 0, WHITE);
-    DrawTextEx(fonte.atributoCartas, bufferAno, (Vector2){x + (155 * escala), y + (201 * escala)}, 16 * escala, 0, WHITE);
+    DrawTextEx(fonte.atributoCartas, "Ano de Construcao", (Vector2){x + (17 * escala), y + (201 * escala)}, 16 * escala, 0, corNomeAtributo);
+    DrawTextEx(fonte.atributoCartas, bufferAno, (Vector2){x + (155 * escala), y + (201 * escala)}, 16 * escala, 0, corValorAtributo);
 
     char bufferAltura[20]; // Buffer para armazenar o ano como string
     sprintf(bufferAltura, "%d", carta.altura);
-    DrawTextEx(fonte.atributoCartas, "Altura", (Vector2){x + (17 * escala), y + ((201 + 22) * escala)}, 16 * escala, 0, WHITE);
-    DrawTextEx(fonte.atributoCartas, bufferAltura, (Vector2){x + (155 * escala), y + ((201 + 22) * escala)}, 16 * escala, 0, WHITE);
+    DrawTextEx(fonte.atributoCartas, "Altura", (Vector2){x + (17 * escala), y + ((201 + 22) * escala)}, 16 * escala, 0, corNomeAtributo);
+    DrawTextEx(fonte.atributoCartas, bufferAltura, (Vector2){x + (155 * escala), y + ((201 + 22) * escala)}, 16 * escala, 0, corValorAtributo);
 
-    DrawTextEx(fonte.atributoCartas, "Visitas Anuais", (Vector2){x + (17 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, WHITE);
+    DrawTextEx(fonte.atributoCartas, "Visitas Anuais", (Vector2){x + (17 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corNomeAtributo);
     if (carta.visitasAnuais > 1000000000) // bilhao
     {
         char resultado[50];
         sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000000000, " Bi");
-        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, WHITE);
+        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
     else if (carta.visitasAnuais > 1000000) // milhao
     {
         char resultado[50];
         sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000000, " M");
-        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, WHITE);
+        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
     else if (carta.visitasAnuais > 1000) // mil
     {
         char resultado[50];
         sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000, " m");
-        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, WHITE);
+        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
     else
     {
         char resultado[50];
         sprintf(resultado, "%d", (carta.visitasAnuais));
-        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, WHITE);
+        DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
 
     char bufferImpotanciaHistorica[20]; // Buffer para armazenar o ano como string
     sprintf(bufferImpotanciaHistorica, "%d", carta.importanciaHistorica);
-    DrawTextEx(fonte.atributoCartas, "Importancia historica", (Vector2){x + (17 * escala), y + ((201 + 66) * escala)}, 16 * escala, 0, WHITE);
-    DrawTextEx(fonte.atributoCartas, bufferImpotanciaHistorica, (Vector2){x + (155 * escala), y + ((201 + 66) * escala)}, 16 * escala, 0, WHITE);
+    DrawTextEx(fonte.atributoCartas, "Importancia historica", (Vector2){x + (17 * escala), y + ((201 + 66) * escala)}, 16 * escala, 0, corNomeAtributo);
+    DrawTextEx(fonte.atributoCartas, bufferImpotanciaHistorica, (Vector2){x + (155 * escala), y + ((201 + 66) * escala)}, 16 * escala, 0, corValorAtributo);
 
     char bufferPopularidade[20]; // Buffer para armazenar o ano como string
     sprintf(bufferPopularidade, "%d", carta.popularidade);
-    DrawTextEx(fonte.atributoCartas, "Popularidade", (Vector2){x + (17 * escala), y + ((201 + 88) * escala)}, 16 * escala, 0, WHITE);
-    DrawTextEx(fonte.atributoCartas, bufferPopularidade, (Vector2){x + (155 * escala), y + ((201 + 88) * escala)}, 16 * escala, 0, WHITE);
+    DrawTextEx(fonte.atributoCartas, "Popularidade", (Vector2){x + (17 * escala), y + ((201 + 88) * escala)}, 16 * escala, 0, corNomeAtributo);
+    DrawTextEx(fonte.atributoCartas, bufferPopularidade, (Vector2){x + (155 * escala), y + ((201 + 88) * escala)}, 16 * escala, 0, corValorAtributo);
 }
 
-void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered) {
+void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered)
+{
     DrawTextureEx(carta.img, (Vector2){x, y}, 0.0f, escala, WHITE);
-    if (carta.supertrunfo == 1) {
-        switch (carta.letra) {
+    if (carta.supertrunfo == 1)
+    {
+        switch (carta.letra)
+        {
         case 'A':
 
             DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, escala, WHITE);
@@ -156,8 +192,11 @@ void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, f
         default:
             break;
         }
-    } else {
-        switch (carta.letra) {
+    }
+    else
+    {
+        switch (carta.letra)
+        {
         case 'A':
             DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, escala, WHITE);
             break;
@@ -177,19 +216,23 @@ void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, f
 
     Vector2 posicaoNome = (Vector2){x + (60 * escala), y + (13 * escala)};
     DrawTextEx(fonte.tituloCartas, carta.nome, posicaoNome, 16 * escala, 0, WHITE);
-    escreverAtributoCartas(carta, x, y, fonte, escala);
+    escreverAtributoCartas(carta, x, y, fonte, escala, carta.letra);
 
-    if (isHovered) {
+    if (isHovered)
+    {
         DrawRectangle(x, y, carta.img.width * escala, carta.img.height * escala, (Color){100, 100, 100, 100});
     }
 }
 
 // Function to draw a bigger card on the side
-void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fonte fonte) {
+void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fonte fonte)
+{
     float escala = escalaGrande;
     DrawTextureEx(carta.img, (Vector2){x, y}, 0.0f, escala, WHITE);
-    if (carta.supertrunfo == 1) {
-        switch (carta.letra) {
+    if (carta.supertrunfo == 1)
+    {
+        switch (carta.letra)
+        {
         case 'A':
 
             DrawTextureEx(molduras.azulST, (Vector2){x, y}, 0.0f, escala, WHITE);
@@ -206,8 +249,11 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
         default:
             break;
         }
-    } else {
-        switch (carta.letra) {
+    }
+    else
+    {
+        switch (carta.letra)
+        {
         case 'A':
             DrawTextureEx(molduras.azul, (Vector2){x, y}, 0.0f, escala, WHITE);
             break;
@@ -226,7 +272,7 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
     }
     Vector2 posicaoNome = (Vector2){x + (60 * escala), y + (13 * escala)};
     DrawTextEx(fonte.tituloCartas, carta.nome, posicaoNome, 16 * escala, 0, WHITE);
-    escreverAtributoCartas(carta, x, y, fonte, escala);
+    escreverAtributoCartas(carta, x, y, fonte, escala, carta.letra);
 }
 
 // Function to draw the letter dropdown
@@ -234,14 +280,14 @@ void drawLetterDropdown(Rectangle rect, Fonte fonte)
 {
     if (showLetterDropdown)
     {
-        DrawRectangleRec( rect,WHITE);
+        DrawRectangleRec(rect, WHITE);
         DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
         const char *letters[] = {"Todas", "A", "B", "C", "D"};
 
         for (int i = 0; i < 5; i++)
         {
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = (Color){13, 35,	55, 255};
+            Color cor = (Color){13, 35, 55, 255};
             if (selectedLetter == letters[i][0] && i > 0)
                 cor = (Color){175, 215, 248, 255};
             else if (selectedLetter == '\0' && i == 0)
@@ -264,14 +310,14 @@ void drawSortByDropdown(Rectangle rect, Fonte fonte)
 {
     if (showSortByDropdown)
     {
-        DrawRectangleRec( rect,WHITE);
+        DrawRectangleRec(rect, WHITE);
         DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
         const char *sortOptions[] = {"Letra da Carta", "Alfabetico"};
 
         for (int i = 0; i < 2; i++)
         { // Only two sorting options now
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = (sortByMethod == i) ? (Color){175, 215, 248, 255} : (Color){13, 35,	55, 255};
+            Color cor = (sortByMethod == i) ? (Color){175, 215, 248, 255} : (Color){13, 35, 55, 255};
             DrawTextEx(fonte.atributoCartas, sortOptions[i], (Vector2){itemRect.x + 10, itemRect.y + 5}, 18, 0, cor);
             if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -286,7 +332,7 @@ void drawSortByDropdown(Rectangle rect, Fonte fonte)
 void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
 {
 
-    DrawRectangleRounded( rect, 0.7f, 0,WHITE);
+    DrawRectangleRounded(rect, 0.7f, 0, WHITE);
     DrawRectangleRoundedLinesEx(rect, 0.3f, 0, 0.4f, (Color){175, 215, 248, 255});
     Color textColor = isHovered ? DARKGRAY : BLACK;
 
@@ -297,7 +343,7 @@ void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
         double currentTime = GetTime();
         if ((currentTime - lastCursorBlinkTime) > 0.5)
         {
-            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){13, 35,	55, 255});
+            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){13, 35, 55, 255});
 
             if ((currentTime - lastCursorBlinkTime) > 1.0)
                 lastCursorBlinkTime = currentTime;
@@ -329,11 +375,13 @@ void updateSearchText()
 }
 
 // Function to filter the cards based on letter, search text and sort the cards
-void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount) {
+void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount)
+{
     *filteredCount = 0;
     cartas *tempFilteredCards = malloc(sizeof(cartas) * quantidadeCartas);
 
-    for (int i = 0; i < quantidadeCartas; i++) {
+    for (int i = 0; i < quantidadeCartas; i++)
+    {
         bool includeCard = true;
         if (selectedLetter != '\0' && listaCartas[i].letra != selectedLetter)
             includeCard = false;
@@ -341,19 +389,26 @@ void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filt
         if (TextLength(searchText) > 0 && strstr(listaCartas[i].nome, searchText) == NULL)
             includeCard = false;
 
-        if (includeCard) {
+        if (includeCard)
+        {
             tempFilteredCards[*filteredCount] = listaCartas[i];
             (*filteredCount)++;
         }
     }
 
     // Sorting Logic
-    if (sortByMethod == 0) { // Sort By evolution chain (currently based on array position)
-        // Do not need to sort
-    } else if (sortByMethod == 1) { // Alphabetical
-        for (int i = 0; i < *filteredCount - 1; i++) {
-            for (int j = 0; j < *filteredCount - i - 1; j++) {
-                if (strcmp(tempFilteredCards[j].nome, tempFilteredCards[j + 1].nome) > 0) {
+    if (sortByMethod == 0)
+    { // Sort By evolution chain (currently based on array position)
+      // Do not need to sort
+    }
+    else if (sortByMethod == 1)
+    { // Alphabetical
+        for (int i = 0; i < *filteredCount - 1; i++)
+        {
+            for (int j = 0; j < *filteredCount - i - 1; j++)
+            {
+                if (strcmp(tempFilteredCards[j].nome, tempFilteredCards[j + 1].nome) > 0)
+                {
                     cartas temp = tempFilteredCards[j];
                     tempFilteredCards[j] = tempFilteredCards[j + 1];
                     tempFilteredCards[j + 1] = temp;
@@ -365,7 +420,235 @@ void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filt
     *filteredCards = tempFilteredCards;
 }
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual){
+void editCartas(Fonte fonte, Vector2 mousePos, cartas *deck, int quantidadeCartas) {
+    static bool showModal = false;
+    static bool dropdownOpen = false;
+    static int selectedOption = 0;
+    static char inputText[50] = {0};
+    static int letterCount = 0;
+
+
+    // Definições constantes para posicionamento
+    const float MODAL_X = 100;
+    const float MODAL_Y = 200;
+    const float MODAL_WIDTH = 450;
+    const float MODAL_HEIGHT = 300;
+    const float DROPDOWN_WIDTH = 250;
+    const float DROPDOWN_HEIGHT = 30;
+
+    // Definição dos retângulos da interface
+    Rectangle modal = {MODAL_X, MODAL_Y, MODAL_WIDTH, MODAL_HEIGHT};
+    Rectangle inputTextBox = {MODAL_X + 20, MODAL_Y + 130, DROPDOWN_WIDTH, DROPDOWN_HEIGHT};
+    Rectangle dropdownBox = {MODAL_X + 20, MODAL_Y + 165, DROPDOWN_WIDTH, DROPDOWN_HEIGHT};
+    Rectangle confirmButton = {MODAL_X + 350, MODAL_Y + 130, 50, 30};
+    Rectangle cancelButton = {MODAL_X + 350, MODAL_Y + 170, 50, 30};
+    Rectangle closeButton = {MODAL_X + 425, MODAL_Y + 10, 20, 20};
+
+    const char *opcoes[6] = {
+        "Nome", "Ano de Construcao", "Altura",
+        "Visitas Anuais", "Importancia Historica", "Popularidade"};
+
+    // Atualizar estado com a variável externa
+    if (isModalOpen)
+    {
+        showModal = true;
+    }
+
+    // Processamento de entrada e interação
+    if (showModal)
+    {
+        // Fechar modal ao clicar no botão de fechar
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, closeButton))
+        {
+            showModal = false;
+            isModalOpen = false;
+            return;
+        }
+
+        // Lógica do dropdown
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            // Verifica se clicou na caixa do dropdown
+            if (CheckCollisionPointRec(mousePos, dropdownBox))
+            {
+                dropdownOpen = !dropdownOpen;
+            }
+            // Se o dropdown estiver aberto, verifica cliques nas opções
+            else if (dropdownOpen)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    Rectangle optionRect = {
+                        dropdownBox.x,
+                        dropdownBox.y + DROPDOWN_HEIGHT + (i * DROPDOWN_HEIGHT),
+                        DROPDOWN_WIDTH,
+                        DROPDOWN_HEIGHT};
+
+                    if (CheckCollisionPointRec(mousePos, optionRect))
+                    {
+                        selectedOption = i;
+                        dropdownOpen = false;
+                        break;
+                    }
+                }
+            }
+            // Se clicou fora do dropdown quando ele está aberto, fecha
+            else if (!CheckCollisionPointRec(mousePos, dropdownBox))
+            {
+                dropdownOpen = false;
+            }
+        }
+
+        // Processamento de entrada de texto
+        int key = GetCharPressed();
+        while (key > 0)
+        {
+            if ((key >= 32) && (key <= 125) && (letterCount < 49))
+            {
+                inputText[letterCount] = (char)key;
+                inputText[letterCount + 1] = '\0';
+                letterCount++;
+            }
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE) && letterCount > 0)
+        {
+            letterCount--;
+            inputText[letterCount] = '\0';
+        }
+
+         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            // Processamento dos botões de confirmação e cancelamento
+            if (CheckCollisionPointRec(mousePos, confirmButton))
+            {
+                if (selectedCardIndex >= 0)
+                {
+                    switch (selectedOption)
+                    {
+                    case 0:
+                        strcpy(deck[selectedCardIndex].nome, inputText);
+                        break;
+                    case 1:
+                        deck[selectedCardIndex].anoConstrucao = atoi(inputText);
+                        break;
+                    case 2:
+                        deck[selectedCardIndex].altura = atoi(inputText);
+                        break;
+                    case 3:
+                        deck[selectedCardIndex].visitasAnuais = atoi(inputText);
+                        break;
+                    case 4:
+                        deck[selectedCardIndex].importanciaHistorica = atoi(inputText);
+                        break;
+                    case 5:
+                        deck[selectedCardIndex].popularidade = atoi(inputText);
+                        break;
+                    }
+                }
+
+                showModal = false;
+                isModalOpen = false;
+                inputText[0] = '\0';
+                letterCount = 0;
+                salvarNoCSV(&deck, &quantidadeCartas); // Chamada corrigida
+            }
+             // Cancelar edição
+            else if (CheckCollisionPointRec(mousePos, cancelButton))
+            {
+                showModal = false;
+                isModalOpen = false;
+                inputText[0] = '\0';
+                letterCount = 0;
+            }
+        }
+    }
+
+    // Renderização
+    if (showModal)
+    {
+        // Background escuro
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
+
+        // Modal
+        DrawRectangleRounded(modal, 0.07f, 0, WHITE);
+        DrawRectangleRoundedLinesEx(modal, 0.07f, 0, 0.4f, (Color){175, 215, 248, 255});
+
+        // Título do modal
+        char bufferText[100];
+        sprintf(bufferText, "Editar %s", deck[selectedCardIndex].nome);
+        DrawTextEx(fonte.tituloTelas, bufferText,
+                   (Vector2){MODAL_X + 40, MODAL_Y + 10}, 20, 0, BLACK);
+
+        // Botão de fechar
+        DrawRectangleRec(closeButton, RED);
+        if (CheckCollisionPointRec(mousePos, closeButton))
+        {
+            DrawRectangleRec(closeButton, (Color){125, 14, 14, 255});
+        }
+        DrawTextEx(fonte.atributoCartas, "X",
+                   (Vector2){closeButton.x + 5, closeButton.y - 2}, 20, 0, WHITE);
+
+        // Caixa de entrada de texto
+        DrawRectangleRec(inputTextBox, WHITE);
+        DrawTextEx(fonte.atributoCartas, inputText,
+                   (Vector2){inputTextBox.x + 5, inputTextBox.y + 5}, 20, 0, BLACK);
+        DrawRectangleLinesEx(inputTextBox, 1, BLACK);
+
+        // Dropdown
+        DrawRectangleRec(dropdownBox, WHITE);
+        DrawTextEx(fonte.atributoCartas, opcoes[selectedOption],
+                   (Vector2){dropdownBox.x + 5, dropdownBox.y + 5}, 20, 0, BLACK);
+        DrawRectangleLinesEx(dropdownBox, 1, BLACK);
+
+        // Opções do dropdown quando aberto
+        if (dropdownOpen)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Rectangle optionRect = {
+                    dropdownBox.x,
+                    dropdownBox.y + DROPDOWN_HEIGHT + (i * DROPDOWN_HEIGHT),
+                    DROPDOWN_WIDTH,
+                    DROPDOWN_HEIGHT};
+
+                // Highlight da opção sob o mouse
+                Color bgColor = CheckCollisionPointRec(mousePos, optionRect) ? LIGHTGRAY : WHITE;
+
+                DrawRectangleRec(optionRect, bgColor);
+                DrawTextEx(fonte.atributoCartas, opcoes[i],
+                           (Vector2){optionRect.x + 5, optionRect.y + 5}, 20, 0, BLACK);
+                DrawRectangleLinesEx(optionRect, 1, BLACK);
+            }
+        }
+
+        // Botões de confirmação e cancelamento
+        // Confirm button
+        DrawRectangleRec(confirmButton, GREEN);
+        if (CheckCollisionPointRec(mousePos, confirmButton))
+        {
+            DrawRectangleRec(confirmButton, DARKGREEN);
+        }
+        DrawTextEx(fonte.atributoCartas, "Ok",
+                   (Vector2){confirmButton.x + 15, confirmButton.y + 5}, 20, 0, WHITE);
+
+        // Cancel button
+        DrawRectangleRec(cancelButton, RED);
+        if (CheckCollisionPointRec(mousePos, cancelButton))
+        {
+            DrawRectangleRec(cancelButton, MAROON);
+        }
+        DrawTextEx(fonte.atributoCartas, "X",
+                   (Vector2){cancelButton.x + 20, cancelButton.y + 5}, 20, 0, WHITE);
+    }
+
+    // Atualizar variável externa
+    isModalOpen = showModal;
+}
+
+void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual)
+{
     const int ALTURA = 600;
     const int LARGURA = 800;
     const int larguraCartaPadrao = 155;
@@ -412,8 +695,31 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
         offsetY = -alturaConteudo + ALTURA - 50;
 
     DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
-    BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
+    DrawRectangle(0, 28, LARGURA, 34, WHITE);
+    DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
+    DrawTextEx(fonte.tituloTelas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
 
+    Rectangle editBoxRec = {700, 33, 22, 22};
+    bool editBoxHovered = CheckCollisionPointRec(mousePos, editBoxRec);
+    if ((editActive && selectedCardIndex != -1) || (editBoxHovered && selectedCardIndex != -1 && !isModalOpen))
+    {
+        DrawTextureEx(texturas.editarON, (Vector2){700, 33}, 0, 1, WHITE);
+
+        if (editBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && selectedCardIndex != -1 && !isModalOpen)
+        {
+            editActive = !editActive;
+            if (editActive)
+            {
+                isModalOpen = true;
+            }
+        }
+    }
+    else if (selectedCardIndex != -1)
+    {
+        DrawTextureEx(texturas.editarOFF, (Vector2){700, 33}, 0, 1, WHITE);
+    }
+
+    BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
 
     cartas *filteredCards;
     int filteredCount;
@@ -457,73 +763,71 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
 
         bool isHovered = CheckCollisionPointRec(mousePos, cardRec);
         desenharCarta(filteredCards[i], posX, posY, molduras, fonte, escala, isHovered);
-        if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+
+        if (isModalOpen == 0)
         {
-            selectedCardIndex = i;
+            if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                selectedCardIndex = i;
+            }
         }
     }
     EndScissorMode();
 
-    
-    DrawRectangle(0, 28, LARGURA, 34, WHITE);
-    DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
-    DrawTextEx(fonte.tituloTelas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
+    if (selectedCardIndex >= 0)
+    {
+        if (editActive)
+            editCartas(fonte, mousePos, listaCartas, quantidadeCartas);
 
-    
+        if (!isModalOpen)
+            editActive = false;
+    }
+
     Rectangle letterButtonRec = {250, 32, 80, 24};
     Rectangle sortByButtonRec = {340, 32, 110, 24};
     Rectangle searchBoxRec = {470, 33, 200, 22};
-    Rectangle editBoxRec = {700, 33, 22, 22};
 
-
-    bool letterButtonHovered = CheckCollisionPointRec(mousePos, letterButtonRec);
-    bool sortByButtonHovered = CheckCollisionPointRec(mousePos, sortByButtonRec);
-    bool searchBoxHovered = CheckCollisionPointRec(mousePos, searchBoxRec);
-    bool editBoxHovered = CheckCollisionPointRec(mousePos, editBoxRec);
-
-    if (editActive == 1|| editBoxHovered == 1)
+    if (!isModalOpen)
     {
-        DrawTextureEx(texturas.editarON,(Vector2){700, 33},0,1,WHITE);
-    }else{
-        DrawTextureEx(texturas.editarOFF,(Vector2){700, 33},0,1,WHITE);
+        bool letterButtonHovered = CheckCollisionPointRec(mousePos, letterButtonRec);
+        bool sortByButtonHovered = CheckCollisionPointRec(mousePos, sortByButtonRec);
+        bool searchBoxHovered = CheckCollisionPointRec(mousePos, searchBoxRec);
+
+        if (searchBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            searchBoxActive = !searchBoxActive;
+
+        if (searchBoxActive)
+            updateSearchText();
+
+        DrawRectangleRec(letterButtonRec, letterButtonHovered ? LIGHTGRAY : WHITE);
+        DrawRectangleLinesEx(letterButtonRec, 1, (Color){175, 215, 248, 255});
+        Color letterColor = letterButtonHovered ? DARKGRAY : (Color){13, 35, 55, 255};
+        DrawTextEx(fonte.atributoCartas, "Filtrar", (Vector2){letterButtonRec.x + 5, letterButtonRec.y + 5}, 18, 0, letterColor);
+
+        DrawRectangleRec(sortByButtonRec, sortByButtonHovered ? LIGHTGRAY : WHITE);
+        DrawRectangleLinesEx(sortByButtonRec, 1, (Color){175, 215, 248, 255});
+        Color sortByColor = sortByButtonHovered ? DARKGRAY : (Color){13, 35, 55, 255};
+        DrawTextEx(fonte.atributoCartas, "Ordenar Por", (Vector2){sortByButtonRec.x + 5, sortByButtonRec.y + 5}, 18, 0, sortByColor);
+
+        drawSearchBox(searchBoxRec, fonte, searchBoxHovered, searchBoxActive);
     }
-    if (editBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-        editActive = !editActive;
-    }
-    
 
-
-    if (searchBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        searchBoxActive = !searchBoxActive;
-
-    if (searchBoxActive)
-        updateSearchText();
-
-//(Color){175, 215, 248, 255} : (Color){13, 35,	55, 255};
-
-    DrawRectangleRec(letterButtonRec, letterButtonHovered ? LIGHTGRAY : WHITE);
-    DrawRectangleLinesEx(letterButtonRec, 1, (Color){175, 215, 248, 255});
-    Color letterColor = letterButtonHovered ? DARKGRAY : (Color){13, 35,	55, 255};
-    DrawTextEx(fonte.atributoCartas, "Filtrar", (Vector2){letterButtonRec.x + 5, letterButtonRec.y + 5}, 18, 0, letterColor);
-
-    DrawRectangleRec(sortByButtonRec, sortByButtonHovered ? LIGHTGRAY : WHITE);
-    DrawRectangleLinesEx(sortByButtonRec, 1, (Color){175, 215, 248, 255});
-    Color sortByColor = sortByButtonHovered ? DARKGRAY : (Color){13, 35,	55, 255};
-    DrawTextEx(fonte.atributoCartas, "Ordenar Por", (Vector2){sortByButtonRec.x + 5, sortByButtonRec.y + 5}, 18, 0, sortByColor);
-
-    drawSearchBox(searchBoxRec, fonte, searchBoxHovered, searchBoxActive);
-
-    if (CheckCollisionPointRec(mousePos, letterButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if (!isModalOpen)
     {
-        showLetterDropdown = !showLetterDropdown;
-        showSortByDropdown = false; // Close the other dropdown
+        if (CheckCollisionPointRec(mousePos, letterButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            showLetterDropdown = !showLetterDropdown;
+            showSortByDropdown = false; // Close the other dropdown
+        }
     }
-    if (CheckCollisionPointRec(mousePos, sortByButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if (!isModalOpen)
     {
-        showSortByDropdown = !showSortByDropdown;
-        showLetterDropdown = false; // Close the other dropdown
+        if (CheckCollisionPointRec(mousePos, sortByButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            showSortByDropdown = !showSortByDropdown;
+            showLetterDropdown = false; // Close the other dropdown
+        }
     }
-
     // Draw the selected card if the state is DECKS
     if (*estadoAtual == DECKS && selectedCardIndex != -1)
     {
@@ -537,15 +841,18 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13))
     {
         DrawTexture(texturas.setaON, 33, 32, WHITE);
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (!isModalOpen)
         {
-            *estadoAtual = MENU;    // Returns to menu.
-            offsetY = 0;            // Reset scroll offset when exiting deck screen.
-            selectedCardIndex = -1; // unselect the card when exiting
-            searchText[0] = '\0';
-            selectedLetter = '\0';
-            sortByMethod = 0;
-            searchBoxActive = false;
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                *estadoAtual = MENU;    // Returns to menu.
+                offsetY = 0;            // Reset scroll offset when exiting deck screen.
+                selectedCardIndex = -1; // unselect the card when exiting
+                searchText[0] = '\0';
+                selectedLetter = '\0';
+                sortByMethod = 0;
+                searchBoxActive = false;
+            }
         }
     }
     else
@@ -554,4 +861,3 @@ void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras moldu
     }
     free(filteredCards);
 }
-

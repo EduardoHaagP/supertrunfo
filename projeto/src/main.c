@@ -6,6 +6,7 @@
 #include "raylib.h"
 
 
+
 const int LARGURA_TELA = 800;
 const int ALTURA_TELA = 600;
 
@@ -37,7 +38,6 @@ int main() {
         if (estadoAtual == MENU) {
             atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
         } else if (estadoAtual == DECKS) {
-              // Handle deck screen input and state changes
             if(IsKeyPressed(KEY_ESCAPE)){
                 estadoAtual = MENU;
              }
@@ -67,7 +67,6 @@ int main() {
     for (int i = 0; i < quantidadeCartas; i++) {
         UnloadTexture(deck[i].img);
     }
-
     unloadTexturas(textura);
     unloadFonte(fonte);
     unloadMolduras(molduras);
