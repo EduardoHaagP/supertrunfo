@@ -24,12 +24,12 @@ typedef struct {
     Texture2D TexturaFundo;
     Texture2D editarON;
     Texture2D editarOFF;
+    Texture2D trash;
 } Textura;
 
 typedef struct {
     Font tituloCartas;
     Font tituloTelas;
-    Font letraCarta;
     Font atributoCartas;
 } Fonte;
 
@@ -46,8 +46,6 @@ Molduras loadMolduras();
 void unloadMolduras(Molduras molduras);
 Textura loadTexturas();
 void unloadTexturas(Textura texturas);
-void loadIMGCartas(cartas *cartas, int quantidadeCartas); // loads texture into each card.
-
-
+void loadIMGCartas(cartas *cartas, int quantidadeCartas); 
 
 #endif

@@ -21,9 +21,9 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
 
 void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered);
 
-void editCartas(Fonte fonte, Vector2 mousePos, cartas *deck, int quantidadeCartas);
+void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCartas);
 
-void filterAndSortCards(cartas *listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount);
+void filterAndSortCards(cartas **listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount);
 void updateSearchText();
 
 void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive);
@@ -32,7 +32,7 @@ void drawSortByDropdown(Rectangle rect, Fonte fonte);
 
 void drawLetterDropdown(Rectangle rect, Fonte fonte);
 
-void desenharTelaDecks(cartas *listaCartas, int quantidadeCartas, Molduras molduras, Fonte fonte,Textura texturas, Estado *estadoAtual);
+void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual);
 
 
 #endif

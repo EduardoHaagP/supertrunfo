@@ -17,10 +17,11 @@ typedef struct {
 } cartas;
 
 // Declarações das funções
-void salvarNoCSV(cartas **deck, int *quantidadeCartas);
+void salvarNoCSV(cartas **deck, int quantidadeCartas);
 void inserirCartas(cartas **deck, int *quantidadeCartas);
-void excluirCartas(cartas **deck, int *quantidadeCartas);
+void excluirCartas(cartas **deck, int *quantidadeCartas, int indice);
 void alterarCartas(cartas **deck, int *quantidadeCartas);
+
 
 
 #endif // CARTAS_H

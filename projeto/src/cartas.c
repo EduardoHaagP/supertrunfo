@@ -152,7 +152,7 @@ void inserirCartas(cartas **deck, int *quantidadeCartas) {
             setbuf(stdin, NULL);
         }
     }
-    salvarNoCSV(deck, quantidadeCartas);
+    salvarNoCSV(deck, (*quantidadeCartas));
     return;
 }
     
@@ -304,86 +304,35 @@ void alterarCartas(cartas **deck, int *quantidadeCartas) {
             (*deck)[indice].popularidade = respostasAux;
             break;
         }
-        salvarNoCSV(deck, quantidadeCartas);
+        salvarNoCSV(deck, (*quantidadeCartas));
     }
     return;
 }
 
-void excluirCartas(cartas **deck, int *quantidadeCartas) {
-    int indice;
-    int quantidadeCartasAux = *quantidadeCartas - 1;
-    printf("Qual o Indice da carta que voce deseja excluir (0 - %i): ", quantidadeCartasAux);
-    scanf("%i", &indice);
-    setbuf(stdin, NULL);
-    while (indice > quantidadeCartasAux || indice < 0)
-    {
-        printf("O indice digitado nao corresponde a nenhuma carta!\n Digite novamente: ");
-        scanf("%i", &indice);
-        setbuf(stdin, NULL);
-    }
-    printf("%6s - %35s| %7s| %14s| %16s| %12s| %15s| %22s| %14s\n", "Indice", "Nome do Monumento", "Letra", "Super Trunfo", "Ano Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade");
-    if ((*deck)[indice].supertrunfo == 1)
-    {
-        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Sim",
-               (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
-               (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
-               (*deck)[indice].popularidade);
-    }
-    else if ((*deck)[indice].supertrunfo == 0)
-    {
-        printf("%6i - %35s| %7c| %14s| %16i| %12i| %15i| %22i| %14i\n", indice, (*deck)[indice].nome, (*deck)[indice].letra, "Nao",
-               (*deck)[indice].anoConstrucao, (*deck)[indice].altura,
-               (*deck)[indice].visitasAnuais, (*deck)[indice].importanciaHistorica,
-               (*deck)[indice].popularidade);
-    }
-    int resposta;
-    printf("E essa carta que voce deseja excluir?\n1-Sim\n2-nao\nDigite aqui: ");
-    scanf("%i", &resposta);
-    setbuf(stdin, NULL);
-    while (resposta != 1 && resposta != 0)
-    {
-        printf("Resposta invalida\nDigite novamente: ");
-        scanf("%i", &resposta);
-        setbuf(stdin, NULL);
-    }
-    if ((*quantidadeCartas) == 32)
-    {
-        printf("Sinto muito, mas nao posso excluir nenhuma carta.\nCaso queira excluir alguma carta adicione outra\n");
-        return;
-    }
-    else
-    {
-        for (int i = 0; i < (*quantidadeCartas); i++)
-        {
-            if (i == indice)
-            {
-                i++;
-            }
-            else if (i > indice)
-            {
-                strcpy((*deck)[i - 1].nome, (*deck)[i].nome);
-                (*deck)[i - 1].letra = (*deck)[i].letra;
-                (*deck)[i - 1].supertrunfo = (*deck)[i].supertrunfo;
-                (*deck)[i - 1].anoConstrucao = (*deck)[i].anoConstrucao;
-                (*deck)[i - 1].altura = (*deck)[i].altura;
-                (*deck)[i - 1].visitasAnuais = (*deck)[i].visitasAnuais;
-                (*deck)[i - 1].importanciaHistorica = (*deck)[i].importanciaHistorica;
-                (*deck)[i - 1].popularidade = (*deck)[i].popularidade;
-            }
-        }
-        if ((*deck)[indice].supertrunfo == 1)
-        {
-            (*deck)[0].supertrunfo = 1;
-        }
-        (*quantidadeCartas)--;
-        *deck = realloc(*deck, (*quantidadeCartas) * sizeof(cartas));
-    }
-
-    salvarNoCSV(deck, quantidadeCartas);
-    return; 
+void excluirCartas(cartas **deck, int *quantidadeCartas, int indice) {
+   // Verifica se o índice é válido
+   if (indice < 0 || indice >= *quantidadeCartas) {
+       return;
+   }
+   for (int i = indice; i < (*quantidadeCartas) - 1; i++) {
+       (*deck)[i] = (*deck)[i + 1];
+   }
+   (*quantidadeCartas)--;
+   *deck = realloc(*deck, (*quantidadeCartas) * sizeof(cartas));
+   bool temSuperTrunfo = false;
+   for (int i = 0; i < *quantidadeCartas; i++) {
+       if ((*deck)[i].supertrunfo == 1) {
+           temSuperTrunfo = true;
+           break;
+       }
+   }
+   if (!temSuperTrunfo && *quantidadeCartas > 0) {
+       (*deck)[0].supertrunfo = 1;
+   }
+   salvarNoCSV(deck, (*quantidadeCartas));
 }
 
-void salvarNoCSV(cartas **deck, int *quantidadeCartas) {
+void salvarNoCSV(cartas **deck, int quantidadeCartas) {
     FILE *arq = fopen("deck.csv", "w");
     if (arq == NULL) {
         printf("Erro ao abrir arquivo para salvar\n");
@@ -391,7 +340,7 @@ void salvarNoCSV(cartas **deck, int *quantidadeCartas) {
     }
 
     // Escreve os dados de cada carta
-    for (int i = 0; i < *quantidadeCartas; i++) {
+    for (int i = 0; i < quantidadeCartas; i++) {
         fprintf(arq, "%s,%c,%d,%d,%d,%d,%d,%d,%s\n",
                 (*deck)[i].nome,
                 (*deck)[i].letra,

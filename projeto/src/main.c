@@ -58,7 +58,7 @@ int main() {
             }
         } else if (estadoAtual == DECKS) {
              // Passar estado por referência para permitir alteração dentro da função
-            desenharTelaDecks(deck, quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+            desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
         }
 
         EndDrawing();

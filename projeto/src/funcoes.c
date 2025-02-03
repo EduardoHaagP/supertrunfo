@@ -88,10 +88,9 @@ cartas configuracoesIniciais(FILE *arq) {
 Fonte loadFonte()
 {
     Fonte fonte;
-    fonte.tituloCartas = LoadFont("./assets/font/Avenir-Black.ttf");
-    fonte.tituloTelas = LoadFont("./assets/font/Avenir-Book.ttf");
-    fonte.letraCarta = LoadFont("./assets/font/Avenir-Heavy.ttf");
-    fonte.atributoCartas = LoadFont("./assets/font/AvenirNextCyr-Medium.ttf");
+    fonte.tituloCartas = LoadFont("assets/font/Roboto_Condensed-ExtraBold.ttf");
+    fonte.tituloTelas = LoadFont("./assets/font/Poppins-Light.ttf");
+    fonte.atributoCartas = LoadFont("./assets/font/OpenSans-Regular.ttf");
     return fonte;
 }
 
@@ -99,7 +98,6 @@ void unloadFonte(Fonte font)
 {
     UnloadFont(font.tituloCartas);
     UnloadFont(font.tituloTelas);
-    UnloadFont(font.letraCarta);
     UnloadFont(font.atributoCartas);
     return;
 }
