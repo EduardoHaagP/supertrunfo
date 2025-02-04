@@ -1,4 +1,4 @@
-Torre Eiffel,A,1,1889,324,7000000,8,10,./assets/imagem/Torre Eiffel.png
+Torre Eiffel,A,0,1889,324,7000000,8,10,./assets/imagem/Torre Eiffel.png
 Estatua da Liberdade,A,0,1886,93,4500000,7,9,./assets/imagem/Estatua da Liberdade.png
 Coliseu,A,0,80,48,6000000,9,9,./assets/imagem/Coliseu.png
 Cristo Redentor,A,0,1931,38,2000000,6,9,./assets/imagem/Cristo Redentor.png
@@ -30,3 +30,4 @@ Templo de Kukulkan,D,0,800,30,2000000,8,7,./assets/imagem/Templo de Kukulkan.png
 Atomium,D,0,1958,102,600000,4,6,./assets/imagem/Atomium.png
 Chichen Itza,D,0,600,30,2600000,9,8,./assets/imagem/ChichenItza.png
 Hagia Sophia,D,0,537,55,3700000,9,8,./assets/imagem/Hagia Sophia.png
+teste,B,1,2005,12,123000000,10,10,

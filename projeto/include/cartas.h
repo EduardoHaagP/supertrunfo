@@ -18,7 +18,7 @@ typedef struct {
 
 // Declarações das funções
 void salvarNoCSV(cartas **deck, int quantidadeCartas);
-void inserirCartas(cartas **deck, int *quantidadeCartas);
+void inserirCartas(cartas **deck, cartas cartaNova,int *quantidadeCartas);
 void excluirCartas(cartas **deck, int *quantidadeCartas, int indice);
 void alterarCartas(cartas **deck, int *quantidadeCartas);
 

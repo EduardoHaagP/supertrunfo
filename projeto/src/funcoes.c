@@ -8,16 +8,7 @@
 #include "funcoes.h"
 #include "jogar.h"
 
-enum Opcoes
-{
-    SAIR = 0,
-    INSERIR,
-    LISTAR,
-    PESQUISAR,
-    ALTERAR,
-    EXCLUIR,
-};
-//"deck.csv"
+
 
 // Implementação das funções
 int contarcartas(FILE *arq) {
@@ -156,21 +147,22 @@ void unloadMolduras(Molduras molduras)
 
 Textura loadTexturas(){
     Textura texturas;
-    texturas.setaOFF = LoadTexture("./assets/textura/setasaidaOFF.png");
-    texturas.setaON = LoadTexture("./assets/textura/setasaidaON.png");
-    texturas.TexturaFundo = LoadTexture("./assets/textura/vector.png");
-    texturas.editarOFF = LoadTexture("./assets/textura/editarOFF.png");
-    texturas.editarON = LoadTexture("./assets/textura/editarON.png");
-    
+    texturas.seta = LoadTexture("assets/textura/setasaida.png");
+    texturas.TexturaFundo = LoadTexture("assets/textura/vector.png");
+    texturas.editar = LoadTexture("assets/textura/editar.png");
+    texturas.tCan = LoadTexture("assets/textura/tCan.png");
+    texturas.add = LoadTexture("assets/textura/add.png");
+    texturas.atencao = LoadTexture("assets/textura/attentionCircle.png");
     return texturas;
-    
 }
-
 void unloadTexturas(Textura texturas)
 {
-    UnloadTexture(texturas.setaOFF);
-    UnloadTexture(texturas.setaON);
+    UnloadTexture(texturas.seta);
     UnloadTexture(texturas.TexturaFundo);
+    UnloadTexture(texturas.editar);
+    UnloadTexture(texturas.tCan);
+    UnloadTexture(texturas.add);
+    UnloadTexture(texturas.atencao);
     return;
 }
 

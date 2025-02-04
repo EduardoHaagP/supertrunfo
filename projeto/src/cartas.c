@@ -15,119 +15,26 @@ enum Opcoes
     POPULARIDADE
 };
 
-void inserirCartas(cartas **deck, int *quantidadeCartas) {
-    int maisUmaCarta = 0;
-    printf("Voce deseja adicionar uma carta?\n1 - Sim\n0 - Nao\nDigite aqui: ");
-    scanf("%i", &maisUmaCarta);
-    setbuf(stdin, NULL);
-
-    while (maisUmaCarta != 0 && maisUmaCarta != 1)
-    {
-        printf("Valor invalido!\nDigite novamente: ");
-        scanf("%i", &maisUmaCarta);
-        setbuf(stdin, NULL);
-    }
-
+void inserirCartas(cartas **deck, cartas cartaNova,int *quantidadeCartas) {
     FILE *arq = NULL;
 
-    if (maisUmaCarta == 1)
-    {
-        arq = fopen("deck.csv", "w"); // Abre para escrita no inicio da função.
+
+        arq = fopen("deck.csv", "w");
         if (arq == NULL)
         {
             printf("Erro na abertura do arquivo\n");
             exit(1);
         }
-    }
-
-    while (maisUmaCarta == 1)
-    {
-        cartas carta;
-
-        printf("Qual o nome do monumento que deseja adicionar: ");
-        fgets(carta.nome, sizeof(carta.nome), stdin);
-        carta.nome[strcspn(carta.nome, "\n")] = '\0';
-        setbuf(stdin, NULL);
-
-        int respostaLetra;
-        printf("Qual letra voce deseja que essa carta possua:1 - A\n2 - B\n3 - C\n4 - D\nDigite aqui: ");
-        scanf("%i", &respostaLetra);
-        setbuf(stdin, NULL);
-        if (respostaLetra == 1)
+        if (cartaNova.supertrunfo == 1)
         {
-            carta.letra = 'A';
-        }
-        else if (respostaLetra == 2)
-        {
-            carta.letra = 'B';
-        }
-        else if (respostaLetra == 3)
-        {
-            carta.letra = 'C';
-        }
-        else if (respostaLetra == 4)
-        {
-            carta.letra = 'D';
-        }
-
-        int resposta;
-        printf("Deseja que ele se torne o super trunfo\n1 - sim\n0 - nao\nDigite aqui: ");
-        scanf("%i", &resposta);
-        setbuf(stdin, NULL);
-        while (resposta != 1 && resposta != 0)
-        {
-            printf("Resposta invalida!\nDigite novamente: ");
-            scanf("%i", &resposta);
-            setbuf(stdin, NULL);
-        }
-
-        if (resposta == 1)
-        {
-            // Desmarca todos os super trunfos no deck
             for (int i = 0; i < (*quantidadeCartas); i++)
             {
                 (*deck)[i].supertrunfo = 0;
             }
-            carta.supertrunfo = 1;
+            
         }
-        else
-        {
-            carta.supertrunfo = 0;
-        }
+        
 
-        printf("Em que ano ele terminou de ser construido (em caso de ser antes de cristo digite o valor negativo): ");
-        scanf("%i", &carta.anoConstrucao);
-        setbuf(stdin, NULL);
-
-        printf("Qual a altura desse monumento: ");
-        scanf("%i", &carta.altura);
-        setbuf(stdin, NULL);
-
-        printf("Quantas visitas anuais esse monumento recebe em media: ");
-        scanf("%i", &carta.visitasAnuais);
-        setbuf(stdin, NULL);
-
-        printf("De 0 a 10 qual a sua importancia historica: ");
-        scanf("%i", &resposta);
-        setbuf(stdin, NULL);
-        while (resposta > 10 || resposta < 0)
-        {
-            printf("Resposta invalida!\nDigite novamente: ");
-            scanf("%i", &resposta);
-            setbuf(stdin, NULL);
-        }
-        carta.importanciaHistorica = resposta;
-
-        printf("De 0 a 10 qual a sua popularidade: ");
-        scanf("%i", &resposta);
-        setbuf(stdin, NULL);
-        while (resposta > 10 || resposta < 0)
-        {
-            printf("Resposta invalida!\nDigite novamente: ");
-            scanf("%i", &resposta);
-            setbuf(stdin, NULL);
-        }
-        carta.popularidade = resposta;
 
         *deck = realloc(*deck, (*quantidadeCartas + 1) * sizeof(cartas));
         if (*deck == NULL)
@@ -139,19 +46,9 @@ void inserirCartas(cartas **deck, int *quantidadeCartas) {
             }
             exit(1);
         }
-        (*deck)[*quantidadeCartas] = carta;
+        (*deck)[*quantidadeCartas] = cartaNova;
         (*quantidadeCartas)++;
-
-        printf("Voce deseja adicionar mais uma carta?\n1 - Sim\n0 - Nao\nDigite aqui: ");
-        scanf("%i", &maisUmaCarta);
-        setbuf(stdin, NULL);
-        while (maisUmaCarta != 0 && maisUmaCarta != 1)
-        {
-            printf("Valor invalido!\nDigite novamente: ");
-            scanf("%i", &maisUmaCarta);
-            setbuf(stdin, NULL);
-        }
-    }
+    
     salvarNoCSV(deck, (*quantidadeCartas));
     return;
 }

@@ -19,12 +19,12 @@ typedef struct {
 } Molduras;
 
 typedef struct {
-    Texture2D setaON;
-    Texture2D setaOFF;
+    Texture2D seta;
     Texture2D TexturaFundo;
-    Texture2D editarON;
-    Texture2D editarOFF;
-    Texture2D trash;
+    Texture2D editar;
+    Texture2D tCan;
+    Texture2D add;
+    Texture2D atencao;
 } Textura;
 
 typedef struct {

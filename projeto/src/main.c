@@ -5,8 +5,6 @@
 #include "visual.h"
 #include "raylib.h"
 
-
-
 const int LARGURA_TELA = 800;
 const int ALTURA_TELA = 600;
 
@@ -28,21 +26,31 @@ int main() {
 
     inicializarJogo(LARGURA_TELA, ALTURA_TELA, "Menu com Raylib");
 
-
     Molduras molduras = loadMolduras();
     loadIMGCartas(deck, quantidadeCartas);
     Fonte fonte = loadFonte();
     Textura textura = loadTexturas();
-    while (!WindowShouldClose()) {
-        // Atualização lógica baseada no estado
+
+
+    while (estadoAtual != SAIR) {
+
+        // Atualização lógica com base no estado
         if (estadoAtual == MENU) {
             atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
         } else if (estadoAtual == DECKS) {
-            if(IsKeyPressed(KEY_ESCAPE)){
+            desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                printf("ESC Pressed in DECKS, changing state to MENU\n");
                 estadoAtual = MENU;
-             }
+            }
+        } else if (estadoAtual == JOGO) {
+            desenharTelaJogo();
+             if (IsKeyPressed(KEY_ESCAPE)) {
+                printf("ESC Pressed in JOGO, changing state to MENU\n");
+                estadoAtual = MENU;
+            }
         }
-        
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -51,19 +59,14 @@ int main() {
             desenharMenu(opcaoSelecionada, botoes, opcoes);
         } else if (estadoAtual == JOGO) {
             desenharTelaJogo();
-
-            // Verificar se ESC retorna ao menu
-            if (IsKeyPressed(KEY_ESCAPE)) {
-                estadoAtual = MENU;
-            }
         } else if (estadoAtual == DECKS) {
-             // Passar estado por referência para permitir alteração dentro da função
             desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
         }
 
         EndDrawing();
     }
 
+    // Descarregar recursos antes de fechar o jogo
     for (int i = 0; i < quantidadeCartas; i++) {
         UnloadTexture(deck[i].img);
     }
@@ -71,6 +74,7 @@ int main() {
     unloadFonte(fonte);
     unloadMolduras(molduras);
     free(deck);
+
     CloseWindow();
     return 0;
 }

@@ -6,9 +6,25 @@
 
 
 
+typedef enum {
+    MENU,
+    JOGO,
+    DECKS,
+    SAIR 
+} Estado;
 
-
-typedef enum { MENU = 0, JOGO, DECKS } Estado;
+typedef enum{
+    NENHUM = -1,
+    NOME,
+    ANOCONSTRUCAO,
+    ALTURA,
+    VISITASANUAIS,
+    IMPORTANCIAHISTORICA,
+    POPULARIDADE,
+    LETRA,
+    SUPERTRUNFO,
+    ARQIMG
+}OpcaOSelecionada;
 
 
 void inicializarJogo(int largura, int altura, const char *titulo);
@@ -21,6 +37,8 @@ void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fon
 
 void desenharCarta(cartas carta, int x, int y, Molduras molduras, Fonte fonte, float escala, bool isHovered);
 
+void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCartas);
+void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, int *quantidadeCartas);
 void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCartas);
 
 void filterAndSortCards(cartas **listaCartas, int quantidadeCartas, cartas **filteredCards, int *filteredCount);

@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 
+
+
 // Global variable to store the scroll offset for deck screen
 static int offsetY = 0;
 // Global variable to store the index of the currently selected card
@@ -18,14 +20,17 @@ static int sortByMethod = 0; // 0 = Evolution Chain, 1 = Alphabetical
 static bool searchBoxActive = false;
 static bool editActive = false;
 static bool delActive = false;
-static bool isModalOpen = false;
-static bool isPopUPOpen = false;
+static bool addActive = false;
+static bool isEditModalOpen = false;
+static bool isDelModalOpen = false;
+static bool isAddModalOpen = false;
+static bool isAnyModalOpen = false;
 
-static float escalaPadrao = 155.37 / 204;  // Escala padrão para as cartas na lista.
-static float escalaReduzida = 115.0 / 204; // Escala reduzida para cartas não selecionadas
-static float escalaGrande = 6800 / 5179;   // escala para carta em destaque
-static int scrollSpeedPadrao = 20;         // velocidade do scroll em tamanho padrão
-static int scrollSpeedReduzido = 15;       // velocidade do scroll em tamanho reduzido
+static float escalaPadrao = 155.37 / 204;
+static float escalaReduzida = 115.0 / 204;
+static float escalaGrande = 6800 / 5179;
+static int scrollSpeedPadrao = 20;
+static int scrollSpeedReduzido = 15;
 static double lastCursorBlinkTime;
 
 void inicializarJogo(int largura, int altura, const char *titulo)
@@ -60,10 +65,9 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
                     *estadoAtual = JOGO;
                 else if (i == 1)
                     *estadoAtual = DECKS;
-                else if (i == 2)
+                else if (i == 2) // Opção Sair
                 {
-                    CloseWindow();
-                    exit(0);
+                    *estadoAtual = SAIR; // Altera para estado de saída
                 }
             }
         }
@@ -75,10 +79,9 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
             *estadoAtual = JOGO;
         else if (*opcaoSelecionada == 1)
             *estadoAtual = DECKS;
-        else if (*opcaoSelecionada == 2)
+        else if (*opcaoSelecionada == 2) // Opção Sair
         {
-            CloseWindow();
-            exit(0);
+            *estadoAtual = SAIR; // Altera para estado de saída
         }
     }
 }
@@ -283,17 +286,17 @@ void drawLetterDropdown(Rectangle rect, Fonte fonte)
     if (showLetterDropdown)
     {
         DrawRectangleRec(rect, WHITE);
-        DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
+        DrawRectangleLinesEx(rect, 0.8f, AZULCLARO);
         const char *letters[] = {"Todas", "A", "B", "C", "D"};
 
         for (int i = 0; i < 5; i++)
         {
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = (Color){13, 35, 55, 255};
+            Color cor = AZULESCURO;
             if (selectedLetter == letters[i][0] && i > 0)
-                cor = (Color){175, 215, 248, 255};
+                cor = AZULCLARO;
             else if (selectedLetter == '\0' && i == 0)
-                cor = (Color){175, 215, 248, 255};
+                cor = AZULCLARO;
             DrawTextEx(fonte.atributoCartas, letters[i], (Vector2){itemRect.x + 10, itemRect.y + 5}, 18, 0, cor);
             if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -313,13 +316,13 @@ void drawSortByDropdown(Rectangle rect, Fonte fonte)
     if (showSortByDropdown)
     {
         DrawRectangleRec(rect, WHITE);
-        DrawRectangleLinesEx(rect, 0.8f, (Color){175, 215, 248, 255});
+        DrawRectangleLinesEx(rect, 0.8f, AZULCLARO);
         const char *sortOptions[] = {"Letra da Carta", "Alfabetico"};
 
         for (int i = 0; i < 2; i++)
         { // Only two sorting options now
             Rectangle itemRect = {rect.x, rect.y + i * 30, rect.width, 30};
-            Color cor = (sortByMethod == i) ? (Color){175, 215, 248, 255} : (Color){13, 35, 55, 255};
+            Color cor = (sortByMethod == i) ? AZULCLARO : AZULESCURO;
             DrawTextEx(fonte.atributoCartas, sortOptions[i], (Vector2){itemRect.x + 10, itemRect.y + 5}, 18, 0, cor);
             if (CheckCollisionPointRec(GetMousePosition(), itemRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -335,7 +338,7 @@ void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
 {
 
     DrawRectangleRounded(rect, 0.7f, 0, WHITE);
-    DrawRectangleRoundedLinesEx(rect, 0.3f, 0, 0.4f, (Color){175, 215, 248, 255});
+    DrawRectangleRoundedLinesEx(rect, 0.3f, 0, 0.4f, AZULCLARO);
     Color textColor = isHovered ? DARKGRAY : BLACK;
 
     DrawTextEx(fonte.atributoCartas, searchText, (Vector2){rect.x + 5, rect.y + 5}, 18, 0, textColor);
@@ -345,7 +348,7 @@ void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
         double currentTime = GetTime();
         if ((currentTime - lastCursorBlinkTime) > 0.5)
         {
-            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){13, 35, 55, 255});
+            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){ 70, 130, 180, 255 });
 
             if ((currentTime - lastCursorBlinkTime) > 1.0)
                 lastCursorBlinkTime = currentTime;
@@ -424,7 +427,7 @@ void filterAndSortCards(cartas **listaCartas, int quantidadeCartas, cartas **fil
 
 void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCartas)
 {
-    static bool showModal = false;
+    static bool showEditModal = false;
     static bool dropdownOpen = false;
     static int selectedOption = 0;
     static char inputText[50] = {0};
@@ -451,19 +454,19 @@ void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCart
         "Visitas Anuais", "Importancia Historica", "Popularidade"};
 
     // Atualizar estado com a variável externa
-    if (isModalOpen)
+    if (isEditModalOpen)
     {
-        showModal = true;
+        showEditModal = true;
     }
 
     // Processamento de entrada e interação
-    if (showModal)
+    if (showEditModal)
     {
         // Fechar modal ao clicar no botão de fechar
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, closeButton))
         {
-            showModal = false;
-            isModalOpen = false;
+            showEditModal = false;
+            isEditModalOpen = false;
             return;
         }
 
@@ -550,8 +553,8 @@ void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCart
                     }
                 }
 
-                showModal = false;
-                isModalOpen = false;
+                showEditModal = false;
+                isEditModalOpen = false;
                 inputText[0] = '\0';
                 letterCount = 0;
                 salvarNoCSV(deck, quantidadeCartas); // Chamada corrigida
@@ -559,8 +562,8 @@ void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCart
             // Cancelar edição
             else if (CheckCollisionPointRec(mousePos, cancelButton))
             {
-                showModal = false;
-                isModalOpen = false;
+                showEditModal = false;
+                isEditModalOpen = false;
                 inputText[0] = '\0';
                 letterCount = 0;
             }
@@ -568,14 +571,14 @@ void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCart
     }
 
     // Renderização
-    if (showModal)
+    if (showEditModal)
     {
         // Background escuro
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
 
         // Modal
         DrawRectangleRounded(modal, 0.07f, 0, WHITE);
-        DrawRectangleRoundedLinesEx(modal, 0.07f, 0, 0.4f, (Color){175, 215, 248, 255});
+        DrawRectangleRoundedLinesEx(modal, 0.07f, 0, 0.4f, AZULCLARO);
 
         // Título do modal
         char bufferText[100];
@@ -646,36 +649,36 @@ void editCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int quantidadeCart
     }
 
     // Atualizar variável externa
-    isModalOpen = showModal;
+    isEditModalOpen = showEditModal;
 }
 
 void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCartas)
 {
-    static bool showPopUP = false;
+    static bool showDelModal = false;
 
-    const float POPUP_X = 240;
-    const float POPUP_Y = 220;
-    const float POPUP_WIDTH = 280;
-    const float POPUP_HEIGHT = 160;
+    const float delModalX = 240;
+    const float delModalY = 220;
+    const float delModalWidth = 280;
+    const float delModalHeight = 160;
 
-    Rectangle delPopUP = {POPUP_X, POPUP_Y, POPUP_WIDTH, POPUP_HEIGHT};
+    Rectangle delModal = {delModalX, delModalY, delModalWidth, delModalHeight};
     Rectangle confirmButton = {258, 337, 244, 23};
     Rectangle cancelDelButton = {258, 337, 113, 23};
     Rectangle confirmDelButton = {389, 337, 113, 23};
 
-    if (isPopUPOpen)
+    if (isDelModalOpen)
     {
-        showPopUP = true;
+        showDelModal = true;
     }
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
 
-    if (showPopUP)
+    if (showDelModal)
     {
-        DrawRectangleRounded(delPopUP, 0.03f, 1, WHITE);
+        DrawRectangleRounded(delModal, 0.03f, 1, WHITE);
 
         if ((*quantidadeCartas) <= 32)
         {
-            DrawTextEx(fonte.tituloTelas, "Nao e possavel deletar cartas", (Vector2){298, 280}, 18, 0, (Color){93, 128, 156, 255});
+            DrawTextEx(fonte.tituloCartas, "Nao e possivel deletar cartas", (Vector2){298, 280}, 10, 0, (Color){93, 128, 156, 255});
             DrawTextEx(fonte.atributoCartas, "O jogo nao permite uma quantidade menor que 32", (Vector2){258, 303}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
             DrawTextEx(fonte.atributoCartas, "cartas", (Vector2){366, 311}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
 
@@ -684,22 +687,22 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmButton))
             {
-                showPopUP = false; // Fecha o modal
+                showDelModal = false; // Fecha o modal
             }
         }
         else
         {
-            DrawTextEx(fonte.tituloTelas, "Tem certeza que deseja excluir essa carta?", (Vector2){258, 280}, 18, 0, (Color){93, 128, 156, 255});
+            DrawTextEx(fonte.tituloCartas, "Tem certeza que deseja excluir essa carta?", (Vector2){258, 280}, 18, 0, (Color){93, 128, 156, 255});
             DrawTextEx(fonte.atributoCartas, "Ao excluir essa carta vc tem a chance de alterar a", (Vector2){258, 300}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
             DrawTextEx(fonte.atributoCartas, "identidade do jogo e ao excluir ela nao ha volta", (Vector2){267, 314}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
 
             DrawRectangleRounded(cancelDelButton, 0.1f, 1, WHITE);
             DrawRectangleRoundedLines(cancelDelButton, 0.1f, 1,
-                                      CheckCollisionPointRec(mousePos, cancelDelButton) ? (Color){13, 35, 55, 255} : (Color){93, 128, 156, 255});
+                                      CheckCollisionPointRec(mousePos, cancelDelButton) ? (Color){ 70, 130, 180, 255 } : (Color){93, 128, 156, 255});
             DrawTextEx(fonte.tituloTelas, "Cancelar", (Vector2){264, 340}, 20, 0, WHITE);
 
             CheckCollisionPointRec(mousePos, confirmDelButton)
-                ? DrawRectangleRounded(confirmDelButton, 0.1f, 1, (Color){13, 35, 55, 255})
+                ? DrawRectangleRounded(confirmDelButton, 0.1f, 1, (Color){ 70, 130, 180, 255 })
                 : DrawRectangleRounded(confirmDelButton, 0.1f, 1, (Color){93, 128, 156, 255});
             DrawTextEx(fonte.tituloTelas, "Confirmar", (Vector2){394, 340}, 20, 0, WHITE);
 
@@ -745,21 +748,258 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
 
                 salvarNoCSV(deck, (*quantidadeCartas));
                 selectedCardIndex = -1;
-                showPopUP = false;
+                showDelModal = false;
             }
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, cancelDelButton))
             {
-                showPopUP = false;
+                showDelModal = false;
             }
         }
     }
 
-    isPopUPOpen = showPopUP;
+    isDelModalOpen = showDelModal;
+}
+
+void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, int *quantidadeCartas) {
+    // --- Static Variables ---
+    static bool showAddModal = false;
+    static cartas auxdeck = {0}; // Initialize
+    static char auxInputs[6][50] = {{0}};
+    static int selectedInputIndex = -1;
+
+    // Dropdown
+    static bool isDropdownOpen = false;
+    static int selectedLetraIndex = 0;
+    static double lastDropdownToggleTime = 0.0;
+    const double toggleDebounceDelay = 0.1; // Adjust as needed
+    const char letras[4][2] = {"A", "B", "C", "D"};
+
+    // Other Static
+    static bool erroPreenchimento = false;
+
+    // Super Trunfo Checkbox static variables
+    static bool supertrunfo = false;  // <---- HERE
+    static double lastSuperTrunfoToggleTime = 0.0; // HERE
+    const double superTrunfoDebounceDelay = 0.1;  //HERE
+
+    const char opcoes[6][25] = {"Nome", "Ano de Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade"};
+
+
+    const float addModalX = 100;
+    const float addModalY = 127;
+    const float addModalWidth = 600;
+    const float addModalHeight = 345;
+    const float inputRecWidth = 115;
+    const float inputRecHeight = 23;
+
+    Rectangle addModal = {addModalX, addModalY, addModalWidth, addModalHeight};
+    Rectangle cancelAddButton = {152, 389, 113, 23};
+    Rectangle confirmAddButton = {284, 389, 113, 23};
+    Rectangle checkbox = {286, 313, 23, 23};
+    Rectangle dropdown = {152, 313, inputRecWidth, inputRecHeight};
+
+    Rectangle inputRecs[6];
+    inputRecs[NOME] = (Rectangle){152, 178, inputRecWidth, inputRecHeight};
+    inputRecs[ANOCONSTRUCAO] = (Rectangle){286, 178, inputRecWidth, inputRecHeight};
+    inputRecs[ALTURA] = (Rectangle){152, 223, inputRecWidth, inputRecHeight};
+    inputRecs[VISITASANUAIS] = (Rectangle){286, 223, inputRecWidth, inputRecHeight};
+    inputRecs[IMPORTANCIAHISTORICA] = (Rectangle){152, 268, inputRecWidth, inputRecHeight};
+    inputRecs[POPULARIDADE] = (Rectangle){286, 268, inputRecWidth, inputRecHeight};
+
+
+    if (isAddModalOpen) {
+        showAddModal = true;
+    }
+
+    if(showAddModal) DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
+
+    if (showAddModal) {
+
+        DrawRectangleRounded(addModal, 0.03f, 1, WHITE);
+        DrawRectangleRoundedLines(addModal, 0.03f, 1, (Color){53, 114, 151, 255});
+
+
+
+        DrawRectangleRec(checkbox, WHITE); 
+
+       
+        Color outlineColor = AZULCLARO; 
+        if (CheckCollisionPointRec(mousePos, checkbox)) {
+            outlineColor = (supertrunfo ? (Color){70, 130, 180, 255} : AZULCLARO); 
+        }
+        DrawRectangleLinesEx(checkbox, 1, outlineColor); 
+
+        double currentTime = GetTime();
+        if (CheckCollisionPointRec(mousePos, checkbox) &&
+            IsMouseButtonReleased(MOUSE_LEFT_BUTTON) &&
+            (currentTime - lastSuperTrunfoToggleTime > superTrunfoDebounceDelay)) {
+
+            supertrunfo = !supertrunfo; 
+            lastSuperTrunfoToggleTime = currentTime; 
+        }
+
+        
+        if (supertrunfo) {
+            
+            DrawTextEx(fonte.tituloCartas,"X", (Vector2){ checkbox.x + 6, checkbox.y + 2}, 20, 0 ,(Color){70, 130, 180, 255}); // Steel blue
+        }
+
+
+        DrawRectangleRounded(dropdown, 0.1, 1, WHITE);
+        DrawRectangleRoundedLines(dropdown, 0.1, 1, AZULCLARO);
+        DrawText(letras[selectedLetraIndex], dropdown.x + 10, dropdown.y + 2, 20, BLACK); 
+
+
+        if (CheckCollisionPointRec(mousePos, dropdown)) {
+            double currentTime = GetTime();
+            if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && (currentTime - lastDropdownToggleTime > toggleDebounceDelay)) {
+                isDropdownOpen = !isDropdownOpen;
+                lastDropdownToggleTime = currentTime;
+                printf("Dropdown toggled: %d\n", isDropdownOpen);
+            }
+        }
+
+        if (isDropdownOpen) {
+            Rectangle dropdownArea = {dropdown.x, dropdown.y, dropdown.width, dropdown.height * 5 }; // Include all options
+            for (int i = 0; i < 4; i++) {
+                Rectangle optionRect = {dropdown.x, dropdown.y + (i + 1) * dropdown.height, dropdown.width, dropdown.height};
+                DrawRectangleRounded(optionRect, 0.1f, 1, WHITE);
+                DrawRectangleRoundedLines(optionRect, 0.1f, 1, AZULCLARO);
+                DrawText(letras[i], optionRect.x + 10, optionRect.y + 2, 20, BLACK);
+
+                if (CheckCollisionPointRec(mousePos, optionRect) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+                    selectedLetraIndex = i;
+                    isDropdownOpen = false;
+                    printf("Selected letter: %s\n", letras[selectedLetraIndex]);
+                }
+            }
+
+
+            if (!CheckCollisionPointRec(mousePos, dropdownArea) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                isDropdownOpen = false;
+            }
+        }
+
+
+        for (int i = 0; i < 6; i++) {
+            DrawTextEx(fonte.atributoCartas, opcoes[i], (Vector2){inputRecs[i].x, inputRecs[i].y - 14}, 14, 1, BLACK);
+            DrawRectangleRounded(inputRecs[i], 0.1, 1, WHITE);
+            DrawRectangleRoundedLines(inputRecs[i], 0.1, 1, (selectedInputIndex == i) ? (Color){70, 130, 180, 255} : AZULCLARO);
+
+            DrawTextEx(fonte.atributoCartas,(i == NOME) ? auxdeck.nome : auxInputs[i],(Vector2){ inputRecs[i].x + 5, inputRecs[i].y + 5}, 18, 0, BLACK);
+
+            if (CheckCollisionPointRec(mousePos, inputRecs[i]) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                selectedInputIndex = i;
+            }
+        }
+
+        int key = GetCharPressed();
+        if (selectedInputIndex != -1 && key > 0) {
+            size_t inputLen = strlen((selectedInputIndex == NOME) ? auxdeck.nome : auxInputs[selectedInputIndex]);
+
+            if (inputLen < 49) {
+                if (selectedInputIndex == NOME) {
+                    auxdeck.nome[inputLen] = (char)key;
+                    auxdeck.nome[inputLen + 1] = '\0';
+                } else if (key >= '0' && key <= '9') {
+                    auxInputs[selectedInputIndex][inputLen] = (char)key;
+                    auxInputs[selectedInputIndex][inputLen + 1] = '\0';
+                }
+            }
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE) && selectedInputIndex != -1) {
+            size_t inputLen = strlen((selectedInputIndex == NOME) ? auxdeck.nome : auxInputs[selectedInputIndex]);
+
+            if (inputLen > 0) {
+                if (selectedInputIndex == NOME)
+                    auxdeck.nome[inputLen - 1] = '\0';
+                else
+                    auxInputs[selectedInputIndex][inputLen - 1] = '\0';
+            }
+        }
+        desenharCarta(auxdeck, 487, 177, molduras, fonte, 140 / 204, false);
+
+        DrawRectangleRounded(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? WHITE : AZULCLARO);
+        DrawRectangleRoundedLines(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? AZULCLARO : WHITE);
+        DrawTextEx(fonte.atributoCartas,"CONFIRMAR",(Vector2){confirmAddButton.x+28,confirmAddButton.y+7},18,0,BLACK);
+
+        
+        DrawRectangleRounded(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? AZULCLARO : WHITE);
+        DrawRectangleRoundedLines(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? WHITE : AZULCLARO);
+        DrawTextEx(fonte.atributoCartas,"CANCELAR",(Vector2){cancelAddButton.x+28,cancelAddButton.y+7},18,0,BLACK);
+
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmAddButton)) {
+            auxdeck.anoConstrucao = atoi(auxInputs[ANOCONSTRUCAO]);
+            auxdeck.altura = atoi(auxInputs[ALTURA]);
+            auxdeck.visitasAnuais = atoi(auxInputs[VISITASANUAIS]);
+            auxdeck.importanciaHistorica = atoi(auxInputs[IMPORTANCIAHISTORICA]);
+            auxdeck.popularidade = atoi(auxInputs[POPULARIDADE]);
+
+            if (strlen(auxdeck.nome) > 0 &&
+                auxdeck.anoConstrucao > 0 &&
+                auxdeck.altura > 0 &&
+                auxdeck.visitasAnuais > 0 &&
+                auxdeck.importanciaHistorica > 0 &&
+                auxdeck.popularidade > 0) {
+
+                switch (selectedLetraIndex) {
+                case 0: auxdeck.letra = 'A'; break;
+                case 1: auxdeck.letra = 'B'; break;
+                case 2: auxdeck.letra = 'C'; break;
+                case 3: auxdeck.letra = 'D'; break;
+                default: break;
+                }
+
+                if (supertrunfo) {
+                    auxdeck.supertrunfo = 1;
+                } else {
+                    auxdeck.supertrunfo = 0;
+                }
+
+                inserirCartas(deck, auxdeck, quantidadeCartas); 
+
+                showAddModal = false;
+                erroPreenchimento = false;
+                 memset(&auxdeck, 0, sizeof(auxdeck)); 
+                memset(auxInputs, 0, sizeof(auxInputs)); 
+                selectedInputIndex = -1;
+                isDropdownOpen = false;
+                selectedLetraIndex = 0;
+                supertrunfo = false;
+
+            } else {
+                erroPreenchimento = true;
+            }
+        }
+
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, cancelAddButton)) {
+             showAddModal = false;
+             erroPreenchimento = false;
+                memset(&auxdeck, 0, sizeof(auxdeck)); 
+                memset(auxInputs, 0, sizeof(auxInputs)); 
+                selectedInputIndex = -1;
+                isDropdownOpen = false;
+                selectedLetraIndex = 0;
+                supertrunfo = false;
+        }
+
+
+        if (erroPreenchimento) {
+            DrawTextEx(fonte.tituloTelas, "Preencha todos os campos antes de confirmar!", (Vector2){172, 132}, 18, 0, RED);
+        }
+    }
+
+
+    isAddModalOpen = showAddModal;
 }
 
 void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras molduras, Fonte fonte, Textura texturas, Estado *estadoAtual)
 {
+
     const int ALTURA = 600;
     const int LARGURA = 800;
     const int larguraCartaPadrao = 155;
@@ -807,28 +1047,8 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
 
     DrawTextureEx(texturas.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
     DrawRectangle(0, 28, LARGURA, 34, WHITE);
-    DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, (Color){175, 215, 248, 255});
+    DrawRectangleLinesEx((Rectangle){0, 28, LARGURA, 34}, 0.8f, AZULCLARO);
     DrawTextEx(fonte.atributoCartas, "Biblioteca de Cartas", (Vector2){70, 32}, 25, 0, BLACK);
-
-    Rectangle editBoxRec = {700, 33, 22, 22};
-    bool editBoxHovered = CheckCollisionPointRec(mousePos, editBoxRec);
-    if ((editActive && selectedCardIndex != -1) || (editBoxHovered && selectedCardIndex != -1 && !isModalOpen))
-    {
-        DrawTextureEx(texturas.editarON, (Vector2){700, 33}, 0, 1, WHITE);
-
-        if (editBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && selectedCardIndex != -1 && !isModalOpen)
-        {
-            editActive = !editActive;
-            if (editActive)
-            {
-                isModalOpen = true;
-            }
-        }
-    }
-    else if (selectedCardIndex != -1)
-    {
-        DrawTextureEx(texturas.editarOFF, (Vector2){700, 33}, 0, 1, WHITE);
-    }
 
     BeginScissorMode(clippingRec.x, clippingRec.y, clippingRec.width, clippingRec.height);
 
@@ -872,13 +1092,13 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
 
         Rectangle cardRec = (Rectangle){posX, posY, larguraCarta, alturaCarta};
         bool isHovered = false;
-        if (isModalOpen == 0 && isPopUPOpen == 0)
+        if (isAnyModalOpen == 0 && isDelModalOpen == 0)
         {
             isHovered = CheckCollisionPointRec(mousePos, cardRec);
         }
         desenharCarta(filteredCards[i], posX, posY, molduras, fonte, escala, isHovered);
 
-        if (isModalOpen == 0 && isPopUPOpen == 0)
+        if (isAnyModalOpen == 0 && isDelModalOpen == 0)
         {
             if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -903,18 +1123,18 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
         updateSearchText();
 
     DrawRectangleRec(letterButtonRec, letterButtonHovered ? LIGHTGRAY : WHITE);
-    DrawRectangleLinesEx(letterButtonRec, 1, (Color){175, 215, 248, 255});
-    Color letterColor = letterButtonHovered ? DARKGRAY : (Color){13, 35, 55, 255};
+    DrawRectangleLinesEx(letterButtonRec, 1, AZULCLARO);
+    Color letterColor = letterButtonHovered ? DARKGRAY : AZULESCURO;
     DrawTextEx(fonte.atributoCartas, "Filtrar", (Vector2){letterButtonRec.x + 5, letterButtonRec.y + 5}, 18, 0, letterColor);
 
     DrawRectangleRec(sortByButtonRec, sortByButtonHovered ? LIGHTGRAY : WHITE);
-    DrawRectangleLinesEx(sortByButtonRec, 1, (Color){175, 215, 248, 255});
-    Color sortByColor = sortByButtonHovered ? DARKGRAY : (Color){13, 35, 55, 255};
+    DrawRectangleLinesEx(sortByButtonRec, 1, AZULCLARO);
+    Color sortByColor = sortByButtonHovered ? DARKGRAY : AZULESCURO;
     DrawTextEx(fonte.atributoCartas, "Ordenar Por", (Vector2){sortByButtonRec.x + 5, sortByButtonRec.y + 5}, 18, 0, sortByColor);
 
     drawSearchBox(searchBoxRec, fonte, searchBoxHovered, searchBoxActive);
 
-    if (!isModalOpen)
+    if (!isAnyModalOpen)
     {
         if (CheckCollisionPointRec(mousePos, letterButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -922,7 +1142,7 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
             showSortByDropdown = false; // Close the other dropdown
         }
     }
-    if (!isModalOpen)
+    if (!isAnyModalOpen)
     {
         if (CheckCollisionPointRec(mousePos, sortByButtonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -931,7 +1151,7 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
         }
     }
     // Draw the selected card if the state is DECKS
-    if (*estadoAtual == DECKS && selectedCardIndex != -1)
+    if (selectedCardIndex != -1)
     {
         desenharCartaSelecionada(filteredCards[selectedCardIndex], 564, 82 + espacamentoTopo, molduras, fonte);
     }
@@ -942,8 +1162,8 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
 
     if (CheckCollisionPointCircle(mousePos, (Vector2){46, 45}, 13))
     {
-        DrawTexture(texturas.setaON, 33, 32, WHITE);
-        if (!isModalOpen)
+        DrawTexture(texturas.seta, 33, 32, AZULESCURO);
+        if (!isAnyModalOpen)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -959,26 +1179,86 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
     }
     else
     {
-        DrawTexture(texturas.setaOFF, 33, 32, WHITE);
+        DrawTexture(texturas.seta, 33, 32, AZULCLARO);
     }
-    Rectangle delBoxRec = {760, 33, 22, 22};
-    bool delBoxHovered = CheckCollisionPointRec(mousePos, delBoxRec);
-    if ((isPopUPOpen && selectedCardIndex != -1) || (delBoxHovered && selectedCardIndex != -1 && !isPopUPOpen))
-    {
-        DrawTextureEx(texturas.trash, (Vector2){760, 33}, 0, 20, WHITE);
 
-        if (delBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && selectedCardIndex != -1 && !isPopUPOpen)
+    Rectangle editBoxRec = {714, 33, 22, 22};
+    bool editBoxHovered = CheckCollisionPointRec(mousePos, editBoxRec);
+    if ((editActive && selectedCardIndex != -1) || (editBoxHovered && selectedCardIndex != -1 && !isEditModalOpen))
+    {
+        DrawTextureEx(texturas.editar, (Vector2){714, 33}, 0, 1, AZULESCURO);
+
+        if (editBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && selectedCardIndex != -1 && !isEditModalOpen)
         {
-            delActive = !delActive;
-            if (delActive)
+            editActive = !editActive;
+            if (editActive)
             {
-                isPopUPOpen = true;
+                isEditModalOpen = true;
             }
         }
     }
     else if (selectedCardIndex != -1)
     {
-        DrawTextureEx(texturas.trash, (Vector2){760, 33}, 0, 20, WHITE);
+        DrawTextureEx(texturas.editar, (Vector2){714, 33}, 0, 1, AZULCLARO);
+    }
+
+    Rectangle delBoxRec = {750, 33, 22, 22};
+    bool delBoxHovered = CheckCollisionPointRec(mousePos, delBoxRec);
+    if ((isDelModalOpen && selectedCardIndex != -1) || (delBoxHovered && selectedCardIndex != -1 && !isDelModalOpen))
+    {
+        DrawTextureEx(texturas.tCan, (Vector2){750, 33}, 0, 1, (Color){13, 35, 55, 255});
+
+        if (delBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && selectedCardIndex != -1 && !isDelModalOpen)
+        {
+            delActive = !delActive;
+            if (delActive)
+            {
+                isDelModalOpen = true;
+            }
+        }
+    }
+    else if (selectedCardIndex != -1)
+    {
+        DrawTextureEx(texturas.tCan, (Vector2){750, 33}, 0, 1, (Color){53, 114, 151, 255});
+    }
+
+    // ADD
+    Rectangle addBoxRec = {676, 33, 22, 22};
+    bool addBoxHovered = CheckCollisionPointRec(mousePos, addBoxRec);
+    if ((isAddModalOpen) || (addBoxHovered && !isAddModalOpen))
+    {
+        DrawTextureEx(texturas.add, (Vector2){676, 33}, 0, 1, (Color){13, 35, 55, 255});
+
+        if (addBoxHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isAddModalOpen)
+        {
+            addActive = !addActive;
+            if (addActive)
+            {
+                isAddModalOpen = true;
+            }
+        }
+    }
+    else
+    {
+        DrawTextureEx(texturas.add, (Vector2){676, 33}, 0, 1, (Color){53, 114, 151, 255});
+    }
+
+    if (addActive)
+    {
+        addCartas(fonte, molduras,mousePos, listaCartas, quantidadeCartas);
+    }
+    if (!isAddModalOpen)
+    {
+        addActive = false;
+    }
+
+    if (isAddModalOpen || isEditModalOpen || isDelModalOpen)
+    {
+        isAnyModalOpen = true;
+    }
+    if(!isAddModalOpen && !isEditModalOpen && !isDelModalOpen)
+    {
+        isAnyModalOpen = false;
     }
 
     if (selectedCardIndex >= 0)
@@ -989,9 +1269,9 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
         {
             delCartas(fonte, mousePos, listaCartas, quantidadeCartas);
         }
-        if (!isModalOpen)
+        if (!isEditModalOpen)
             editActive = false;
-        if (!isPopUPOpen)
+        if (!isDelModalOpen)
         {
             delActive = false;
         }
