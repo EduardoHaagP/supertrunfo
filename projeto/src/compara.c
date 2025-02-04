@@ -6,6 +6,9 @@
 void find_winner(cartas carta1, cartas carta2, int atributo)
 {
     int winner = -1;
+    
+    if (!carta1.supertrunfo == 1 && !carta2.supertrunfo == 1)
+    {
     switch (atributo)
     {
     case 0: // Ano Contrucao
@@ -66,6 +69,15 @@ void find_winner(cartas carta1, cartas carta2, int atributo)
     default:
         break;
     }
+    }else if (carta1.supertrunfo == 1)
+    {
+        winner = 1;
+    }else if (carta2.supertrunfo == 1)
+    {
+        winner = 2;
+    }
+    
+
     if (winner == 1)
     {
         printf("Winner: %s\n", carta1.nome);
