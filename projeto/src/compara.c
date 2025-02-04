@@ -1,50 +1,82 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cartas.h>
 
-#define MAX_CARDS 100
-#define MAX_NAME_LENGTH 100
-
-typedef struct {
-    char name[MAX_NAME_LENGTH];
-    char category;
-    int year;
-    int height;
-    int cost;
-    int attribute1;
-    int attribute2;
-} Card;
-
-void read_cards(Card cards[], int *count) {
-    FILE *file = fopen("deck.csv", "r");
-    if (!file) {
-        perror("Failed to open file");
-        exit(EXIT_FAILURE);
-    }
-
-    *count = 0;
-    while (fscanf(file, "%99[^,],%c,%*d,%d,%d,%d,%d,%d,%*s\n",
-                  cards[*count].name,
-                  &cards[*count].category,
-                  &cards[*count].year,
-                  &cards[*count].height,
-                  &cards[*count].cost,
-                  &cards[*count].attribute1,
-                  &cards[*count].attribute2) == 7) {
-        (*count)++;
-    }
-
-    fclose(file);
-}
-
-void find_winner(Card cards[], int count) {
-    int max_index = 0;
-    for (int i = 1; i < count; i++) {
-        if (cards[i].height > cards[max_index].height) {
-            max_index = i;
+void find_winner(cartas carta1, cartas carta2, int atributo)
+{
+    int winner = -1;
+    switch (atributo)
+    {
+    case 0: // Ano Contrucao
+        if (carta1.anoConstrucao > carta2.anoConstrucao)
+        {
+            winner == 1;
+        }else if (carta1.anoConstrucao < carta2.anoConstrucao)
+        {
+            winner == 2;
+        }else{
+            winner == 0;
         }
+        break;
+    case 1:// altura
+        if (carta1.altura > carta2.altura)
+        {
+            winner == 1;
+        }else if (carta1.altura < carta2.altura)
+        {
+            winner == 2;
+        }else{
+            winner == 0;
+        }
+        break;
+    case 2:// visitas Anuais
+        if (carta1.visitasAnuais > carta2.visitasAnuais)
+        {
+            winner == 1;
+        }else if (carta1.visitasAnuais < carta2.visitasAnuais)
+        {
+            winner == 2;
+        }else{
+            winner == 0;
+        }
+        break;
+    case 3:// Importancia Historica
+        if (carta1.importanciaHistorica > carta2.importanciaHistorica)
+        {
+            winner == 1;
+        }else if (carta1.importanciaHistorica < carta2.importanciaHistorica)
+        {
+            winner == 2;
+        }else{
+            winner == 0;
+        }
+        break;
+    case 4:// Popularidade
+        if (carta1.popularidade > carta2.popularidade)
+        {
+            winner == 1;
+        }else if (carta1.popularidade < carta2.popularidade)
+        {
+            winner == 2;
+        }else{
+            winner == 0;
+        }
+        break;
+    default:
+        break;
     }
-    printf("Winner: %s\n", cards[max_index].name);
-    printf("Height: %d m\n", cards[max_index].height);
-    printf("Cost: %d\n", cards[max_index].cost);
+    if (winner == 1)
+    {
+        printf("Winner: %s\n", carta1.nome);
+    }
+    if (winner == 2)
+    {
+        printf("Winner: %s\n", carta2.nome);
+    }
+    if (winner == 3)
+    {
+        printf("Empate\n");
+    }
+    return;
 }

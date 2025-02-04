@@ -3,6 +3,8 @@
 
 #include "raylib.h"
 #include "funcoes.h"
+#include "compara.h"
+
 
 
 

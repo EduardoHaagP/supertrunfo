@@ -90,11 +90,12 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
 void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
 {
     ClearBackground(RAYWHITE);
-    DrawText("Menu Principal", 320, 100, 30, DARKGRAY);
+    DrawText("Super Trunfo", 320, 100, 30, AZULESCURO);
     for (int i = 0; i < 3; i++)
     {
-        Color cor = (i == opcaoSelecionada) ? RED : BLACK;
-        DrawRectangleRec(botoes[i], LIGHTGRAY);
+        Color cor = (i == opcaoSelecionada) ? WHITE : AZULESCURO;
+        DrawRectangleRounded(botoes[i],0.1,1 ,(i == opcaoSelecionada) ? AZULESCURO : WHITE);
+        DrawRectangleRoundedLines(botoes[i],0.1,1 ,(i == opcaoSelecionada) ? WHITE : AZULESCURO);
         DrawText(opcoes[i], botoes[i].x + 10, botoes[i].y + 5, 20, cor);
     }
 }
@@ -679,11 +680,11 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
 
         if ((*quantidadeCartas) <= 32)
         {
-            DrawTextEx(fonte.tituloCartas, "Nao e possivel deletar cartas", (Vector2){298, 280}, 10, 0, (Color){93, 128, 156, 255});
-            DrawTextEx(fonte.atributoCartas, "O jogo nao permite uma quantidade menor que 32", (Vector2){258, 303}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
-            DrawTextEx(fonte.atributoCartas, "cartas", (Vector2){366, 311}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
+            DrawTextEx(fonte.tituloCartas, "Nao e possivel deletar cartas", (Vector2){298, 280}, 10, 0, (Color)AZULESCURO);
+            DrawTextEx(fonte.atributoCartas, "O jogo nao permite uma quantidade menor que 32", (Vector2){258, 303}, 14, 0, AZULCLARO);
+            DrawTextEx(fonte.atributoCartas, "cartas", (Vector2){366, 311}, 14, 0, AZULCLARO);
 
-            DrawRectangleRounded(confirmButton, 0.03f, 1, (Color){93, 128, 156, 255});
+            DrawRectangleRounded(confirmButton, 0.03f, 1, (Color)AZULESCURO);
             DrawTextEx(fonte.tituloTelas, "Confirmar", (Vector2){352, 340}, 20, 0, WHITE);
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmButton))
@@ -693,18 +694,18 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
         }
         else
         {
-            DrawTextEx(fonte.tituloCartas, "Tem certeza que deseja excluir essa carta?", (Vector2){258, 280}, 18, 0, (Color){93, 128, 156, 255});
-            DrawTextEx(fonte.atributoCartas, "Ao excluir essa carta vc tem a chance de alterar a", (Vector2){258, 300}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
-            DrawTextEx(fonte.atributoCartas, "identidade do jogo e ao excluir ela nao ha volta", (Vector2){267, 314}, 14, 0, (Color){93, 128, 156, 255 * 0.9});
+            DrawTextEx(fonte.tituloCartas, "Tem certeza que deseja excluir essa carta?", (Vector2){258, 280}, 18, 0, AZULESCURO);
+            DrawTextEx(fonte.atributoCartas, "Ao excluir essa carta vc tem a chance de alterar a", (Vector2){258, 300}, 14, 0, AZULCLARO);
+            DrawTextEx(fonte.atributoCartas, "identidade do jogo e ao excluir ela nao ha volta", (Vector2){267, 314}, 14, 0, AZULCLARO);
 
             DrawRectangleRounded(cancelDelButton, 0.1f, 1, WHITE);
             DrawRectangleRoundedLines(cancelDelButton, 0.1f, 1,
-                                      CheckCollisionPointRec(mousePos, cancelDelButton) ? (Color){ 70, 130, 180, 255 } : (Color){93, 128, 156, 255});
+                                      CheckCollisionPointRec(mousePos, cancelDelButton) ? AZULCLARO : AZULESCURO);
             DrawTextEx(fonte.tituloTelas, "Cancelar", (Vector2){264, 340}, 20, 0, WHITE);
 
             CheckCollisionPointRec(mousePos, confirmDelButton)
-                ? DrawRectangleRounded(confirmDelButton, 0.1f, 1, (Color){ 70, 130, 180, 255 })
-                : DrawRectangleRounded(confirmDelButton, 0.1f, 1, (Color){93, 128, 156, 255});
+                ? DrawRectangleRounded(confirmDelButton, 0.1f, 1, AZULCLARO)
+                : DrawRectangleRounded(confirmDelButton, 0.1f, 1, AZULESCURO);
             DrawTextEx(fonte.tituloTelas, "Confirmar", (Vector2){394, 340}, 20, 0, WHITE);
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmDelButton))

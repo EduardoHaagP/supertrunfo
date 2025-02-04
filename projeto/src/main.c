@@ -27,7 +27,7 @@ int main() {
     int opcaoSelecionada = 0;
     Estado estadoAtual = MENU;
 
-    inicializarJogo(LARGURA_TELA, ALTURA_TELA, "Menu com Raylib");
+    inicializarJogo(LARGURA_TELA, ALTURA_TELA, "Super Trunfo Pontos Turisticos");
 
 
     Molduras molduras = loadMolduras();
@@ -46,6 +46,8 @@ int main() {
         
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        DrawTextureEx(textura.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
+
 
         // Desenhar telas com base no estado
         if (estadoAtual == MENU) {
