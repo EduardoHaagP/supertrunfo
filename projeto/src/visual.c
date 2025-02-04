@@ -12,6 +12,7 @@ static int offsetY = 0;
 static int selectedCardIndex = -1;
 
 // Variables for search and filter
+static bool loadTextureAddCard = false;
 static bool showLetterDropdown = false;
 static bool showSortByDropdown = false;
 static char searchText[64] = "";
@@ -794,8 +795,8 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
     const float inputRecHeight = 23;
 
     Rectangle addModal = {addModalX, addModalY, addModalWidth, addModalHeight};
-    Rectangle cancelAddButton = {152, 389, 113, 23};
-    Rectangle confirmAddButton = {284, 389, 113, 23};
+    Rectangle cancelAddButton = {434, 397, 113, 23};//434
+    Rectangle confirmAddButton = {566, 397, 113, 23};
     Rectangle checkbox = {286, 313, 23, 23};
     Rectangle dropdown = {152, 313, inputRecWidth, inputRecHeight};
 
@@ -819,7 +820,8 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
         DrawRectangleRounded(addModal, 0.03f, 1, WHITE);
         DrawRectangleRoundedLines(addModal, 0.03f, 1, (Color){53, 114, 151, 255});
 
-
+        // Draw the card before anything else
+        desenharCarta(auxdeck, 487, 177, molduras, fonte, 140 / 204, false);
 
         DrawRectangleRec(checkbox, WHITE); 
 
@@ -856,7 +858,6 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
             if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && (currentTime - lastDropdownToggleTime > toggleDebounceDelay)) {
                 isDropdownOpen = !isDropdownOpen;
                 lastDropdownToggleTime = currentTime;
-                printf("Dropdown toggled: %d\n", isDropdownOpen);
             }
         }
 
@@ -871,7 +872,6 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
                 if (CheckCollisionPointRec(mousePos, optionRect) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
                     selectedLetraIndex = i;
                     isDropdownOpen = false;
-                    printf("Selected letter: %s\n", letras[selectedLetraIndex]);
                 }
             }
 
@@ -919,8 +919,7 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
                     auxInputs[selectedInputIndex][inputLen - 1] = '\0';
             }
         }
-        desenharCarta(auxdeck, 487, 177, molduras, fonte, 140 / 204, false);
-
+        
         DrawRectangleRounded(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? WHITE : AZULCLARO);
         DrawRectangleRoundedLines(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? AZULCLARO : WHITE);
         DrawTextEx(fonte.atributoCartas,"CONFIRMAR",(Vector2){confirmAddButton.x+28,confirmAddButton.y+7},18,0,BLACK);
@@ -929,7 +928,22 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
         DrawRectangleRounded(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? AZULCLARO : WHITE);
         DrawRectangleRoundedLines(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? WHITE : AZULCLARO);
         DrawTextEx(fonte.atributoCartas,"CANCELAR",(Vector2){cancelAddButton.x+28,cancelAddButton.y+7},18,0,BLACK);
-
+    
+        if (((*quantidadeCartas)%32)%3 == 0)
+        {
+            strcpy(auxdeck.arqimg, "assets/imagem/Extra1.png");
+        }else if (((*quantidadeCartas)%32)%3 == 1)
+        {
+            strcpy(auxdeck.arqimg, "assets/imagem/Extra2.png");
+        }else if (((*quantidadeCartas)%32)%3 == 2)
+        {
+            strcpy(auxdeck.arqimg, "assets/imagem/Extra3.png");
+        }        
+        if (!loadTextureAddCard)
+        {
+            auxdeck.img = LoadTexture(auxdeck.arqimg);
+            loadTextureAddCard = true;
+        }
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmAddButton)) {
             auxdeck.anoConstrucao = atoi(auxInputs[ANOCONSTRUCAO]);
@@ -945,12 +959,12 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
                 auxdeck.importanciaHistorica > 0 &&
                 auxdeck.popularidade > 0) {
 
-                switch (selectedLetraIndex) {
-                case 0: auxdeck.letra = 'A'; break;
-                case 1: auxdeck.letra = 'B'; break;
-                case 2: auxdeck.letra = 'C'; break;
-                case 3: auxdeck.letra = 'D'; break;
-                default: break;
+                 switch (selectedLetraIndex) {
+                    case 0: auxdeck.letra = 'A'; break;
+                    case 1: auxdeck.letra = 'B'; break;
+                    case 2: auxdeck.letra = 'C'; break;
+                    case 3: auxdeck.letra = 'D'; break;
+                    default: break;
                 }
 
                 if (supertrunfo) {
@@ -986,7 +1000,6 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
                 selectedLetraIndex = 0;
                 supertrunfo = false;
         }
-
 
         if (erroPreenchimento) {
             DrawTextEx(fonte.tituloTelas, "Preencha todos os campos antes de confirmar!", (Vector2){172, 132}, 18, 0, RED);
