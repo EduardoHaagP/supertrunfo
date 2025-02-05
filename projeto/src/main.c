@@ -34,6 +34,11 @@ int main() {
     loadIMGCartas(deck, quantidadeCartas);
     Fonte fonte = loadFonte();
     Textura textura = loadTexturas();
+
+    cartas minhaCarta;
+    cartas cartaInimigo;
+    bool novaRodada = true;
+
     while (!WindowShouldClose()) {
         // Atualização lógica baseada no estado
         if (estadoAtual == MENU) {
@@ -43,7 +48,7 @@ int main() {
                 estadoAtual = MENU;
              }
         }
-        
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawTextureEx(textura.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
@@ -53,18 +58,30 @@ int main() {
         if (estadoAtual == MENU) {
             desenharMenu(opcaoSelecionada, botoes, opcoes);
         } else if (estadoAtual == JOGO) {
-            desenharTelaJogo();
+
+            if (novaRodada) {
+                minhaCarta = deck[rand() % quantidadeCartas];
+                cartaInimigo = deck[rand() % quantidadeCartas];
+                novaRodada = false;
+            }
+
+            desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);//
+
+            if (IsKeyPressed(KEY_SPACE)) { // Espera o jogador pressionar ESPAÇO
+                novaRodada = true; // Começa uma nova rodada
+            }
 
             // Verificar se ESC retorna ao menu
             if (IsKeyPressed(KEY_ESCAPE)) {
                 estadoAtual = MENU;
+                novaRodada = true; // Reinicia o jogo
             }
         } else if (estadoAtual == DECKS) {
              // Passar estado por referência para permitir alteração dentro da função
             desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
         }
 
-        EndDrawing();
+        EndDrawing(); 
     }
 
     for (int i = 0; i < quantidadeCartas; i++) {

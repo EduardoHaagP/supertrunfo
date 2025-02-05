@@ -100,10 +100,34 @@ void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
     }
 }
 
-void desenharTelaJogo()
+void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras molduras, Fonte fonte)
 {
-    DrawText("Você está jogando!", 280, 200, 30, DARKGREEN);
-    DrawText("Pressione ESC para voltar ao menu", 220, 250, 20, GRAY);
+    ClearBackground(RAYWHITE);
+
+    DrawText("Batalha das Cartas!", 280, 50, 30, DARKGREEN);
+    DrawText("Pressione ESC para voltar ao menu", 220, 450, 20, GRAY);
+
+    // Exibir a carta do jogador
+    DrawText("Sua Carta:", 200, 150, 20, BLACK);
+    desenharCarta(cartaJogador, 200, 180, molduras, fonte, 1.0f, false);
+
+    // Exibir a carta do computador
+    DrawText("Carta do Oponente:", 500, 150, 20, BLACK);
+    desenharCarta(cartaComputador, 500, 180, molduras, fonte, 1.0f, false);
+
+    // Verificar o vencedor
+    const char *resultado;
+    if (cartaJogador.popularidade > cartaComputador.popularidade) {
+        resultado = "Você venceu!";
+    } else if (cartaJogador.popularidade < cartaComputador.popularidade) {
+        resultado = "Você perdeu!";
+    } else {
+        resultado = "Empate!";
+    }
+
+    // Exibir resultado da batalha
+    DrawText(resultado, 350, 400, 30, RED);
+
 }
 
 void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escala, char letra)
