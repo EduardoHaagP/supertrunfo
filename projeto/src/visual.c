@@ -175,9 +175,16 @@ void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escal
         break;
     }
     char bufferAno[20]; // Buffer para armazenar o ano como string
-    sprintf(bufferAno, "%d", carta.anoConstrucao);
+    if (carta.anoConstrucao >= 0)
+    {
+    sprintf(bufferAno, "%ddC", carta.anoConstrucao);
+    }else{
+    sprintf(bufferAno, "%daC", (-carta.anoConstrucao));
+    }
     DrawTextEx(fonte.atributoCartas, "Ano de Construcao", (Vector2){x + (17 * escala), y + (201 * escala)}, 16 * escala, 0, corNomeAtributo);
     DrawTextEx(fonte.atributoCartas, bufferAno, (Vector2){x + (155 * escala), y + (201 * escala)}, 16 * escala, 0, corValorAtributo);
+    
+    
 
     char bufferAltura[20]; // Buffer para armazenar o ano como string
     sprintf(bufferAltura, "%d", carta.altura);

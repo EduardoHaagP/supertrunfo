@@ -26,9 +26,12 @@ int main() {
 
     int opcaoSelecionada = 0;
     Estado estadoAtual = MENU;
+    Image icon = LoadImage("assets/icon.png");
 
     inicializarJogo(LARGURA_TELA, ALTURA_TELA, "Super Trunfo Pontos Turisticos");
+    SetWindowIcon(icon);
 
+    SetExitKey(KEY_NULL);
 
     Molduras molduras = loadMolduras();
     loadIMGCartas(deck, quantidadeCartas);
@@ -79,7 +82,10 @@ int main() {
         } else if (estadoAtual == DECKS) {
              // Passar estado por referência para permitir alteração dentro da função
             desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+        } else if (estadoAtual == SAIR){
+            break;
         }
+
 
         EndDrawing(); 
     }
@@ -87,6 +93,7 @@ int main() {
     for (int i = 0; i < quantidadeCartas; i++) {
         UnloadTexture(deck[i].img);
     }
+    UnloadImage(icon);
     unloadTexturas(textura);
     unloadFonte(fonte);
     unloadMolduras(molduras);
