@@ -104,18 +104,36 @@ void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras mold
 {
     ClearBackground(RAYWHITE);
 
-    DrawText("Batalha das Cartas!", 280, 50, 30, DARKGREEN);
-    DrawText("Pressione ESC para voltar ao menu", 220, 450, 20, GRAY);
+    const int LARGURA_TELA = 800;
+    const int ALTURA_TELA = 600;
 
-    // Exibir a carta do jogador
-    DrawText("Sua Carta:", 200, 150, 20, BLACK);
-    desenharCarta(cartaJogador, 200, 180, molduras, fonte, 1.0f, false);
+    // Centralizar título
+    int larguraTitulo = MeasureText("Batalha das Cartas!", 30);
+    DrawText("Batalha das Cartas!", (LARGURA_TELA - larguraTitulo) / 2, 30, 30, DARKGREEN);
 
-    // Exibir a carta do computador
-    DrawText("Carta do Oponente:", 500, 150, 20, BLACK);
-    desenharCarta(cartaComputador, 500, 180, molduras, fonte, 1.0f, false);
+    // Mensagem de instrução (menor e no canto inferior esquerdo)
+    DrawText("Pressione ESC para voltar ao menu", 20, ALTURA_TELA - 30, 15, GRAY);
+    DrawText("Pressione ESPAÇO para avançar", LARGURA_TELA - 250, ALTURA_TELA - 30, 15, GRAY);
 
-    // Verificar o vencedor
+    // Ajuste das posições das cartas
+    int centroX = LARGURA_TELA / 2;
+    int posCartaY = 160; // Cartas mais acima
+
+    int espacoEntreCartas = 100; // Separação entre as cartas
+    int larguraCarta = 150; // Supondo essa largura
+
+    int posCartaJogadorX = centroX - larguraCarta - espacoEntreCartas - 50;  // Mais para a esquerda
+    int posCartaComputadorX = centroX + espacoEntreCartas - 30;  // Um pouco mais para a direita
+
+    // Exibir carta do jogador
+    DrawText("Sua Carta:", posCartaJogadorX + 40, posCartaY - 30, 20, BLACK);
+    desenharCarta(cartaJogador, posCartaJogadorX, posCartaY, molduras, fonte, 1.0f, false);
+
+    // Exibir carta do computador (movida um pouco para a direita)
+    DrawText("Carta do Oponente:", posCartaComputadorX + 10, posCartaY - 30, 20, BLACK);
+    desenharCarta(cartaComputador, posCartaComputadorX, posCartaY, molduras, fonte, 1.0f, false);
+
+    // Determinar o resultado da batalha
     const char *resultado;
     if (cartaJogador.popularidade > cartaComputador.popularidade) {
         resultado = "Você venceu!";
@@ -125,10 +143,14 @@ void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras mold
         resultado = "Empate!";
     }
 
-    // Exibir resultado da batalha
-    DrawText(resultado, 350, 400, 30, RED);
-
+    // Centralizar resultado da batalha e movê-lo um pouco para baixo
+    int larguraResultado = MeasureText(resultado, 30);
+    DrawText(resultado, (LARGURA_TELA - larguraResultado) / 2, ALTURA_TELA - 100, 30, RED);
 }
+
+
+
+
 
 void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escala, char letra)
 {
