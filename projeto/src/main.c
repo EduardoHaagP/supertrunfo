@@ -40,55 +40,116 @@ int main() {
 
     cartas minhaCarta;
     cartas cartaInimigo;
+    int vezJogador = 1; // 1 = jogador, 0 = computador
+    int cartasJogador = 10;  // Número inicial de cartas
+    int cartasComputador = 10;
+    int atributoEscolhido;
     bool novaRodada = true;
+    const char *resultado = "";
 
-    while (!WindowShouldClose()) {
-        // Atualização lógica baseada no estado
-        if (estadoAtual == MENU) {
-            atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
-        } else if (estadoAtual == DECKS) {
-            if(IsKeyPressed(KEY_ESCAPE)){
-                estadoAtual = MENU;
-             }
+while (!WindowShouldClose()) {
+    // Atualização lógica baseada no estado
+    if (estadoAtual == MENU) {
+        atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
+    } else if (estadoAtual == DECKS) {
+        if(IsKeyPressed(KEY_ESCAPE)){
+            estadoAtual = MENU;
         }
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawTextureEx(textura.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
-
-
-        // Desenhar telas com base no estado
-        if (estadoAtual == MENU) {
-            desenharMenu(opcaoSelecionada, botoes, opcoes);
-        } else if (estadoAtual == JOGO) {
-
-            if (novaRodada) {
-                minhaCarta = deck[rand() % quantidadeCartas];
-                cartaInimigo = deck[rand() % quantidadeCartas];
-                novaRodada = false;
-            }
-
-            desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);//
-
-            if (IsKeyPressed(KEY_SPACE)) { // Espera o jogador pressionar ESPAÇO
-                novaRodada = true; // Começa uma nova rodada
-            }
-
-            // Verificar se ESC retorna ao menu
-            if (IsKeyPressed(KEY_ESCAPE)) {
-                estadoAtual = MENU;
-                novaRodada = true; // Reinicia o jogo
-            }
-        } else if (estadoAtual == DECKS) {
-             // Passar estado por referência para permitir alteração dentro da função
-            desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
-        } else if (estadoAtual == SAIR){
-            break;
-        }
-
-
-        EndDrawing(); 
     }
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    DrawTextureEx(textura.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
+
+    // Desenhar telas com base no estado
+    if (estadoAtual == MENU) {
+        desenharMenu(opcaoSelecionada, botoes, opcoes);
+    } 
+    else if (estadoAtual == JOGO) {
+        // 🔹 INÍCIO DA RODADA: Sorteia cartas apenas uma vez por rodada
+        if (novaRodada) {
+            minhaCarta = deck[rand() % quantidadeCartas];
+            cartaInimigo = deck[rand() % quantidadeCartas];
+            novaRodada = false;
+            resultado = "";
+        }
+
+        desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);
+
+        // ESCOLHA DO ATRIBUTO
+        if (vezJogador) { 
+            DrawText("Escolha um atributo (1, 2, 3, 4 ou 5)", 250, 500, 20, BLUE);
+
+            if (IsKeyPressed(KEY_ONE)) atributoEscolhido = 0;
+            if (IsKeyPressed(KEY_TWO)) atributoEscolhido = 1;
+            if (IsKeyPressed(KEY_THREE)) atributoEscolhido = 2;
+            if (IsKeyPressed(KEY_FOUR)) atributoEscolhido = 3;
+            if (IsKeyPressed(KEY_FIVE)) atributoEscolhido = 4;
+
+
+
+            if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE) || IsKeyPressed(KEY_FOUR)|| IsKeyPressed(KEY_FIVE)) {
+                vezJogador = 0; 
+            }
+        } else { 
+            atributoEscolhido = rand() % 3;
+            vezJogador = 1; 
+        }
+
+        // 🔹 COMPARAÇÃO DAS CARTAS
+        if (atributoEscolhido != -1) { // Se um atributo já foi escolhido
+            int valorJogador = obterAtributo(minhaCarta, atributoEscolhido);
+            int valorComputador = obterAtributo(cartaInimigo, atributoEscolhido);
+
+            if (valorJogador > valorComputador) {
+                cartasJogador++;
+                cartasComputador--;
+                resultado = "Você venceu!";
+            } else if (valorJogador < valorComputador) {
+                cartasJogador--;
+                cartasComputador++;
+                resultado = "Você perdeu!";
+            } else {
+                resultado = "Empate!";
+            }
+
+            // Exibir o resultado no final da rodada
+            int larguraResultado = MeasureText(resultado, 30);
+            DrawText(resultado, (800 - larguraResultado) / 2, 520, 30, RED);
+        }
+
+        // CONTINUAR OU FINALIZAR O JOGO
+        if (IsKeyPressed(KEY_SPACE)) { // Pressionar espaço avança para a próxima rodada
+            novaRodada = true;
+            atributoEscolhido = -1;
+        }
+
+        //  FIM 
+        if (cartasJogador == 0 || cartasComputador == 0) {
+            estadoAtual = FIM_JOGO;
+        }
+
+        // ESC para sair 
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            estadoAtual = MENU;
+            novaRodada = true;
+        }
+    }
+    else if (estadoAtual == FIM_JOGO) {
+        if (cartasJogador > 0) {
+            DrawText("Parabéns, você venceu!", 280, 200, 30, GREEN);
+        } else {
+            DrawText("O computador venceu!", 280, 200, 30, RED);
+        }
+        DrawText("Pressione ENTER para voltar ao menu", 250, 400, 20, GRAY);
+        if (IsKeyPressed(KEY_ENTER)) estadoAtual = MENU;
+    }
+    else if (estadoAtual == DECKS) {
+        desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+    }
+
+    EndDrawing();
+}
 
     for (int i = 0; i < quantidadeCartas; i++) {
         UnloadTexture(deck[i].img);

@@ -11,6 +11,10 @@
 typedef enum {
     MENU,
     JOGO,
+    SELECIONAR_ATRIBUTO, // O jogador escolhe qual atributo comparar
+    BATALHA, // O jogo compara as cartas
+    RESULTADO, // Mostra quem venceu
+    FIM_JOGO,
     DECKS,
     SAIR 
 } Estado;
