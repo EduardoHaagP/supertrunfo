@@ -41,8 +41,8 @@ int main() {
     cartas minhaCarta;
     cartas cartaInimigo;
     int vezJogador = 1; 
-    int cartasJogador = 10;  
-    int cartasComputador = 10;
+    int cartasJogador = 16;  
+    int cartasComputador = 16;
     int atributoEscolhido = -1;
     bool novaRodada = true;
     const char *resultado = "";
@@ -181,8 +181,8 @@ else if (estadoAtual == JOGO) {
             DrawText ("Pressione ENTER para voltar ao menu", 250, 400, 20, DARKGRAY);
             if(IsKeyPressed(KEY_ENTER)){
                 estadoAtual = MENU;
-                cartasJogador = 10;  //número de cartas inicial
-                cartasComputador = 10;
+                cartasJogador = 16;  //número de cartas inicial
+                cartasComputador = 16;
             }
     }else if (estadoAtual == DECKS){
         desenharTelaDecks (&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
