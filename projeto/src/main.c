@@ -40,15 +40,15 @@ int main() {
 
     cartas minhaCarta;
     cartas cartaInimigo;
-    int vezJogador = 1; // 1 = jogador, 0 = computador
-    int cartasJogador = 10;  // Número inicial de cartas
+    int vezJogador = 1; 
+    int cartasJogador = 10;  
     int cartasComputador = 10;
-    int atributoEscolhido;
+    int atributoEscolhido = -1;
     bool novaRodada = true;
     const char *resultado = "";
+    
 
 while (!WindowShouldClose()) {
-    // Atualização lógica baseada no estado
     if (estadoAtual == MENU) {
         atualizarMenu(&opcaoSelecionada, &estadoAtual, botoes);
     } else if (estadoAtual == DECKS) {
@@ -61,104 +61,133 @@ while (!WindowShouldClose()) {
     ClearBackground(RAYWHITE);
     DrawTextureEx(textura.TexturaFundo, (Vector2){0, 0}, 0.0f, 1.5, WHITE);
 
-    // Desenhar telas com base no estado
     if (estadoAtual == MENU) {
         desenharMenu(opcaoSelecionada, botoes, opcoes);
     } 
-    else if (estadoAtual == JOGO) {
-        // 🔹 INÍCIO DA RODADA: Sorteia cartas apenas uma vez por rodada
-        if (novaRodada) {
-            minhaCarta = deck[rand() % quantidadeCartas];
-            cartaInimigo = deck[rand() % quantidadeCartas];
-            novaRodada = false;
-            resultado = "";
-        }
+else if (estadoAtual == JOGO) {
+    if (novaRodada) {
+        minhaCarta = deck[rand() % quantidadeCartas];
+        cartaInimigo = deck[rand() % quantidadeCartas];
+        novaRodada = false;
+        resultado = "";
+        atributoEscolhido = -1;  
+    }
 
-        desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);
+    if (vezJogador) {
+        int cartaPosX = LARGURA_TELA - 300;  
+        int cartaPosY = 150;                 
+        desenharCarta(minhaCarta, cartaPosX, cartaPosY, molduras, fonte, 1.0f, false);
 
-        // ESCOLHA DO ATRIBUTO
-        if (vezJogador) { 
-            DrawText("Escolha um atributo (1, 2, 3, 4 ou 5)", 250, 500, 20, BLUE);
+        DrawText("Escolha um atributo:", 50, 100, 20, DARKGRAY);
 
-            if (IsKeyPressed(KEY_ONE)) atributoEscolhido = 0;
-            if (IsKeyPressed(KEY_TWO)) atributoEscolhido = 1;
-            if (IsKeyPressed(KEY_THREE)) atributoEscolhido = 2;
-            if (IsKeyPressed(KEY_FOUR)) atributoEscolhido = 3;
-            if (IsKeyPressed(KEY_FIVE)) atributoEscolhido = 4;
+        Rectangle caixasAtributos[5];
+        const char *atributos[] = {
+            "1 - Ano de Construção",
+            "2 - Altura",
+            "3 - Visitas Anuais",
+            "4 - Importância Histórica",
+            "5 - Popularidade"
+        };
 
+        Vector2 mousePos = GetMousePosition(); 
 
+        for (int i = 0; i < 5; i++) {
+            int largura = (i == 3) ? 280 : 250; 
+            int altura = 40;                    
+            int posX = 50;                       
+            int posY = 170 + (i * 50);           
 
-            if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE) || IsKeyPressed(KEY_FOUR)|| IsKeyPressed(KEY_FIVE)) {
-                vezJogador = 0; 
+            caixasAtributos[i] = (Rectangle){posX, posY, largura, altura}; 
+
+            
+            Color corCaixa = (Color){230, 230, 230, 255};  
+            Color corBorda = (Color){180, 180, 180, 255};  
+
+            
+            if (CheckCollisionPointRec(mousePos, caixasAtributos[i])) {
+                corCaixa = (Color){200, 200, 200, 255};  
+                corBorda = (Color){150, 150, 150, 255};  
+
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    atributoEscolhido = i; 
+                    estadoAtual = RESULTADO_BATALHA;  
+                }
             }
-        } else { 
-            atributoEscolhido = rand() % 3;
-            vezJogador = 1; 
+
+            DrawRectangle(caixasAtributos[i].x + 3, caixasAtributos[i].y + 3, caixasAtributos[i].width, caixasAtributos[i].height, (Color){0, 0, 0, 50});
+
+            DrawRectangleRec(caixasAtributos[i], corCaixa);
+            DrawRectangleLinesEx(caixasAtributos[i], 2, corBorda); 
+
+            DrawText(atributos[i], caixasAtributos[i].x + 15, caixasAtributos[i].y + 10, 20, DARKGRAY);
+        }
+    } else {
+        int larguraTexto = MeasureText("Oponente escolhe atributo:", 20);
+        DrawText("Oponente escolhe atributo:", (LARGURA_TELA - larguraTexto) / 2, 100, 20, DARKGRAY);
+
+        desenharCarta(cartaInimigo, 300, 200, molduras, fonte, 1.0f, false);
+
+        atributoEscolhido = rand() % 5;
+
+        const char *atributos[] = {"1 - Ano de Construção", "2 - Altura", "3 - Visitas Anuais", "4 - Importância Histórica", "5 - Popularidade"};
+        larguraTexto = MeasureText(atributos[atributoEscolhido], 20);
+        DrawText(atributos[atributoEscolhido], (LARGURA_TELA - larguraTexto) / 2, 130, 20, DARKGRAY);
+
+        EndDrawing();
+        BeginDrawing();
+
+        WaitTime(3.0);  
+
+        estadoAtual = RESULTADO_BATALHA;  
+    }
+}else if (estadoAtual == RESULTADO_BATALHA) {
+        desenharTelaJogo (minhaCarta, cartaInimigo, molduras, fonte);
+
+        int valorJogador = obterAtributo (minhaCarta, atributoEscolhido);
+        int valorComputador = obterAtributo (cartaInimigo, atributoEscolhido);
+
+        if (valorJogador > valorComputador) {
+            cartasJogador++;
+            cartasComputador --;
+            resultado = "Você ganhou!";
+        }else if (valorJogador < valorComputador) {
+            cartasJogador --;
+            cartasComputador++;
+            resultado = "Você perdeu!";
+        }else{
+            resultado = "Empate!";
         }
 
-        // 🔹 COMPARAÇÃO DAS CARTAS
-        if (atributoEscolhido != -1) { // Se um atributo já foi escolhido
-            int valorJogador = obterAtributo(minhaCarta, atributoEscolhido);
-            int valorComputador = obterAtributo(cartaInimigo, atributoEscolhido);
+    int larguraResultado = MeasureText (resultado, 30);
+    DrawText(resultado, (800 - larguraResultado) / 2, 520, 30, RED);
 
-            if (valorJogador > valorComputador) {
-                cartasJogador++;
-                cartasComputador--;
-                resultado = "Você venceu!";
-            } else if (valorJogador < valorComputador) {
-                cartasJogador--;
-                cartasComputador++;
-                resultado = "Você perdeu!";
-            } else {
-                resultado = "Empate!";
-            }
-
-            // Exibir o resultado no final da rodada
-            int larguraResultado = MeasureText(resultado, 30);
-            DrawText(resultado, (800 - larguraResultado) / 2, 520, 30, RED);
-        }
-
-        // CONTINUAR OU FINALIZAR O JOGO
-        if (IsKeyPressed(KEY_SPACE)) { // Pressionar espaço avança para a próxima rodada
-            novaRodada = true;
-            atributoEscolhido = -1;
-        }
-
-        //  FIM 
-        if (cartasJogador == 0 || cartasComputador == 0) {
+    DrawText("Pressione ESPAÇO para continutar", 300, 600, 20, DARKGRAY);
+    if (IsKeyPressed(KEY_SPACE)) {
+        if(cartasJogador == 32 || cartasComputador == 32) {
             estadoAtual = FIM_JOGO;
-        }
-
-        // ESC para sair 
-        if (IsKeyPressed(KEY_ESCAPE)) {
-            estadoAtual = MENU;
+        }else{
+            estadoAtual = JOGO;
             novaRodada = true;
+            vezJogador = !vezJogador;
         }
     }
-    else if (estadoAtual == FIM_JOGO) {
-        if (cartasJogador > 0) {
-            DrawText("Parabéns, você venceu!", 280, 200, 30, GREEN);
-        } else {
-            DrawText("O computador venceu!", 280, 200, 30, RED);
-        }
-        DrawText("Pressione ENTER para voltar ao menu", 250, 400, 20, GRAY);
-        if (IsKeyPressed(KEY_ENTER)) estadoAtual = MENU;
-    }
-    else if (estadoAtual == DECKS) {
-        desenharTelaDecks(&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
+    }else if (estadoAtual == FIM_JOGO) {
+        if (cartasJogador == 32) {
+            DrawText("Parabéns, você venceu o jogo!", 300, 400, 30, GREEN);
+        }else{
+            DrawText("Você perdeu o jogo!", 300, 400, 30, RED);
+            }
+
+            DrawText ("Pressione ENTER para voltar ao menu", 250, 400, 20, DARKGRAY);
+            if(IsKeyPressed(KEY_ENTER)){
+                estadoAtual = MENU;
+                cartasJogador = 10;  //número de cartas inicial
+                cartasComputador = 10;
+            }
+    }else if (estadoAtual == DECKS){
+        desenharTelaDecks (&deck, &quantidadeCartas, molduras, fonte, textura, &estadoAtual);
     }
 
     EndDrawing();
 }
-
-    for (int i = 0; i < quantidadeCartas; i++) {
-        UnloadTexture(deck[i].img);
-    }
-    UnloadImage(icon);
-    unloadTexturas(textura);
-    unloadFonte(fonte);
-    unloadMolduras(molduras);
-    free(deck);
-    CloseWindow();
-    return 0;
 }

@@ -100,6 +100,7 @@ void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
     }
 }
 
+
 void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras molduras, Fonte fonte)
 {
     ClearBackground(RAYWHITE);
