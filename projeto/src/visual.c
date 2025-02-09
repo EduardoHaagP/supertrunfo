@@ -4,8 +4,6 @@
 #include <string.h>
 #include <time.h>
 
-
-
 // Global variable to store the scroll offset for deck screen
 static int offsetY = 0;
 // Global variable to store the index of the currently selected card
@@ -62,9 +60,9 @@ void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes
             *opcaoSelecionada = i;
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (i == 0)
+                if (i == 0){
                     *estadoAtual = JOGO;
-                else if (i == 1)
+                }else if (i == 1)
                     *estadoAtual = DECKS;
                 else if (i == 2) // Opção Sair
                 {
@@ -94,8 +92,8 @@ void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
     for (int i = 0; i < 3; i++)
     {
         Color cor = (i == opcaoSelecionada) ? WHITE : AZULESCURO;
-        DrawRectangleRounded(botoes[i],0.1,1 ,(i == opcaoSelecionada) ? AZULESCURO : WHITE);
-        DrawRectangleRoundedLines(botoes[i],0.1,1 ,(i == opcaoSelecionada) ? WHITE : AZULESCURO);
+        DrawRectangleRounded(botoes[i], 0.1, 1, (i == opcaoSelecionada) ? AZULESCURO : WHITE);
+        DrawRectangleRoundedLines(botoes[i], 0.1, 1, (i == opcaoSelecionada) ? WHITE : AZULESCURO);
         DrawText(opcoes[i], botoes[i].x + 10, botoes[i].y + 5, 20, cor);
     }
 }
@@ -103,8 +101,6 @@ void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes)
 
 void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras molduras, Fonte fonte)
 {
-    ClearBackground(RAYWHITE);
-
     const int LARGURA_TELA = 800;
     const int ALTURA_TELA = 600;
 
@@ -121,10 +117,10 @@ void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras mold
     int posCartaY = 160; // Cartas mais acima
 
     int espacoEntreCartas = 100; // Separação entre as cartas
-    int larguraCarta = 150; // Supondo essa largura
+    int larguraCarta = 150;      // Supondo essa largura
 
-    int posCartaJogadorX = centroX - larguraCarta - espacoEntreCartas - 50;  // Mais para a esquerda
-    int posCartaComputadorX = centroX + espacoEntreCartas - 30;  // Um pouco mais para a direita
+    int posCartaJogadorX = centroX - larguraCarta - espacoEntreCartas - 50; // Mais para a esquerda
+    int posCartaComputadorX = centroX + espacoEntreCartas - 30;             // Um pouco mais para a direita
 
     // Exibir carta do jogador
     DrawText("Sua Carta:", posCartaJogadorX + 40, posCartaY - 30, 20, BLACK);
@@ -133,14 +129,7 @@ void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras mold
     // Exibir carta do computador (movida um pouco para a direita)
     DrawText("Carta do Oponente:", posCartaComputadorX + 10, posCartaY - 30, 20, BLACK);
     desenharCarta(cartaComputador, posCartaComputadorX, posCartaY, molduras, fonte, 1.0f, false);
-
-    
-    
 }
-
-
-
-
 
 void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escala, char letra)
 {
@@ -167,14 +156,14 @@ void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escal
     char bufferAno[20]; // Buffer para armazenar o ano como string
     if (carta.anoConstrucao >= 0)
     {
-    sprintf(bufferAno, "%ddC", carta.anoConstrucao);
-    }else{
-    sprintf(bufferAno, "%daC", (-carta.anoConstrucao));
+        sprintf(bufferAno, "%ddC", carta.anoConstrucao);
+    }
+    else
+    {
+        sprintf(bufferAno, "%daC", (-carta.anoConstrucao));
     }
     DrawTextEx(fonte.atributoCartas, "Ano de Construcao", (Vector2){x + (17 * escala), y + (201 * escala)}, 16 * escala, 0, corNomeAtributo);
     DrawTextEx(fonte.atributoCartas, bufferAno, (Vector2){x + (155 * escala), y + (201 * escala)}, 16 * escala, 0, corValorAtributo);
-    
-    
 
     char bufferAltura[20]; // Buffer para armazenar o ano como string
     sprintf(bufferAltura, "%d", carta.altura);
@@ -393,7 +382,7 @@ void drawSearchBox(Rectangle rect, Fonte fonte, bool isHovered, bool isActive)
         double currentTime = GetTime();
         if ((currentTime - lastCursorBlinkTime) > 0.5)
         {
-            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){ 70, 130, 180, 255 });
+            DrawLine(rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 5, rect.x + 5 + MeasureTextEx(fonte.atributoCartas, searchText, 18, 0).x, rect.y + 21, (Color){70, 130, 180, 255});
 
             if ((currentTime - lastCursorBlinkTime) > 1.0)
                 lastCursorBlinkTime = currentTime;
@@ -806,7 +795,8 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
     isDelModalOpen = showDelModal;
 }
 
-void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, int *quantidadeCartas) {
+void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, int *quantidadeCartas)
+{
     // --- Static Variables ---
     static bool showAddModal = false;
     static cartas auxdeck = {0}; // Initialize
@@ -824,12 +814,11 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
     static bool erroPreenchimento = false;
 
     // Super Trunfo Checkbox static variables
-    static bool supertrunfo = false;  // <---- HERE
+    static bool supertrunfo = false;               // <---- HERE
     static double lastSuperTrunfoToggleTime = 0.0; // HERE
-    const double superTrunfoDebounceDelay = 0.1;  //HERE
+    const double superTrunfoDebounceDelay = 0.1;   // HERE
 
     const char opcoes[6][25] = {"Nome", "Ano de Construcao", "Altura", "Visitas Anuais", "Importancia Historica", "Popularidade"};
-
 
     const float addModalX = 100;
     const float addModalY = 127;
@@ -839,7 +828,7 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
     const float inputRecHeight = 23;
 
     Rectangle addModal = {addModalX, addModalY, addModalWidth, addModalHeight};
-    Rectangle cancelAddButton = {434, 397, 113, 23};//434
+    Rectangle cancelAddButton = {434, 397, 113, 23}; // 434
     Rectangle confirmAddButton = {566, 397, 113, 23};
     Rectangle checkbox = {286, 313, 23, 23};
     Rectangle dropdown = {152, 313, inputRecWidth, inputRecHeight};
@@ -852,14 +841,16 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
     inputRecs[IMPORTANCIAHISTORICA] = (Rectangle){152, 268, inputRecWidth, inputRecHeight};
     inputRecs[POPULARIDADE] = (Rectangle){286, 268, inputRecWidth, inputRecHeight};
 
-
-    if (isAddModalOpen) {
+    if (isAddModalOpen)
+    {
         showAddModal = true;
     }
 
-    if(showAddModal) DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
+    if (showAddModal)
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
 
-    if (showAddModal) {
+    if (showAddModal)
+    {
 
         DrawRectangleRounded(addModal, 0.03f, 1, WHITE);
         DrawRectangleRoundedLines(addModal, 0.03f, 1, (Color){53, 114, 151, 255});
@@ -867,129 +858,143 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
         // Draw the card before anything else
         desenharCarta(auxdeck, 487, 177, molduras, fonte, 140 / 204, false);
 
-        DrawRectangleRec(checkbox, WHITE); 
+        DrawRectangleRec(checkbox, WHITE);
 
-       
-        Color outlineColor = AZULCLARO; 
-        if (CheckCollisionPointRec(mousePos, checkbox)) {
-            outlineColor = (supertrunfo ? (Color){70, 130, 180, 255} : AZULCLARO); 
+        Color outlineColor = AZULCLARO;
+        if (CheckCollisionPointRec(mousePos, checkbox))
+        {
+            outlineColor = (supertrunfo ? (Color){70, 130, 180, 255} : AZULCLARO);
         }
-        DrawRectangleLinesEx(checkbox, 1, outlineColor); 
+        DrawRectangleLinesEx(checkbox, 1, outlineColor);
 
         double currentTime = GetTime();
         if (CheckCollisionPointRec(mousePos, checkbox) &&
             IsMouseButtonReleased(MOUSE_LEFT_BUTTON) &&
-            (currentTime - lastSuperTrunfoToggleTime > superTrunfoDebounceDelay)) {
+            (currentTime - lastSuperTrunfoToggleTime > superTrunfoDebounceDelay))
+        {
 
-            supertrunfo = !supertrunfo; 
-            lastSuperTrunfoToggleTime = currentTime; 
+            supertrunfo = !supertrunfo;
+            lastSuperTrunfoToggleTime = currentTime;
         }
 
-        
-        if (supertrunfo) {
-            
-            DrawTextEx(fonte.tituloCartas,"X", (Vector2){ checkbox.x + 6, checkbox.y + 2}, 20, 0 ,(Color){70, 130, 180, 255}); // Steel blue
-        }
+        if (supertrunfo)
+        {
 
+            DrawTextEx(fonte.tituloCartas, "X", (Vector2){checkbox.x + 6, checkbox.y + 2}, 20, 0, (Color){70, 130, 180, 255}); // Steel blue
+        }
 
         DrawRectangleRounded(dropdown, 0.1, 1, WHITE);
         DrawRectangleRoundedLines(dropdown, 0.1, 1, AZULCLARO);
-        DrawText(letras[selectedLetraIndex], dropdown.x + 10, dropdown.y + 2, 20, BLACK); 
+        DrawText(letras[selectedLetraIndex], dropdown.x + 10, dropdown.y + 2, 20, BLACK);
 
-
-        if (CheckCollisionPointRec(mousePos, dropdown)) {
+        if (CheckCollisionPointRec(mousePos, dropdown))
+        {
             double currentTime = GetTime();
-            if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && (currentTime - lastDropdownToggleTime > toggleDebounceDelay)) {
+            if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && (currentTime - lastDropdownToggleTime > toggleDebounceDelay))
+            {
                 isDropdownOpen = !isDropdownOpen;
                 lastDropdownToggleTime = currentTime;
             }
         }
 
-        if (isDropdownOpen) {
-            Rectangle dropdownArea = {dropdown.x, dropdown.y, dropdown.width, dropdown.height * 5 }; // Include all options
-            for (int i = 0; i < 4; i++) {
+        if (isDropdownOpen)
+        {
+            Rectangle dropdownArea = {dropdown.x, dropdown.y, dropdown.width, dropdown.height * 5}; // Include all options
+            for (int i = 0; i < 4; i++)
+            {
                 Rectangle optionRect = {dropdown.x, dropdown.y + (i + 1) * dropdown.height, dropdown.width, dropdown.height};
                 DrawRectangleRounded(optionRect, 0.1f, 1, WHITE);
                 DrawRectangleRoundedLines(optionRect, 0.1f, 1, AZULCLARO);
                 DrawText(letras[i], optionRect.x + 10, optionRect.y + 2, 20, BLACK);
 
-                if (CheckCollisionPointRec(mousePos, optionRect) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+                if (CheckCollisionPointRec(mousePos, optionRect) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+                {
                     selectedLetraIndex = i;
                     isDropdownOpen = false;
                 }
             }
 
-
-            if (!CheckCollisionPointRec(mousePos, dropdownArea) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (!CheckCollisionPointRec(mousePos, dropdownArea) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 isDropdownOpen = false;
             }
         }
 
-
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++)
+        {
             DrawTextEx(fonte.atributoCartas, opcoes[i], (Vector2){inputRecs[i].x, inputRecs[i].y - 14}, 14, 1, BLACK);
             DrawRectangleRounded(inputRecs[i], 0.1, 1, WHITE);
             DrawRectangleRoundedLines(inputRecs[i], 0.1, 1, (selectedInputIndex == i) ? (Color){70, 130, 180, 255} : AZULCLARO);
 
-            DrawTextEx(fonte.atributoCartas,(i == NOME) ? auxdeck.nome : auxInputs[i],(Vector2){ inputRecs[i].x + 5, inputRecs[i].y + 5}, 18, 0, BLACK);
+            DrawTextEx(fonte.atributoCartas, (i == NOME) ? auxdeck.nome : auxInputs[i], (Vector2){inputRecs[i].x + 5, inputRecs[i].y + 5}, 18, 0, BLACK);
 
-            if (CheckCollisionPointRec(mousePos, inputRecs[i]) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (CheckCollisionPointRec(mousePos, inputRecs[i]) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 selectedInputIndex = i;
             }
         }
 
         int key = GetCharPressed();
-        if (selectedInputIndex != -1 && key > 0) {
+        if (selectedInputIndex != -1 && key > 0)
+        {
             size_t inputLen = strlen((selectedInputIndex == NOME) ? auxdeck.nome : auxInputs[selectedInputIndex]);
 
-            if (inputLen < 49) {
-                if (selectedInputIndex == NOME) {
+            if (inputLen < 49)
+            {
+                if (selectedInputIndex == NOME)
+                {
                     auxdeck.nome[inputLen] = (char)key;
                     auxdeck.nome[inputLen + 1] = '\0';
-                } else if (key >= '0' && key <= '9') {
+                }
+                else if (key >= '0' && key <= '9')
+                {
                     auxInputs[selectedInputIndex][inputLen] = (char)key;
                     auxInputs[selectedInputIndex][inputLen + 1] = '\0';
                 }
             }
         }
 
-        if (IsKeyPressed(KEY_BACKSPACE) && selectedInputIndex != -1) {
+        if (IsKeyPressed(KEY_BACKSPACE) && selectedInputIndex != -1)
+        {
             size_t inputLen = strlen((selectedInputIndex == NOME) ? auxdeck.nome : auxInputs[selectedInputIndex]);
 
-            if (inputLen > 0) {
+            if (inputLen > 0)
+            {
                 if (selectedInputIndex == NOME)
                     auxdeck.nome[inputLen - 1] = '\0';
                 else
                     auxInputs[selectedInputIndex][inputLen - 1] = '\0';
             }
         }
-        
-        DrawRectangleRounded(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? WHITE : AZULCLARO);
-        DrawRectangleRoundedLines(confirmAddButton,0.1,1,CheckCollisionPointRec(mousePos, confirmAddButton) ? AZULCLARO : WHITE);
-        DrawTextEx(fonte.atributoCartas,"CONFIRMAR",(Vector2){confirmAddButton.x+28,confirmAddButton.y+7},18,0,BLACK);
 
-        
-        DrawRectangleRounded(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? AZULCLARO : WHITE);
-        DrawRectangleRoundedLines(cancelAddButton,0.1,1,CheckCollisionPointRec(mousePos, cancelAddButton) ? WHITE : AZULCLARO);
-        DrawTextEx(fonte.atributoCartas,"CANCELAR",(Vector2){cancelAddButton.x+28,cancelAddButton.y+7},18,0,BLACK);
-    
-        if (((*quantidadeCartas)%32)%3 == 0)
+        DrawRectangleRounded(confirmAddButton, 0.1, 1, CheckCollisionPointRec(mousePos, confirmAddButton) ? WHITE : AZULCLARO);
+        DrawRectangleRoundedLines(confirmAddButton, 0.1, 1, CheckCollisionPointRec(mousePos, confirmAddButton) ? AZULCLARO : WHITE);
+        DrawTextEx(fonte.atributoCartas, "CONFIRMAR", (Vector2){confirmAddButton.x + 28, confirmAddButton.y + 7}, 18, 0, BLACK);
+
+        DrawRectangleRounded(cancelAddButton, 0.1, 1, CheckCollisionPointRec(mousePos, cancelAddButton) ? AZULCLARO : WHITE);
+        DrawRectangleRoundedLines(cancelAddButton, 0.1, 1, CheckCollisionPointRec(mousePos, cancelAddButton) ? WHITE : AZULCLARO);
+        DrawTextEx(fonte.atributoCartas, "CANCELAR", (Vector2){cancelAddButton.x + 28, cancelAddButton.y + 7}, 18, 0, BLACK);
+
+        if (((*quantidadeCartas) % 32) % 3 == 0)
         {
             strcpy(auxdeck.arqimg, "assets/imagem/Extra1.png");
-        }else if (((*quantidadeCartas)%32)%3 == 1)
+        }
+        else if (((*quantidadeCartas) % 32) % 3 == 1)
         {
             strcpy(auxdeck.arqimg, "assets/imagem/Extra2.png");
-        }else if (((*quantidadeCartas)%32)%3 == 2)
+        }
+        else if (((*quantidadeCartas) % 32) % 3 == 2)
         {
             strcpy(auxdeck.arqimg, "assets/imagem/Extra3.png");
-        }        
+        }
         if (!loadTextureAddCard)
         {
             auxdeck.img = LoadTexture(auxdeck.arqimg);
             loadTextureAddCard = true;
         }
 
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmAddButton)) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, confirmAddButton))
+        {
             auxdeck.anoConstrucao = atoi(auxInputs[ANOCONSTRUCAO]);
             auxdeck.altura = atoi(auxInputs[ALTURA]);
             auxdeck.visitasAnuais = atoi(auxInputs[VISITASANUAIS]);
@@ -1001,55 +1006,70 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
                 auxdeck.altura > 0 &&
                 auxdeck.visitasAnuais > 0 &&
                 auxdeck.importanciaHistorica > 0 &&
-                auxdeck.popularidade > 0) {
+                auxdeck.popularidade > 0)
+            {
 
-                 switch (selectedLetraIndex) {
-                    case 0: auxdeck.letra = 'A'; break;
-                    case 1: auxdeck.letra = 'B'; break;
-                    case 2: auxdeck.letra = 'C'; break;
-                    case 3: auxdeck.letra = 'D'; break;
-                    default: break;
+                switch (selectedLetraIndex)
+                {
+                case 0:
+                    auxdeck.letra = 'A';
+                    break;
+                case 1:
+                    auxdeck.letra = 'B';
+                    break;
+                case 2:
+                    auxdeck.letra = 'C';
+                    break;
+                case 3:
+                    auxdeck.letra = 'D';
+                    break;
+                default:
+                    break;
                 }
 
-                if (supertrunfo) {
+                if (supertrunfo)
+                {
                     auxdeck.supertrunfo = 1;
-                } else {
+                }
+                else
+                {
                     auxdeck.supertrunfo = 0;
                 }
 
-                inserirCartas(deck, auxdeck, quantidadeCartas); 
+                inserirCartas(deck, auxdeck, quantidadeCartas);
 
                 showAddModal = false;
                 erroPreenchimento = false;
-                 memset(&auxdeck, 0, sizeof(auxdeck)); 
-                memset(auxInputs, 0, sizeof(auxInputs)); 
+                memset(&auxdeck, 0, sizeof(auxdeck));
+                memset(auxInputs, 0, sizeof(auxInputs));
                 selectedInputIndex = -1;
                 isDropdownOpen = false;
                 selectedLetraIndex = 0;
                 supertrunfo = false;
-
-            } else {
+            }
+            else
+            {
                 erroPreenchimento = true;
             }
         }
 
-
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, cancelAddButton)) {
-             showAddModal = false;
-             erroPreenchimento = false;
-                memset(&auxdeck, 0, sizeof(auxdeck)); 
-                memset(auxInputs, 0, sizeof(auxInputs)); 
-                selectedInputIndex = -1;
-                isDropdownOpen = false;
-                selectedLetraIndex = 0;
-                supertrunfo = false;
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, cancelAddButton))
+        {
+            showAddModal = false;
+            erroPreenchimento = false;
+            memset(&auxdeck, 0, sizeof(auxdeck));
+            memset(auxInputs, 0, sizeof(auxInputs));
+            selectedInputIndex = -1;
+            isDropdownOpen = false;
+            selectedLetraIndex = 0;
+            supertrunfo = false;
         }
 
-        if (erroPreenchimento) {
+        if (erroPreenchimento)
+        {
             DrawTextEx(fonte.tituloTelas, "Preencha todos os campos antes de confirmar!", (Vector2){172, 132}, 18, 0, RED);
         }
     }
-
 
     isAddModalOpen = showAddModal;
 }
@@ -1302,7 +1322,7 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
 
     if (addActive)
     {
-        addCartas(fonte, molduras,mousePos, listaCartas, quantidadeCartas);
+        addCartas(fonte, molduras, mousePos, listaCartas, quantidadeCartas);
     }
     if (!isAddModalOpen)
     {
@@ -1313,7 +1333,7 @@ void desenharTelaDecks(cartas *listaCartas[], int *quantidadeCartas, Molduras mo
     {
         isAnyModalOpen = true;
     }
-    if(!isAddModalOpen && !isEditModalOpen && !isDelModalOpen)
+    if (!isAddModalOpen && !isEditModalOpen && !isDelModalOpen)
     {
         isAnyModalOpen = false;
     }

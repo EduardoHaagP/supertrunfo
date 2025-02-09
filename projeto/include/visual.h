@@ -3,7 +3,6 @@
 
 #include "raylib.h"
 #include "funcoes.h"
-#include "compara.h"
 
 
 
@@ -16,6 +15,7 @@ typedef enum {
     DECKS,
     SAIR
 }Estado;
+
 
 typedef enum{
     NENHUM = -1,
@@ -34,8 +34,8 @@ typedef enum{
 void inicializarJogo(int largura, int altura, const char *titulo);
 void atualizarMenu(int *opcaoSelecionada, Estado *estadoAtual, Rectangle *botoes);
 void desenharMenu(int opcaoSelecionada, Rectangle *botoes, const char **opcoes);
-void desenharTelaJogo();
 
+void desenharTelaJogo(cartas cartaJogador, cartas cartaComputador, Molduras molduras, Fonte fonte);
 
 void desenharCartaSelecionada(cartas carta, int x, int y, Molduras molduras, Fonte fonte);
 
