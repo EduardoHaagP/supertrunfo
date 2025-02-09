@@ -57,6 +57,11 @@ int main()
 
     while (!WindowShouldClose())
     {
+
+        if (IsKeyPressed(KEY_ESCAPE))
+    {
+        estadoAtual = MENU;
+    }
         // Atualização lógica baseada no estado
         if (estadoAtual == MENU)
         {
