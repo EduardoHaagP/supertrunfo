@@ -14,7 +14,15 @@ int main()
     setlocale(LC_ALL, "pt_BR.UTF-8");
 
     int quantidadeCartas;
-    cartas *deck = carregarDeck("deck.csv", &quantidadeCartas);
+    cartas *deck;
+
+    deck = carregarDeckBinario("deck.bin", &quantidadeCartas);
+
+    if (deck == NULL){
+        printf("Bem-vindo ao Super Trunfo: Pontos Turísticos!\n");
+        deck = carregarDeck ("deck.csv", &quantidadeCartas);
+    }
+
     srand(time(NULL));
 
     const char *opcoes[] = {"Jogar", "Decks", "Sair"};
@@ -57,11 +65,6 @@ int main()
 
     while (!WindowShouldClose())
     {
-
-        if (IsKeyPressed(KEY_ESCAPE))
-    {
-        estadoAtual = MENU;
-    }
         // Atualização lógica baseada no estado
         if (estadoAtual == MENU)
         {
@@ -70,6 +73,13 @@ int main()
         else if (estadoAtual == DECKS)
         {
             if (IsKeyPressed(KEY_ESCAPE))
+            {
+                estadoAtual = MENU;
+            }
+        }
+        else if (estadoAtual == RESULTADO_BATALHA)
+        {
+            if(IsKeyPressed(KEY_ESCAPE))
             {
                 estadoAtual = MENU;
             }
@@ -239,6 +249,8 @@ int main()
 
         EndDrawing();
     }
+
+    salvarDeckBinario(deck, quantidadeCartas, "deck.bin");
 
     for (int i = 0; i < quantidadeCartas; i++)
     {

@@ -36,6 +36,49 @@ int contarcartas(FILE *arq) {
     return contador;
 }
 
+void salvarDeckBinario(cartas *deck, int quantidadeCartas, const char *nomeArquivo) {
+    FILE *arq = fopen(nomeArquivo, "wb");
+    if (arq == NULL) {
+        printf("erro ao abrir arquivo para salvar\n");
+        return;
+    }
+
+    fwrite(&quantidadeCartas, sizeof(int), 1, arq);
+
+    // escreve cada carta
+    for (int i = 0; i < quantidadeCartas; i++) {
+        fwrite(&deck[i], sizeof(cartas), 1, arq);
+    }
+
+    fclose(arq);
+}
+
+cartas *carregarDeckBinario(const char *nomeArquivo, int *quantidadeCartas) {
+    FILE *arq = fopen(nomeArquivo, "rb");
+    if (arq == NULL) {
+        printf("arquivo binario nao encontrado. criando novo arquivo...\n");
+        return NULL;
+    }
+
+    // Lê a quantidade de cartas do arquivo
+    fread(quantidadeCartas, sizeof(int), 1, arq);
+
+    // Aloca memória para o deck de cartas
+    cartas *deck = (cartas *)malloc((*quantidadeCartas) * sizeof(cartas));
+    if (deck == NULL) {
+        printf("erro na alocacao\n");
+        fclose(arq);
+        exit(1);
+    }
+
+    for (int i = 0; i < *quantidadeCartas; i++) {
+        fread(&deck[i], sizeof(cartas), 1, arq);
+    }
+
+    fclose(arq);
+    return deck;
+}
+
 cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas) {
     FILE *arq = fopen(nomeArquivo, "r");
     if (arq == NULL) {

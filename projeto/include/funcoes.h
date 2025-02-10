@@ -36,6 +36,8 @@ typedef struct {
 
 // Function Prototypes
 int contarcartas(FILE *arq);
+void salvarDeckBinario(cartas *deck, int quantidadeCartas, const char *nomeArquivo);
+cartas *carregarDeckBinario(const char *nomeArquivo, int *quantidadeCartas);
 cartas configuracoesIniciais(FILE *arq); //Should this be a 'cartas *'?
 cartas *carregarDeck(const char *nomeArquivo, int *quantidadeCartas);
 
