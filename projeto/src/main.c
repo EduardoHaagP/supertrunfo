@@ -222,14 +222,14 @@ int main()
         {
             if (cartasJogador == 32)
             {
-                DrawText("Parabéns, você venceu o jogo!", 300, 400, 30, GREEN);
+                DrawText("Parabéns, você venceu o jogo!", 300, 250, 30, GREEN);
             }
             else
             {
-                DrawText("Você perdeu o jogo!", 300, 400, 30, RED);
+                DrawText("Você perdeu o jogo!", 300, 250, 30, RED);
             }
 
-            DrawText("Pressione ENTER para voltar ao menu", 250, 400, 20, DARKGRAY);
+            DrawText("Pressione ENTER para voltar ao menu", 250, 500, 20, DARKGRAY);
             if (IsKeyPressed(KEY_ENTER))
             {
                 estadoAtual = MENU;
