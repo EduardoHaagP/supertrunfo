@@ -50,7 +50,6 @@ Textura loadTexturas();
 void unloadTexturas(Textura texturas);
 void loadIMGCartas(cartas *cartas, int quantidadeCartas); 
 
-int obterAtributo(cartas c, int atributo);
 
 
 #endif

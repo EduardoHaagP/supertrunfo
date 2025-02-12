@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 
+
+
 // Global variable to store the scroll offset for deck screen
 static int offsetY = 0;
 // Global variable to store the index of the currently selected card
@@ -171,22 +173,22 @@ void escreverAtributoCartas(cartas carta, int x, int y, Fonte fonte, float escal
     DrawTextEx(fonte.atributoCartas, bufferAltura, (Vector2){x + (155 * escala), y + ((201 + 22) * escala)}, 16 * escala, 0, corValorAtributo);
 
     DrawTextEx(fonte.atributoCartas, "Visitas Anuais", (Vector2){x + (17 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corNomeAtributo);
-    if (carta.visitasAnuais > 1000000000) // bilhao
+    if (carta.visitasAnuais >= 1000000000) // bilhao
     {
         char resultado[50];
-        sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000000000, " Bi");
+        sprintf(resultado, "%.1f%s", (float)((carta.visitasAnuais) / 1000000000), " Bi");
         DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
-    else if (carta.visitasAnuais > 1000000) // milhao
+    else if (carta.visitasAnuais >= 1000000) // milhao
     {
         char resultado[50];
-        sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000000, " M");
+        sprintf(resultado, "%.1f%s", (float)((carta.visitasAnuais)) / 1000000, " M");
         DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
-    else if (carta.visitasAnuais > 1000) // mil
+    else if (carta.visitasAnuais >= 1000) // mil
     {
         char resultado[50];
-        sprintf(resultado, "%d%s", (carta.visitasAnuais) / 1000, " m");
+        sprintf(resultado, "%.1f%s", (float)((carta.visitasAnuais)) / 1000, " m");
         DrawTextEx(fonte.atributoCartas, resultado, (Vector2){x + (155 * escala), y + ((201 + 44) * escala)}, 16 * escala, 0, corValorAtributo);
     }
     else

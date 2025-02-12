@@ -3,6 +3,8 @@
 #include <string.h>
 #include "cartas.h"
 
+
+
 enum Opcoes
 {
     NOME = 1,

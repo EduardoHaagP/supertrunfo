@@ -136,15 +136,7 @@ void unloadFonte(Fonte font)
     return;
 }
 
-int obterAtributo(cartas c, int atributo) {
-    if (atributo == 0) return c.anoConstrucao;
-    if (atributo == 1) return c.altura;
-    if (atributo == 2) return c.visitasAnuais;
-    if (atributo == 3) return c.importanciaHistorica;
-    if (atributo == 4) return c.popularidade;
 
-    return 0;
-}
 
 Molduras loadMolduras()
 {

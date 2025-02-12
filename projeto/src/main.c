@@ -178,10 +178,34 @@ int main()
         }
         else if (estadoAtual == RESULTADO_BATALHA)
         {
-            desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);
+            int valorJogador = 0;
+            int valorComputador = 0;
+            if (atributoEscolhido == 0){
+              valorComputador = cartaInimigo.anoConstrucao;
+              valorJogador = minhaCarta.anoConstrucao;  
+            }
+            if (atributoEscolhido == 1){
+              valorComputador = cartaInimigo.altura;
+              valorJogador = minhaCarta.altura;  
+            }
+            if (atributoEscolhido == 2){
+              valorComputador = cartaInimigo.visitasAnuais;
+              valorJogador = minhaCarta.visitasAnuais;  
+            }
+            if (atributoEscolhido == 3) {
+              valorComputador = cartaInimigo.importanciaHistorica;
+              valorJogador = minhaCarta.importanciaHistorica;  
+            }
+            if (atributoEscolhido == 4) {
+              valorComputador = cartaInimigo.popularidade;
+              valorJogador = minhaCarta.popularidade;  
+            }
 
-            int valorJogador = obterAtributo(minhaCarta, atributoEscolhido);
-            int valorComputador = obterAtributo(cartaInimigo, atributoEscolhido);
+            
+
+
+
+            desenharTelaJogo(minhaCarta, cartaInimigo, molduras, fonte);
 
             if (valorJogador > valorComputador)
             {
