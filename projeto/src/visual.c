@@ -867,6 +867,7 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
         {
             outlineColor = (supertrunfo ? (Color){70, 130, 180, 255} : AZULCLARO);
         }
+        DrawTextEx(fonte.atributoCartas, "Super Trunfo", (Vector2){286 , 313 -14}, 18, 0, BLACK);
         DrawRectangleLinesEx(checkbox, 1, outlineColor);
 
         double currentTime = GetTime();
@@ -899,11 +900,12 @@ void addCartas(Fonte fonte, Molduras molduras, Vector2 mousePos, cartas **deck, 
             }
         }
 
+        DrawTextEx(fonte.atributoCartas, "Letra", (Vector2){dropdown.x , dropdown.y -14}, 18, 0, BLACK);
         if (isDropdownOpen)
         {
             Rectangle dropdownArea = {dropdown.x, dropdown.y, dropdown.width, dropdown.height * 5}; // Include all options
             for (int i = 0; i < 4; i++)
-            {
+            { 
                 Rectangle optionRect = {dropdown.x, dropdown.y + (i + 1) * dropdown.height, dropdown.width, dropdown.height};
                 DrawRectangleRounded(optionRect, 0.1f, 1, WHITE);
                 DrawRectangleRoundedLines(optionRect, 0.1f, 1, AZULCLARO);
