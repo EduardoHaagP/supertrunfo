@@ -735,7 +735,7 @@ void delCartas(Fonte fonte, Vector2 mousePos, cartas **deck, int *quantidadeCart
             DrawRectangleRounded(cancelDelButton, 0.1f, 1, WHITE);
             DrawRectangleRoundedLines(cancelDelButton, 0.1f, 1,
                                       CheckCollisionPointRec(mousePos, cancelDelButton) ? AZULCLARO : AZULESCURO);
-            DrawTextEx(fonte.tituloTelas, "Cancelar", (Vector2){264, 340}, 20, 0, WHITE);
+            DrawTextEx(fonte.tituloTelas, "Cancelar", (Vector2){264, 340}, 20, 0, AZULESCURO);
 
             CheckCollisionPointRec(mousePos, confirmDelButton)
                 ? DrawRectangleRounded(confirmDelButton, 0.1f, 1, AZULCLARO)
