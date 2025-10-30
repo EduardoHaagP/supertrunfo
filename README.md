@@ -228,5 +228,8 @@ Distribuído sob a **MIT License**. Consulte [LICENSE](LICENSE).
 
 ## 👤 Autor
 
-**Eduardo Haag P.**  
+**Eduardo Haag Piassa da Silva**  
+🔗 GitHub: [@EduardoHaagP](https://github.com/EduardoHaagP)
+
+**Nathalia Rodrigues Nunes Gonçalves**  
 🔗 GitHub: [@EduardoHaagP](https://github.com/EduardoHaagP)
